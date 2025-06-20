@@ -69,7 +69,7 @@ export const startSaveNote = () => {
 }
 
 export const startUploadingFiles = (files = []) => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     dispatch(setSaving())
 
     // await fileUpload( files[0] );
@@ -81,6 +81,9 @@ export const startUploadingFiles = (files = []) => {
     const photosUrls = await Promise.all(fileUploadPromises)
 
     dispatch(setPhotosToActiveNote(photosUrls))
+
+    // Guardar la nota actualizada en Firestore automáticamente
+    await dispatch(startSaveNote())
   }
 }
 

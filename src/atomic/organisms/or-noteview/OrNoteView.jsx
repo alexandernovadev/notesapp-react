@@ -20,6 +20,7 @@ import Swal from "sweetalert2"
 import "sweetalert2/dist/sweetalert2.css"
 
 import AtGrid from "../../atoms/at-grid"
+import ImageGallery from "../../molecules/image-gallery/ImageGallery"
 
 import { useForm } from "../../../hooks/useForm"
 
@@ -174,6 +175,8 @@ const OrNoteView = () => {
               Borrar
             </Button>
           </AtGrid>
+
+          <ImageGallery images={note.imageUrls} />
         </AtGrid>
       )}
     </>
