@@ -104,9 +104,20 @@ const OrNoteView = () => {
   // Efecto para mostrar mensaje de guardado
   useEffect(() => {
     if (messageSaved.length > 0) {
-      Swal.fire("Nota actualizada", messageSaved, "success").then(() => {
-        navigate("/")
-      })
+      if (note && note.id && note.title && note.body) {
+        Swal.fire("Nota actualizada", messageSaved, "success").then(() => {
+          navigate("/")
+        })
+      } else {
+        Swal.fire({
+          icon: 'success',
+          title: 'Nota agregada exitosamente',
+          timer: 1800,
+          showConfirmButton: false,
+        }).then(() => {
+          navigate("/")
+        })
+      }
     }
   }, [messageSaved, navigate])
 
@@ -118,6 +129,20 @@ const OrNoteView = () => {
   const onFileInputChange = useCallback(
     ({ target }) => {
       if (!target.files || target.files.length === 0) return
+      // Validación de archivos
+      const validTypes = ["image/jpeg", "image/png", "image/gif", "image/webp", "image/jpg"]
+      const maxSize = 5 * 1024 * 1024 // 5MB
+      const invalids = Array.from(target.files).filter(
+        (file) => !validTypes.includes(file.type) || file.size > maxSize
+      )
+      if (invalids.length > 0) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Archivo no válido',
+          text: 'Solo se permiten imágenes (jpg, png, gif, webp) y máximo 5MB.',
+        })
+        return
+      }
       dispatch(startUploadingFiles(target.files))
     },
     [dispatch]
