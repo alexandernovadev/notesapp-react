@@ -1,14 +1,20 @@
 import React, { useMemo } from "react"
 import { useDispatch } from "react-redux"
+import { useNavigate } from "react-router"
 import { capitalize } from "@mui/material"
 import ListItemButton from "@mui/material/ListItemButton"
 import AtTypography from "../../atoms/at-typography"
+import { setActiveNote } from "../../../store/journal/JournalSlice"
 
 const MlItemSideBarNote = ({ date, id, body, title, imageUrls, onClose }) => {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const onClickNote = () => {
-    onClose()
+    const note = { date, id, body, title, imageUrls }
+    dispatch(setActiveNote(note))
+    navigate(`/addnote/${id}`)
+    if (onClose) onClose()
   }
 
   const titleCrop = useMemo(() => {

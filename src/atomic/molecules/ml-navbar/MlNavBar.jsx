@@ -59,7 +59,7 @@ const MlNavBar = ({ isOpen, onClose }) => {
           ) : (
             <>
               {notes?.map((note) => (
-                <MlItemSideBarNote {...note} key={note.id} onclose={onClose} />
+                <MlItemSideBarNote {...note} key={note.id} onClose={onClose} />
               ))}
             </>
           )}
