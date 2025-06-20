@@ -32,6 +32,8 @@ import {
 } from "../../../store/journal/thunks"
 import { setActiveNote } from "../../../store/journal/JournalSlice"
 
+import TmLoadingLayout from "../../templates/tm-loadinglayout/TmLoadingLayout"
+
 const OrNoteView = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -49,6 +51,7 @@ const OrNoteView = () => {
 
   // Buscar y setear nota activa si hay id en la URL
   useEffect(() => {
+    if (isLoading) return;
     if (noteIdParam) {
       // Si la nota activa no coincide con el id de la URL
       if (!note || note.id !== noteIdParam) {
@@ -65,7 +68,7 @@ const OrNoteView = () => {
     } else {
       setNotFound(false)
     }
-  }, [noteIdParam, notes, note, dispatch])
+  }, [noteIdParam, notes, note, dispatch, isLoading])
 
   // Memoizar valores seguros para la nota
   const safeNote = useMemo(
@@ -126,9 +129,7 @@ const OrNoteView = () => {
   return (
     <>
       {isLoading ? (
-        <Box sx={{ width: "100%", mt: 8 }}>
-          <LinearProgress color="secondary" />
-        </Box>
+        <TmLoadingLayout />
       ) : notFound ? (
         <Box sx={{ mt: 8, textAlign: "center" }}>
           <Typography variant="h4" color="error" gutterBottom>
