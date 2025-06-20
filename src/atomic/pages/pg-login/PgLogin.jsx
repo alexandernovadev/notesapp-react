@@ -18,8 +18,8 @@ import {
 } from "../../../store/auth/thunks"
 
 const formData = {
-  email: "",
-  password: "",
+  email: "demouser@demo.com",
+  password: "soydemo123",
 }
 
 const formValidations = {
