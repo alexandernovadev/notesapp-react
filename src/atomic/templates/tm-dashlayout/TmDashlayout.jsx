@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { useNavigate } from "react-router"
 
 import MenuItem from "@mui/material/MenuItem"
 import MenuList from "@mui/material/MenuList"
@@ -22,6 +23,7 @@ const TmDashlayout = ({ children }) => {
   const [isAvatarMenuOpen, setIsAvatarMenuOpen] = useState(false)
 
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const { displayName } = useSelector((state) => state.auth)
 
   const handleLogOut = () => {
@@ -71,11 +73,11 @@ const TmDashlayout = ({ children }) => {
               }}
             >
               <MenuList>
-                <MenuItem>
+                <MenuItem onClick={() => { setIsAvatarMenuOpen(false); navigate('/profile') }}>
                   <AccountCircleIcon />
                   &nbsp; Profile
                 </MenuItem>
-                <MenuItem divider>
+                <MenuItem divider onClick={() => { setIsAvatarMenuOpen(false); navigate('/myaccount') }}>
                   <Person3Icon />
                   &nbsp; My account
                 </MenuItem>

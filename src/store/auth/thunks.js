@@ -3,6 +3,7 @@ import {
   registerUserWithEmailPassword,
   singInWithGoogle,
   logoutFirebase,
+  updateUserProfile,
 } from "../../firebase/providers"
 import { clearNotesLogout } from "../journal/JournalSlice"
 import { checkingCredentials, logout, login } from "./AuthSlice"
@@ -58,5 +59,16 @@ export const startLogout = () => {
     await logoutFirebase()
     dispatch(clearNotesLogout())
     dispatch(logout())
+  }
+}
+
+export const startUpdateUserProfile = ({ displayName, photoURL }) => {
+  return async (dispatch, getState) => {
+    dispatch(checkingCredentials())
+    const result = await updateUserProfile({ displayName, photoURL })
+    if (!result.ok) return dispatch(logout(result.errorMessage))
+    // Actualiza el estado auth con los nuevos datos
+    const { uid, email } = getState().auth
+    dispatch(login({ uid, email, displayName: result.displayName, photoURL: result.photoURL }))
   }
 }

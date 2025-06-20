@@ -81,3 +81,12 @@ export const loginWithEmailPassword = async ({ email, password }) => {
 export const logoutFirebase = async () => {
   return await FirebaseAuth.signOut()
 }
+
+export const updateUserProfile = async ({ displayName, photoURL }) => {
+  try {
+    await updateProfile(FirebaseAuth.currentUser, { displayName, photoURL })
+    return { ok: true, displayName, photoURL }
+  } catch (error) {
+    return { ok: false, errorMessage: error.message }
+  }
+}
