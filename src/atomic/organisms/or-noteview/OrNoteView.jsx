@@ -1,6 +1,6 @@
-import React, { useEffect, useMemo, useRef, useCallback } from "react"
+import React, { useEffect, useMemo, useRef, useCallback, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { useNavigate } from "react-router"
+import { useNavigate, useParams } from "react-router"
 
 import {
   DeleteOutline,
@@ -28,16 +28,44 @@ import {
   startDeletingNote,
   startSaveNote,
   startUploadingFiles,
+  startNewNote,
 } from "../../../store/journal/thunks"
+import { setActiveNote } from "../../../store/journal/JournalSlice"
 
 const OrNoteView = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
+  const { id: noteIdParam } = useParams()
   const {
     active: note,
     messageSaved,
     isSaving,
+    notes,
+    isLoading,
   } = useSelector((state) => state.journal)
+
+  // Estado para error de nota no encontrada
+  const [notFound, setNotFound] = useState(false)
+
+  // Buscar y setear nota activa si hay id en la URL
+  useEffect(() => {
+    if (noteIdParam) {
+      // Si la nota activa no coincide con el id de la URL
+      if (!note || note.id !== noteIdParam) {
+        const found = notes?.find((n) => n.id === noteIdParam)
+        if (found) {
+          dispatch(setActiveNote(found))
+          setNotFound(false)
+        } else {
+          setNotFound(true)
+        }
+      } else {
+        setNotFound(false)
+      }
+    } else {
+      setNotFound(false)
+    }
+  }, [noteIdParam, notes, note, dispatch])
 
   // Memoizar valores seguros para la nota
   const safeNote = useMemo(
@@ -86,12 +114,33 @@ const OrNoteView = () => {
     dispatch(startDeletingNote())
   }, [dispatch])
 
+  // Acción para crear una nueva nota
+  const onAddNewNote = useCallback(() => {
+    dispatch(startNewNote())
+    navigate("/addnote")
+  }, [dispatch, navigate])
+
   // Render condicional en variable
-  const noNoteSelected = !note || !note.id
+  const noNoteSelected = (!note || !note.id) && !notFound
 
   return (
     <>
-      {noNoteSelected ? (
+      {isLoading ? (
+        <Box sx={{ width: "100%", mt: 8 }}>
+          <LinearProgress color="secondary" />
+        </Box>
+      ) : notFound ? (
+        <Box sx={{ mt: 8, textAlign: "center" }}>
+          <Typography variant="h4" color="error" gutterBottom>
+            Oops, no existe ninguna nota con ese ID
+          </Typography>
+          <Typography variant="body1" sx={{ mb: 3 }}>
+            Puedes crear una nueva nota o volver al inicio.
+          </Typography>
+          <Button variant="contained" color="primary" onClick={onAddNewNote} sx={{ mr: 2 }}>Agregar nueva nota</Button>
+          <Button variant="outlined" color="primary" onClick={() => navigate("/")}>Volver al inicio</Button>
+        </Box>
+      ) : noNoteSelected ? (
         <Typography variant="h5" sx={{ mt: 5, textAlign: "center" }}>
           Selecciona o crea una nota
         </Typography>
