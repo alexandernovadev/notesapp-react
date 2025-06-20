@@ -14,7 +14,7 @@ import MlNavBar from "../../molecules/ml-navbar"
 import AtGrid from "../../atoms/at-grid/AtGrid"
 import AtTypography from "../../atoms/at-typography/AtTypography"
 
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { startLogout } from "../../../store/auth/thunks"
 
 const TmDashlayout = ({ children }) => {
@@ -22,9 +22,18 @@ const TmDashlayout = ({ children }) => {
   const [isAvatarMenuOpen, setIsAvatarMenuOpen] = useState(false)
 
   const dispatch = useDispatch()
+  const { displayName } = useSelector((state) => state.auth)
 
   const handleLogOut = () => {
     dispatch(startLogout())
+  }
+
+  // Función para obtener iniciales del displayName
+  const getInitials = (name) => {
+    if (!name) return "?"
+    const names = name.trim().split(" ")
+    if (names.length === 1) return names[0][0].toUpperCase()
+    return (names[0][0] + names[names.length - 1][0]).toUpperCase()
   }
 
   return (
@@ -40,13 +49,13 @@ const TmDashlayout = ({ children }) => {
           </AtButton>
 
           <AtGrid display="flex" gap={2}>
-            <AtTypography sx={{ pt: 1 }}>Alexander Nova</AtTypography>
+            <AtTypography sx={{ pt: 1 }}>{displayName || "Usuario"}</AtTypography>
             <AtAvatar
               id="avatar-button"
               sx={{ width: 32, height: 32 }}
               onClick={() => setIsAvatarMenuOpen(true)}
             >
-              AN
+              {getInitials(displayName)}
             </AtAvatar>
             <Popover
               open={isAvatarMenuOpen}
