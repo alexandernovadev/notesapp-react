@@ -5,13 +5,16 @@ import OrNoteView from "../../organisms/or-noteview"
 
 import { startNewNote } from "../../../store/journal/thunks"
 import { useDispatch, useSelector } from "react-redux"
+import { useNavigate } from "react-router-dom"
 
 const PgJournal = () => {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const { isSaving, active } = useSelector((state) => state.journal)
 
   const onClickNewNote = () => {
     dispatch(startNewNote())
+    navigate("/addnote")
   }
 
   return (

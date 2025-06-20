@@ -1,50 +1,43 @@
 import React, { useMemo } from "react"
 import { useDispatch } from "react-redux"
-
-import {capitalize} from "@mui/material"
-
+import { capitalize } from "@mui/material"
 import ListItemButton from "@mui/material/ListItemButton"
-import AtGrid from "../../atoms/at-grid"
 import AtTypography from "../../atoms/at-typography"
-
 import { setActiveNote } from "../../../store/journal/JournalSlice"
-import { getFormatDistanceToNow } from "../../../helpers/getFormatDistanceToNow"
 
 const MlItemSideBarNote = ({ date, id, body, title, imageUrls, onClose }) => {
   const dispatch = useDispatch()
 
-  
   const onClickNote = () => {
     dispatch(setActiveNote({ title, body, id, date }))
     onClose()
   }
 
   const titleCrop = useMemo(() => {
-    return title.length > 19 ? title.substring(0, 17) + "..." : title
+    return title.length > 24 ? title.substring(0, 22) + "..." : title
   }, [title])
-
-
-  const descriptionCrop = useMemo(() => {
-    return body.length > 79 ? body.substring(0, 80) + "..." : title
-  }, [body])
-
 
   return (
     <ListItemButton
-      sx={{ borderLeft: "2px dotted gray ", my: 2 }}
+      sx={{
+        borderLeft: "3px solid #fff",
+        my: 1,
+        borderRadius: 2,
+        background: "rgba(255,255,255,0.08)",
+        transition: "background 0.2s, color 0.2s",
+        ':hover': { background: "#fff", color: "#222" },
+        px: 2,
+        py: 1.5,
+        minHeight: 40,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
       onClick={onClickNote}
     >
-      <AtGrid container direction="column" justifyContent="start">
-        <AtTypography variant="h6">{capitalize(titleCrop)}</AtTypography>
-        <AtTypography variant="body" component="h6" sx={{ p: 1 }}>
-          {descriptionCrop}
-        </AtTypography>
-        <AtGrid container direction="row" justifyContent="end">
-          <AtTypography variant="body2" sx={{ color: "gray" }}>
-            {getFormatDistanceToNow(date)}
-          </AtTypography>
-        </AtGrid>
-      </AtGrid>
+      <AtTypography variant="subtitle1" sx={{ fontWeight: 600, textAlign: 'center', width: '100%' }}>
+        {capitalize(titleCrop) || 'Sin título'}
+      </AtTypography>
     </ListItemButton>
   )
 }
