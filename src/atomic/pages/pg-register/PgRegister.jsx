@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react"
-import { Link as RouterLink } from "react-router-dom"
+import { Link as RouterLink } from "react-router"
 
 import { useForm } from "../../../hooks/useForm"
 import { useDispatch, useSelector } from "react-redux"

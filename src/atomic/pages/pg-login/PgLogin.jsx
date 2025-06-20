@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react"
-import { Link as RouterLink } from "react-router-dom"
+import { Link as RouterLink } from "react-router"
 import { Google } from "@mui/icons-material"
 import { useForm } from "../../../hooks/useForm"
 import { useDispatch, useSelector } from "react-redux"

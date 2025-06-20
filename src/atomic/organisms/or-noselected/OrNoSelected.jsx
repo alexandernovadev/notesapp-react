@@ -6,7 +6,7 @@ import AtBox from "../../atoms/at-box"
 import AtGrid from "../../atoms/at-grid"
 import AtTypography from "../../atoms/at-typography"
 import { setActiveNote } from "../../../store/journal/JournalSlice"
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router"
 
 const OrNoSelected = () => {
   const dispatch = useDispatch()

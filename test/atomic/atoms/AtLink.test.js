@@ -1,6 +1,6 @@
 import React from "react"
 import { render } from "@testing-library/react"
-import { BrowserRouter as Router } from "react-router-dom"
+import { BrowserRouter as Router } from "react-router"
 import AtLink from "../../../src/atomic/atoms/at-link"
 
 describe("AtLink Atom", () => {

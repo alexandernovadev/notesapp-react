@@ -1,4 +1,4 @@
-import { Route, Routes, Navigate } from "react-router-dom"
+import { Route, Routes, Navigate } from "react-router"
 import JournalPage from "../atomic/pages/pg-journal"
 import OrNoteView from "../atomic/organisms/or-noteview"
 import TmDashlayout from "../atomic/templates/tm-dashlayout"

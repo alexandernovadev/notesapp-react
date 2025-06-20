@@ -1,4 +1,4 @@
-import { Route, Routes, Navigate } from "react-router-dom"
+import { Route, Routes, Navigate } from "react-router"
 
 import PgLogin from "../atomic/pages/pg-login"
 import PgRegister from "../atomic/pages/pg-register"
