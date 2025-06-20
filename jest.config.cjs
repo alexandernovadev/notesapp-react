@@ -10,7 +10,7 @@ module.exports = {
     "\\.(jpg|jpeg|png|gif|webp|svg)$": "<rootDir>/__mocks__/fileMock.js",
   },
   setupFilesAfterEnv: [
-    "@testing-library/jest-dom/extend-expect",
+    "@testing-library/jest-dom",
     "./jest.setup.js"
   ],
   moduleFileExtensions: ["js", "mjs", "json", "jsx", "node"],
