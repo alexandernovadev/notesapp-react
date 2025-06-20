@@ -36,6 +36,8 @@ import {
   setActiveNote as clearActiveNote,
 } from "../../../store/journal/JournalSlice"
 
+import TmDashlayout from "../../templates/tm-dashlayout"
+
 const OrNoteView = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
