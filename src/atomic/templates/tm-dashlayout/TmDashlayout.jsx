@@ -14,6 +14,7 @@ import AtButton from "../../atoms/at-button"
 import MlNavBar from "../../molecules/ml-navbar"
 import AtGrid from "../../atoms/at-grid/AtGrid"
 import AtTypography from "../../atoms/at-typography/AtTypography"
+import MenuIcon from "@mui/icons-material/Menu"
 
 import { useDispatch, useSelector } from "react-redux"
 import { startLogout } from "../../../store/auth/thunks"
@@ -45,10 +46,15 @@ const TmDashlayout = ({ children }) => {
     >
       <MlNavBar isOpen={isOpen} onClose={() => setIsOpen(false)} />
       <AtBox component="main" sx={{ flexGrow: 1, p: 2, height: "100vh" }}>
-        <AtGrid container justifyContent="space-between">
-          <AtButton variant="text" onClick={() => setIsOpen(!isOpen)}>
-            <NoteIcon /> &nbsp; Mis Notas
-          </AtButton>
+        <AtGrid container justifyContent="space-between" alignItems="center">
+          <AtGrid display="flex" alignItems="center" gap={1}>
+            <AtButton variant="text" onClick={() => setIsOpen(true)} sx={{ minWidth: 0, p: 1 }}>
+              <MenuIcon />
+            </AtButton>
+            <AtButton variant="text" onClick={() => navigate("/")}> 
+              <NoteIcon /> &nbsp; Mis Notas
+            </AtButton>
+          </AtGrid>
 
           <AtGrid display="flex" gap={2}>
             <AtTypography sx={{ pt: 1 }}>{displayName || "Usuario"}</AtTypography>
