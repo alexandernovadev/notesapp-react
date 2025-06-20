@@ -52,89 +52,98 @@ const TmDashlayout = ({ children }) => {
     >
       <MlNavBar isOpen={isOpen} onClose={() => setIsOpen(false)} />
       <AtBox component="main" sx={{ flexGrow: 1, p: 2, height: "100vh" }}>
-        <AtGrid container justifyContent="space-between" alignItems="center">
-          <AtGrid display="flex" alignItems="center" gap={1}>
-            <AtButton
-              variant="text"
-              onClick={() => setIsOpen(true)}
-              sx={{ minWidth: 0, p: 1 }}
-            >
-              <MenuIcon />
-            </AtButton>
-            <AtButton
-              variant="text"
-              onClick={() => {
-                dispatch(setActiveNote(null))
-                navigate("/")
-              }}
-            >
-              <NoteIcon /> &nbsp; Mis Notas
-            </AtButton>
-          </AtGrid>
+        <AtBox
+          sx={{
+            position: "sticky",
+            top: 0,
+            zIndex: 1100,
+            backgroundColor: "primary.light",
+            pb: 1,
+          }}
+        >
+          <AtGrid container justifyContent="space-between" alignItems="center">
+            <AtGrid display="flex" alignItems="center" gap={1}>
+              <AtButton
+                variant="text"
+                onClick={() => setIsOpen(true)}
+                sx={{ minWidth: 0, p: 1 }}
+              >
+                <MenuIcon />
+              </AtButton>
+              <AtButton
+                variant="text"
+                onClick={() => {
+                  dispatch(setActiveNote(null))
+                  navigate("/")
+                }}
+              >
+                <NoteIcon /> &nbsp; Mis Notas
+              </AtButton>
+            </AtGrid>
 
-          <AtGrid display="flex" gap={2}>
-            <AtTypography sx={{ pt: 1 }}>
-              {displayName || "Usuario"}
-            </AtTypography>
-            <AtAvatar
-              id="avatar-button"
-              sx={{ width: 32, height: 32 }}
-              onClick={() => setIsAvatarMenuOpen(true)}
-            >
-              {getInitials(displayName)}
-            </AtAvatar>
-            <Popover
-              open={isAvatarMenuOpen}
-              onClose={() => setIsAvatarMenuOpen(false)}
-              anchorEl={document.querySelector("#avatar-button")}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "right",
-              }}
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-            >
-              <MenuList>
-                <MenuItem
-                  onClick={() => {
-                    setIsAvatarMenuOpen(false)
-                    navigate("/profile")
-                  }}
-                >
-                  <AccountCircleIcon />
-                  &nbsp; Profile
-                </MenuItem>
-                <MenuItem
-                  divider
-                  onClick={() => {
-                    setIsAvatarMenuOpen(false)
-                    navigate("/myaccount")
-                  }}
-                >
-                  <Person3Icon />
-                  &nbsp; My account
-                </MenuItem>
-                <MenuItem
-                  onClick={() => {
-                    setIsAvatarMenuOpen(false)
-                    navigate("/aboutme")
-                  }}
-                >
-                  <Person3Icon />
-                  &nbsp; Sobre mí
-                </MenuItem>
-                <MenuItem onClick={handleLogOut}>
-                  <LogoutIcon />
-                  &nbsp; Logout
-                </MenuItem>
-              </MenuList>
-            </Popover>
+            <AtGrid display="flex" gap={2}>
+              <AtTypography sx={{ pt: 1 }}>
+                {displayName || "Usuario"}
+              </AtTypography>
+              <AtAvatar
+                id="avatar-button"
+                sx={{ width: 32, height: 32 }}
+                onClick={() => setIsAvatarMenuOpen(true)}
+              >
+                {getInitials(displayName)}
+              </AtAvatar>
+              <Popover
+                open={isAvatarMenuOpen}
+                onClose={() => setIsAvatarMenuOpen(false)}
+                anchorEl={document.querySelector("#avatar-button")}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "right",
+                }}
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+              >
+                <MenuList>
+                  <MenuItem
+                    onClick={() => {
+                      setIsAvatarMenuOpen(false)
+                      navigate("/profile")
+                    }}
+                  >
+                    <AccountCircleIcon />
+                    &nbsp; Profile
+                  </MenuItem>
+                  <MenuItem
+                    divider
+                    onClick={() => {
+                      setIsAvatarMenuOpen(false)
+                      navigate("/myaccount")
+                    }}
+                  >
+                    <Person3Icon />
+                    &nbsp; My account
+                  </MenuItem>
+                  <MenuItem
+                    onClick={() => {
+                      setIsAvatarMenuOpen(false)
+                      navigate("/aboutme")
+                    }}
+                  >
+                    <Person3Icon />
+                    &nbsp; Sobre mí
+                  </MenuItem>
+                  <MenuItem onClick={handleLogOut}>
+                    <LogoutIcon />
+                    &nbsp; Logout
+                  </MenuItem>
+                </MenuList>
+              </Popover>
+            </AtGrid>
           </AtGrid>
-        </AtGrid>
-
-        <AtBox sx={{ pt: 4 }}>{children}</AtBox>
+        </AtBox>
+        <AtBox sx={{ pt: 4, pb: 3 }}>{children}</AtBox>
       </AtBox>
     </AtBox>
   )

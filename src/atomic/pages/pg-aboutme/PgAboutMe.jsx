@@ -10,6 +10,7 @@ const PgAboutMe = () => (
       width: "100%",
       mx: "auto",
       mt: 4,
+      mb: 3,
       p: { xs: 1, sm: 3 },
       background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)",
       borderRadius: 4,
