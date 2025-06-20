@@ -12,6 +12,7 @@ import AtGrid from "../../atoms/at-grid"
 import MlAlert from "../../molecules/ml-alert"
 import AtButton from "../../atoms/at-button"
 import AtTextField from "../../atoms/at-textfield"
+import Tooltip from "@mui/material/Tooltip"
 
 const formData = {
   email: "",
@@ -114,22 +115,20 @@ export const PgRegister = () => {
             </AtGrid>
 
             <AtGrid item xs={12}>
-              <AtButton
-                disabled={isCheckingAuth}
-                type="submit"
-                variant="contained"
-                fullWidth
-              >
-                Crear cuenta
-              </AtButton>
+              <Tooltip title="demoapp" arrow>
+                <span>
+                  <AtButton
+                    disabled
+                    type="submit"
+                    variant="contained"
+                    fullWidth
+                    sx={{ opacity: 0.5, pointerEvents: 'none' }}
+                  >
+                    Crear cuenta
+                  </AtButton>
+                </span>
+              </Tooltip>
             </AtGrid>
-          </AtGrid>
-
-          <AtGrid container direction="row" justifyContent="end">
-            <AtTypography sx={{ mr: 1 }}>¿Ya tienes cuenta?</AtTypography>
-            <AtLink component={RouterLink} color="inherit" to="/auth/login">
-              ingresar
-            </AtLink>
           </AtGrid>
         </AtGrid>
       </form>

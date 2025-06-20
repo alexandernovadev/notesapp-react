@@ -17,6 +17,8 @@ import {
   startGoogleSignIn,
 } from "../../../store/auth/thunks"
 
+import notesIcon from "../../../assets/notesIcon.png"
+
 const formData = {
   email: "demouser@demo.com",
   password: "soydemo123",
@@ -38,19 +40,56 @@ export const PgLogin = () => {
 
   const onSubmit = (e) => {
     e.preventDefault()
-    
+
     if (!isFormValid) return
     dispatch(startLoginWithEmailPassword({ email, password }))
   }
 
   const onGoogleSignIn = () => {
-    console.log("entra ?");
+    console.log("entra ?")
     setFormSubmitted(true)
     dispatch(startGoogleSignIn())
   }
 
   return (
-    <TmAuthLayout title="Login">
+    <TmAuthLayout title={null}>
+      <AtTypography
+        sx={{
+          textAlign: "center",
+          fontWeight: 700,
+          fontSize: 28,
+          mb: 1,
+          color: "primary.main",
+          letterSpacing: 1,
+        }}
+      >
+        notasFire
+      </AtTypography>
+      <img
+        src={notesIcon}
+        alt="Notas"
+        style={{
+          display: "block",
+          margin: "0 auto 8px",
+          width: 48,
+          height: 48,
+        }}
+      />
+      <AtTypography
+        sx={{
+          mb: 2,
+          textAlign: "center",
+          color: "text.secondary",
+          fontSize: 12,
+          fontWeight: 500,
+        }}
+      >
+        Esta aplicación es una demo para mostrar habilidades técnicas. El
+        registro está deshabilitado y se utiliza un usuario de prueba por
+        defecto.
+        <br />
+        Haz click en el botón de Login para iniciar sesión automáticamente.
+      </AtTypography>
       <form
         onSubmit={onSubmit}
         className="animate__animated animate__fadeIn animate__faster"
@@ -67,18 +106,20 @@ export const PgLogin = () => {
               onChange={onInputChange}
               error={!!emailValid && formSubmitted}
               helperText={emailValid}
+              disabled
             />
           </AtGrid>
 
           <AtGrid item xs={12} sx={{ mt: 2 }}>
             <AtTextField
               label="Contraseña"
-              type="password"
+              type="text"
               placeholder="Contraseña"
               fullWidth
               name="password"
               value={password}
               onChange={onInputChange}
+              disabled
             />
           </AtGrid>
 
@@ -88,21 +129,18 @@ export const PgLogin = () => {
             </AtGrid>
 
             <AtGrid item xs={12} sm={6}>
-              <AtButton
-                type="submit"
-                variant="contained"
-                fullWidth
-                disabled={isAuthenticated}
-              >
+              <AtButton type="submit" variant="contained" fullWidth>
                 Login
               </AtButton>
             </AtGrid>
-            <AtGrid item xs={12} sm={6}>
+
+            <AtGrid item xs={12} sm={6} sx={{ cursor: "not-allowed" }}>
               <AtButton
                 onClick={onGoogleSignIn}
                 variant="contained"
                 fullWidth
-                disabled={isAuthenticated}
+                disabled
+                sx={{ opacity: 0.5 }}
               >
                 <Google />
                 <AtTypography sx={{ ml: 1 }}>Google</AtTypography>
@@ -111,9 +149,7 @@ export const PgLogin = () => {
           </AtGrid>
 
           <AtGrid container direction="row" justifyContent="end">
-            <AtLink component={RouterLink} color="inherit" to="/auth/register">
-              Crear una cuenta
-            </AtLink>
+            <span style={{ cursor: "not-allowed" }}>Crear una cuenta</span>
           </AtGrid>
         </AtGrid>
       </form>

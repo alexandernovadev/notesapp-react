@@ -7,7 +7,7 @@ const AuthRoutes = () => {
   return (
     <Routes>
       <Route path="login" element={<PgLogin />} />
-      <Route path="register" element={<PgRegister />} />
+      {/* // <Route path="register" element={<PgRegister />} /> */}
 
       <Route path="/*" element={<Navigate to="/auth/login" />} />
     </Routes>
