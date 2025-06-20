@@ -6,6 +6,7 @@ import {
   DeleteOutline,
   SaveOutlined,
   UploadOutlined,
+  EditOutlined,
 } from "@mui/icons-material"
 import {
   Button,
@@ -83,6 +84,15 @@ const OrNoteView = () => {
   )
 
   const { body, title, date, onInputChange, formState } = useForm(safeNote)
+
+  // Nuevo handler para sincronizar con el store
+  const onInputChangeAndSync = (e) => {
+    onInputChange(e)
+    dispatch(setActiveNote({
+      ...note,
+      [e.target.name]: e.target.value,
+    }))
+  }
 
   const dateString = useMemo(() => {
     const newDate = new Date(date)
@@ -199,12 +209,21 @@ const OrNoteView = () => {
             <Button
               disabled={isSaving}
               onClick={onSaveNote}
-              color="primary"
+              color={note && note.id ? "success" : "primary"}
               variant="contained"
               sx={{}}
             >
-              <SaveOutlined sx={{ fontSize: 30, mr: 1 }} />
-              Guardar
+              {note && note.id ? (
+                <>
+                  <EditOutlined sx={{ fontSize: 30, mr: 1 }} />
+                  Editar
+                </>
+              ) : (
+                <>
+                  <SaveOutlined sx={{ fontSize: 30, mr: 1 }} />
+                  Guardar
+                </>
+              )}
             </Button>
           </AtGrid>
 
@@ -217,7 +236,7 @@ const OrNoteView = () => {
               sx={{ border: "none", mb: 1 }}
               name="title"
               value={title}
-              onChange={onInputChange}
+              onChange={onInputChangeAndSync}
             />
 
             <TextField
@@ -228,7 +247,7 @@ const OrNoteView = () => {
               minRows={5}
               name="body"
               value={body}
-              onChange={onInputChange}
+              onChange={onInputChangeAndSync}
             />
           </AtGrid>
 
