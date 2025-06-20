@@ -1,6 +1,6 @@
 import React from "react"
 import { useSelector, useDispatch } from "react-redux"
-import { Grid, Typography } from "@mui/material"
+import { Grid, Typography, CircularProgress } from "@mui/material"
 import imageMain from "../../../assets/imageclean.png"
 import AtBox from "../../atoms/at-box"
 import AtGrid from "../../atoms/at-grid"
@@ -11,11 +11,27 @@ import { setActiveNote } from "../../../store/journal/JournalSlice"
 const OrNotes = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  const { notes } = useSelector((state) => state.journal)
+  const { notes, isLoading } = useSelector((state) => state.journal)
 
   const handleSelectNote = (note) => {
     dispatch(setActiveNote(note))
     navigate(`/addnote/${note.id}`)
+  }
+
+  if (isLoading) {
+    return (
+      <Grid
+        container
+        spacing={0}
+        direction="column"
+        alignItems="center"
+        justifyContent="center"
+        sx={{ minHeight: "calc(100vh - 110px)", borderRadius: 3 }}
+      >
+        <CircularProgress size={60} thickness={4} />
+        <Typography variant="h6" sx={{ mt: 3, color: 'gray' }}>Cargando notas...</Typography>
+      </Grid>
+    )
   }
 
   if (!notes || notes.length === 0) {

@@ -11,6 +11,7 @@ import {
   setPhotosToActiveNote,
   setSaving,
   updateNote,
+  setLoadingNotes,
 } from "./JournalSlice"
 
 import { fileUpload, loadNotes } from "../../helpers"
@@ -40,11 +41,13 @@ export const startNewNote = () => {
 
 export const startLoadingNotes = () => {
   return async (dispatch, getState) => {
+    dispatch(setLoadingNotes(true))
     const { uid } = getState().auth
     if (!uid) throw new Error("El UID del usuario no existe")
 
     const notes = await loadNotes(uid)
     dispatch(setNotes(notes))
+    dispatch(setLoadingNotes(false))
   }
 }
 
