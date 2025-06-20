@@ -42,23 +42,40 @@ const TmDashlayout = ({ children }) => {
 
   return (
     <AtBox
-      sx={{ display: "flex", backgroundColor: "primary.light" }}
+      sx={{
+        display: "flex",
+        height: "100vh",
+        overflow: "auto",
+        backgroundColor: "primary.light",
+      }}
       className="animate__animated animate__fadeIn"
     >
       <MlNavBar isOpen={isOpen} onClose={() => setIsOpen(false)} />
       <AtBox component="main" sx={{ flexGrow: 1, p: 2, height: "100vh" }}>
         <AtGrid container justifyContent="space-between" alignItems="center">
           <AtGrid display="flex" alignItems="center" gap={1}>
-            <AtButton variant="text" onClick={() => setIsOpen(true)} sx={{ minWidth: 0, p: 1 }}>
+            <AtButton
+              variant="text"
+              onClick={() => setIsOpen(true)}
+              sx={{ minWidth: 0, p: 1 }}
+            >
               <MenuIcon />
             </AtButton>
-            <AtButton variant="text" onClick={() => { dispatch(setActiveNote(null)); navigate("/") }}> 
+            <AtButton
+              variant="text"
+              onClick={() => {
+                dispatch(setActiveNote(null))
+                navigate("/")
+              }}
+            >
               <NoteIcon /> &nbsp; Mis Notas
             </AtButton>
           </AtGrid>
 
           <AtGrid display="flex" gap={2}>
-            <AtTypography sx={{ pt: 1 }}>{displayName || "Usuario"}</AtTypography>
+            <AtTypography sx={{ pt: 1 }}>
+              {displayName || "Usuario"}
+            </AtTypography>
             <AtAvatar
               id="avatar-button"
               sx={{ width: 32, height: 32 }}
@@ -80,13 +97,33 @@ const TmDashlayout = ({ children }) => {
               }}
             >
               <MenuList>
-                <MenuItem onClick={() => { setIsAvatarMenuOpen(false); navigate('/profile') }}>
+                <MenuItem
+                  onClick={() => {
+                    setIsAvatarMenuOpen(false)
+                    navigate("/profile")
+                  }}
+                >
                   <AccountCircleIcon />
                   &nbsp; Profile
                 </MenuItem>
-                <MenuItem divider onClick={() => { setIsAvatarMenuOpen(false); navigate('/myaccount') }}>
+                <MenuItem
+                  divider
+                  onClick={() => {
+                    setIsAvatarMenuOpen(false)
+                    navigate("/myaccount")
+                  }}
+                >
                   <Person3Icon />
                   &nbsp; My account
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    setIsAvatarMenuOpen(false)
+                    navigate("/aboutme")
+                  }}
+                >
+                  <Person3Icon />
+                  &nbsp; Sobre mí
                 </MenuItem>
                 <MenuItem onClick={handleLogOut}>
                   <LogoutIcon />

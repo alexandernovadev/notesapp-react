@@ -68,7 +68,7 @@ const PgProfile = () => {
               {displayName || "Usuario"}
             </AtTypography>
             <AtTypography variant="subtitle1" color="text.secondary">
-              {email}
+              demouser@demo.com
             </AtTypography>
             <AtButton variant="outlined" sx={{ mt: 2 }} onClick={handleEdit}>
               Editar perfil
@@ -82,49 +82,73 @@ const PgProfile = () => {
         <AtTypography variant="body1">
           Nombre: {displayName || "No especificado"}
         </AtTypography>
-        <AtTypography variant="body1">
-          Correo: {email || "No especificado"}
-        </AtTypography>
+        <AtTypography variant="body1">Correo: demouser@demo.com</AtTypography>
         <AtDivider sx={{ my: 3 }} />
         <AtTypography variant="h6" fontWeight={600} gutterBottom>
           Actividad reciente
         </AtTypography>
-        <AtTypography variant="body2" color="text.secondary">
-          Aquí podrías ver tus últimas notas, cambios o actividad relevante.
-        </AtTypography>
+        <AtBox sx={{ mb: 2 }}>
+          <AtTypography variant="body2" color="text.secondary">
+            - 2024-06-01: Creaste la nota "Ideas para el proyecto"
+          </AtTypography>
+          <AtTypography variant="body2" color="text.secondary">
+            - 2024-06-02: Editaste la nota "Lista de compras"
+          </AtTypography>
+          <AtTypography variant="body2" color="text.secondary">
+            - 2024-06-03: Eliminaste la nota "Borrador antiguo"
+          </AtTypography>
+        </AtBox>
         <AtDivider sx={{ my: 3 }} />
         <AtTypography variant="h6" fontWeight={600} gutterBottom>
           Opciones
         </AtTypography>
-        <AtButton variant="contained" color="primary" sx={{ mr: 2 }}>
+        <AtButton
+          variant="contained"
+          color="primary"
+          sx={{ mr: 2, cursor: "not-allowed" }}
+          disabled
+        >
           Cambiar contraseña
         </AtButton>
-        <AtButton variant="outlined" color="error">
+        <AtButton
+          variant="outlined"
+          color="error"
+          sx={{ cursor: "not-allowed" }}
+          disabled
+        >
           Eliminar cuenta
         </AtButton>
       </AtBox>
       {/* Modal de edición */}
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Editar perfil</DialogTitle>
-        <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            label="Nombre"
-            type="text"
-            fullWidth
-            value={editName}
-            onChange={(e) => setEditName(e.target.value)}
-            sx={{ mb: 2 }}
-          />
-          <TextField
-            margin="dense"
-            label="URL de foto (opcional)"
-            type="text"
-            fullWidth
-            value={editPhoto}
-            onChange={(e) => setEditPhoto(e.target.value)}
-          />
+        <DialogContent sx={{ position: "relative", p: 3 }}>
+             <AtTypography color="text.secondary" sx={{ fontWeight: 600, textAlign: 'center', pt: 1, pb: 1 }}>
+                No tiene permisos para editar perfil
+              </AtTypography>
+          <div style={{ position: "relative" }}>
+            <TextField
+              autoFocus
+              margin="dense"
+              label="Nombre"
+              type="text"
+              fullWidth
+              value={editName}
+              onChange={(e) => setEditName(e.target.value)}
+              sx={{ mb: 2, cursor: "not-allowed", background: "#f5f5f5" }}
+              disabled
+            />
+            <TextField
+              margin="dense"
+              label="URL de foto (opcional)"
+              type="text"
+              fullWidth
+              value={editPhoto}
+              onChange={(e) => setEditPhoto(e.target.value)}
+              sx={{ cursor: "not-allowed", background: "#f5f5f5" }}
+              disabled
+            />
+          </div>
         </DialogContent>
         <DialogActions>
           <AtButton onClick={handleClose} disabled={saving}>
@@ -133,7 +157,7 @@ const PgProfile = () => {
           <AtButton
             onClick={handleSave}
             variant="contained"
-            disabled={saving || !editName.trim()}
+            disabled={true}
           >
             Guardar
           </AtButton>

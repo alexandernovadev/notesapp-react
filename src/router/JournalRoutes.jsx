@@ -4,6 +4,7 @@ import OrNoteView from "../atomic/organisms/or-noteview"
 import TmDashlayout from "../atomic/templates/tm-dashlayout"
 import PgProfile from "../atomic/pages/pg-profile"
 import PgMyAccount from "../atomic/pages/pg-myaccount"
+import PgAboutMe from '../atomic/pages/pg-aboutme'
 
 const JournalRoutes = () => {
   return (
@@ -13,6 +14,7 @@ const JournalRoutes = () => {
         <Route path="addnote/:id?" element={<OrNoteView />} />
         <Route path="profile" element={<PgProfile />} />
         <Route path="myaccount" element={<PgMyAccount />} />
+        <Route path="aboutme" element={<PgAboutMe />} />
         <Route path="/*" element={<Navigate to="/" />} />
       </Routes>
     </TmDashlayout>

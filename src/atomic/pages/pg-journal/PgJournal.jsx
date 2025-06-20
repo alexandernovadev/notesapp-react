@@ -1,6 +1,5 @@
-
 import MlAddEntry from "../../molecules/ml-addentry"
-import OrNotes from '../../organisms/or-notes/OrNotes'
+import OrNotes from "../../organisms/or-notes/OrNotes"
 
 import { startNewNote } from "../../../store/journal/thunks"
 import { useDispatch, useSelector } from "react-redux"
@@ -19,6 +18,7 @@ const PgJournal = () => {
   return (
     <>
       <OrNotes />
+
       <MlAddEntry
         onClick={onClickNewNote}
         size="large"
