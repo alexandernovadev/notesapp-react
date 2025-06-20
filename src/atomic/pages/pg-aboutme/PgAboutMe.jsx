@@ -68,14 +68,6 @@ const PgAboutMe = () => (
       If you're building something meaningful that needs a solid technical
       backbone and creative frontend solutions — <b>I'm your guy.</b>
     </AtTypography>
-    <AtTypography
-      variant="body1"
-      sx={{ fontSize: 18, color: "#333", fontWeight: 700 }}
-    >
-      Si estás creando algo ambicioso y buscas un desarrollador que combine
-      visión técnica, velocidad y diseño con propósito,{" "}
-      <span style={{ color: "#1976d2" }}>aquí estoy</span>.
-    </AtTypography>
   </AtBox>
 )
 
