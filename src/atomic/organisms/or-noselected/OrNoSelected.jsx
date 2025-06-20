@@ -41,11 +41,11 @@ const OrNoSelected = () => {
 
   return (
     <AtBox sx={{ maxWidth: 1024, mx: 'auto', width: '100%' }}>
-      <AtGrid container spacing={1} sx={{ p: 1, py: 0 }}>
+      <AtGrid container spacing={2} sx={{ p: 1, py: 0 }}>
         {notes.map((note) => {
           const imgSrc = note.imageUrls && note.imageUrls.length > 0 ? note.imageUrls[0] : imageMain
           return (
-            <AtGrid item xs={12} sm={6} key={note.id} sx={{ display: 'flex' }}>
+            <AtGrid item xs={12} sm={6} md={4} lg={3} key={note.id} sx={{ display: 'flex' }}>
               <AtBox
                 sx={{
                   display: "flex",
@@ -60,6 +60,7 @@ const OrNoSelected = () => {
                   minHeight: 110,
                   height: 130,
                   width: '100%',
+                  minWidth: 0,
                   transition: "box-shadow 0.25s, transform 0.18s",
                   ':hover': {
                     boxShadow: 10,
@@ -76,12 +77,12 @@ const OrNoSelected = () => {
                   style={{ width: 64, height: 64, objectFit: 'cover', borderRadius: 8, marginRight: 16 }}
                   loading="lazy"
                 />
-                <div style={{ flex: 1 }}>
+                <div style={{ flex: 1, minWidth: 0 }}>
                   <AtTypography variant="h6" sx={{ mb: 1, fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                     {note.title || 'Sin título'}
                   </AtTypography>
-                  <AtTypography variant="body2" sx={{ color: 'gray', overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical' }}>
-                    {note.body ? (note.body.length > 80 ? note.body.slice(0, 80) + '...' : note.body) : 'Sin descripción'}
+                  <AtTypography variant="body2" sx={{ color: 'gray', overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', minWidth: 0 }}>
+                    {note.body ? note.body : 'Sin descripción'}
                   </AtTypography>
                 </div>
               </AtBox>

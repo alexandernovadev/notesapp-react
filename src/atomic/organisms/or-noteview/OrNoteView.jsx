@@ -36,7 +36,6 @@ import {
   setActiveNote as clearActiveNote,
 } from "../../../store/journal/JournalSlice"
 
-import TmDashlayout from "../../templates/tm-dashlayout"
 
 const OrNoteView = () => {
   const dispatch = useDispatch()
@@ -91,7 +90,6 @@ const OrNoteView = () => {
   }
 
   return (
-    <TmDashlayout>
       <AtGrid
         container
         direction="row"
@@ -174,7 +172,6 @@ const OrNoteView = () => {
 
         {/* <ImageGallery images={note.imageUrls} /> */}
       </AtGrid>
-    </TmDashlayout>
   )
 }
 
