@@ -33,37 +33,75 @@ const PgProfile = () => {
   const handleClose = () => setOpen(false)
   const handleSave = async () => {
     setSaving(true)
-    await dispatch(startUpdateUserProfile({ displayName: editName, photoURL: editPhoto }))
+    await dispatch(
+      startUpdateUserProfile({ displayName: editName, photoURL: editPhoto })
+    )
     setSaving(false)
     setOpen(false)
   }
 
   return (
-    <TmDashlayout>
-      <AtBox sx={{ maxWidth: 600, mx: "auto", mt: 4, p: 3, background: "#fff", borderRadius: 3, boxShadow: 3 }}>
+    <>
+      <AtBox
+        sx={{
+          maxWidth: 600,
+          mx: "auto",
+          mt: 4,
+          p: 3,
+          background: "#fff",
+          borderRadius: 3,
+          boxShadow: 3,
+        }}
+      >
         <AtGrid container spacing={2} alignItems="center">
           <AtGrid item>
-            <AtAvatar src={photoURL} alt={displayName} sx={{ width: 80, height: 80, fontSize: 36 }}>
+            <AtAvatar
+              src={photoURL}
+              alt={displayName}
+              sx={{ width: 80, height: 80, fontSize: 36 }}
+            >
               {getInitials(displayName)}
             </AtAvatar>
           </AtGrid>
           <AtGrid item xs>
-            <AtTypography variant="h4" fontWeight={700}>{displayName || "Usuario"}</AtTypography>
-            <AtTypography variant="subtitle1" color="text.secondary">{email}</AtTypography>
-            <AtButton variant="outlined" sx={{ mt: 2 }} onClick={handleEdit}>Editar perfil</AtButton>
+            <AtTypography variant="h4" fontWeight={700}>
+              {displayName || "Usuario"}
+            </AtTypography>
+            <AtTypography variant="subtitle1" color="text.secondary">
+              {email}
+            </AtTypography>
+            <AtButton variant="outlined" sx={{ mt: 2 }} onClick={handleEdit}>
+              Editar perfil
+            </AtButton>
           </AtGrid>
         </AtGrid>
         <AtDivider sx={{ my: 3 }} />
-        <AtTypography variant="h6" fontWeight={600} gutterBottom>Información personal</AtTypography>
-        <AtTypography variant="body1">Nombre: {displayName || "No especificado"}</AtTypography>
-        <AtTypography variant="body1">Correo: {email || "No especificado"}</AtTypography>
+        <AtTypography variant="h6" fontWeight={600} gutterBottom>
+          Información personal
+        </AtTypography>
+        <AtTypography variant="body1">
+          Nombre: {displayName || "No especificado"}
+        </AtTypography>
+        <AtTypography variant="body1">
+          Correo: {email || "No especificado"}
+        </AtTypography>
         <AtDivider sx={{ my: 3 }} />
-        <AtTypography variant="h6" fontWeight={600} gutterBottom>Actividad reciente</AtTypography>
-        <AtTypography variant="body2" color="text.secondary">Aquí podrías ver tus últimas notas, cambios o actividad relevante.</AtTypography>
+        <AtTypography variant="h6" fontWeight={600} gutterBottom>
+          Actividad reciente
+        </AtTypography>
+        <AtTypography variant="body2" color="text.secondary">
+          Aquí podrías ver tus últimas notas, cambios o actividad relevante.
+        </AtTypography>
         <AtDivider sx={{ my: 3 }} />
-        <AtTypography variant="h6" fontWeight={600} gutterBottom>Opciones</AtTypography>
-        <AtButton variant="contained" color="primary" sx={{ mr: 2 }}>Cambiar contraseña</AtButton>
-        <AtButton variant="outlined" color="error">Eliminar cuenta</AtButton>
+        <AtTypography variant="h6" fontWeight={600} gutterBottom>
+          Opciones
+        </AtTypography>
+        <AtButton variant="contained" color="primary" sx={{ mr: 2 }}>
+          Cambiar contraseña
+        </AtButton>
+        <AtButton variant="outlined" color="error">
+          Eliminar cuenta
+        </AtButton>
       </AtBox>
       {/* Modal de edición */}
       <Dialog open={open} onClose={handleClose}>
@@ -76,7 +114,7 @@ const PgProfile = () => {
             type="text"
             fullWidth
             value={editName}
-            onChange={e => setEditName(e.target.value)}
+            onChange={(e) => setEditName(e.target.value)}
             sx={{ mb: 2 }}
           />
           <TextField
@@ -85,18 +123,24 @@ const PgProfile = () => {
             type="text"
             fullWidth
             value={editPhoto}
-            onChange={e => setEditPhoto(e.target.value)}
+            onChange={(e) => setEditPhoto(e.target.value)}
           />
         </DialogContent>
         <DialogActions>
-          <AtButton onClick={handleClose} disabled={saving}>Cancelar</AtButton>
-          <AtButton onClick={handleSave} variant="contained" disabled={saving || !editName.trim()}>
+          <AtButton onClick={handleClose} disabled={saving}>
+            Cancelar
+          </AtButton>
+          <AtButton
+            onClick={handleSave}
+            variant="contained"
+            disabled={saving || !editName.trim()}
+          >
             Guardar
           </AtButton>
         </DialogActions>
       </Dialog>
-    </TmDashlayout>
+    </>
   )
 }
 
-export default PgProfile 
+export default PgProfile

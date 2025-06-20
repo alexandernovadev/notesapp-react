@@ -113,9 +113,22 @@ const OrNoteView = () => {
     [dispatch]
   )
 
-  const onDelete = useCallback(() => {
-    dispatch(startDeletingNote())
-  }, [dispatch])
+  const onDelete = useCallback(async () => {
+    const result = await Swal.fire({
+      title: '¿Estás seguro de borrar esta nota?',
+      text: 'Esta acción no se puede deshacer.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Sí, borrar',
+      cancelButtonText: 'Cancelar',
+    })
+    if (result.isConfirmed) {
+      await dispatch(startDeletingNote())
+      navigate("/")
+    }
+  }, [dispatch, navigate])
 
   // Acción para crear una nueva nota
   const onAddNewNote = useCallback(() => {
