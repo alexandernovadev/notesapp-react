@@ -3,6 +3,7 @@ import { Link as RouterLink } from "react-router"
 import { Google } from "@mui/icons-material"
 import { useForm } from "../../../hooks/useForm"
 import { useDispatch, useSelector } from "react-redux"
+import 'devicon/devicon.min.css';
 
 import AtTextField from "../../atoms/at-textfield"
 import AtGrid from "../../atoms/at-grid"
@@ -153,6 +154,21 @@ export const PgLogin = () => {
           </AtGrid>
         </AtGrid>
       </form>
+      <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center', marginTop: 16 }}>
+        <i className="devicon-react-original colored" title="React" style={{ fontSize: 32 }}></i>
+        <i className="devicon-redux-original colored" title="Redux" style={{ fontSize: 32 }}></i>
+        <i className="devicon-javascript-plain colored" title="JavaScript" style={{ fontSize: 32 }}></i>
+        <i className="devicon-firebase-plain colored" title="Firebase" style={{ fontSize: 32 }}></i>
+        <i className="devicon-sass-original colored" title="Sass" style={{ fontSize: 32 }}></i>
+        <i className="devicon-jest-plain colored" title="Jest" style={{ fontSize: 32 }}></i>
+        <i className="devicon-babel-plain colored" title="Babel" style={{ fontSize: 32 }}></i>
+        <i className="devicon-vitejs-plain colored" title="Vite" style={{ fontSize: 32 }}></i>
+        <i className="devicon-materialui-plain colored" title="Material UI" style={{ fontSize: 32 }}></i>
+        <i className="devicon-nodejs-plain colored" title="Node.js" style={{ fontSize: 32 }}></i>
+        <i className="devicon-git-plain colored" title="Git" style={{ fontSize: 32 }}></i>
+        <i className="devicon-npm-original-wordmark colored" title="Npm" style={{ fontSize: 32 }}></i>
+        <i className="devicon-yarn-plain colored" title="Yarn" style={{ fontSize: 32 }}></i>
+      </div>
     </TmAuthLayout>
   )
 }
