@@ -5,12 +5,12 @@ import imageMain from "../../../assets/imageclean.png"
 import AtBox from "../../atoms/at-box"
 import AtGrid from "../../atoms/at-grid"
 import AtTypography from "../../atoms/at-typography"
-import { setActiveNote } from "../../../store/journal/JournalSlice"
 import { useNavigate } from "react-router"
+import { setActiveNote } from "../../../store/journal/JournalSlice"
 
-const OrNoSelected = () => {
-  const dispatch = useDispatch()
+const OrNotes = () => {
   const navigate = useNavigate()
+  const dispatch = useDispatch()
   const { notes } = useSelector((state) => state.journal)
 
   const handleSelectNote = (note) => {
@@ -94,4 +94,4 @@ const OrNoSelected = () => {
   )
 }
 
-export default OrNoSelected
+export default OrNotes

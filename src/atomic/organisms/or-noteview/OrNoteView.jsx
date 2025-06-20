@@ -31,10 +31,6 @@ import {
   startSaveNote,
   startUploadingFiles,
 } from "../../../store/journal/thunks"
-import {
-  setActiveNote,
-  setActiveNote as clearActiveNote,
-} from "../../../store/journal/JournalSlice"
 
 
 const OrNoteView = () => {
@@ -45,6 +41,11 @@ const OrNoteView = () => {
     messageSaved,
     isSaving,
   } = useSelector((state) => state.journal)
+
+  // Mostrar mensaje si no hay nota activa
+  if (!note || !note.id) {
+    return <Typography variant="h5" sx={{ mt: 5, textAlign: "center" }}>Selecciona o crea una nota</Typography>
+  }
 
   // Valores por defecto para evitar undefined
   const safeNote = {
@@ -64,13 +65,8 @@ const OrNoteView = () => {
   const fileInputRef = useRef()
 
   useEffect(() => {
-    dispatch(setActiveNote(formState))
-  }, [formState])
-
-  useEffect(() => {
     if (messageSaved.length > 0) {
       Swal.fire("Nota actualizada", messageSaved, "success").then(() => {
-        dispatch(clearActiveNote(null))
         navigate("/")
       })
     }

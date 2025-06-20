@@ -3,13 +3,11 @@ import { useDispatch } from "react-redux"
 import { capitalize } from "@mui/material"
 import ListItemButton from "@mui/material/ListItemButton"
 import AtTypography from "../../atoms/at-typography"
-import { setActiveNote } from "../../../store/journal/JournalSlice"
 
 const MlItemSideBarNote = ({ date, id, body, title, imageUrls, onClose }) => {
   const dispatch = useDispatch()
 
   const onClickNote = () => {
-    dispatch(setActiveNote({ title, body, id, date }))
     onClose()
   }
 

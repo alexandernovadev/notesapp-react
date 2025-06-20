@@ -7,13 +7,15 @@ import PgMyAccount from "../atomic/pages/pg-myaccount"
 
 const JournalRoutes = () => {
   return (
-    <Routes>
-      <Route path="" element={<JournalPage />} />
-      <Route path="addnote/:id?" element={<OrNoteView />} />
-      <Route path="profile" element={<PgProfile />} />
-      <Route path="myaccount" element={<PgMyAccount />} />
-      <Route path="/*" element={<Navigate to="/" />} />
-    </Routes>
+    <TmDashlayout>
+      <Routes>
+        <Route path="" element={<JournalPage />} />
+        <Route path="addnote/:id?" element={<OrNoteView />} />
+        <Route path="profile" element={<PgProfile />} />
+        <Route path="myaccount" element={<PgMyAccount />} />
+        <Route path="/*" element={<Navigate to="/" />} />
+      </Routes>
+    </TmDashlayout>
   )
 }
 

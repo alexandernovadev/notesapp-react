@@ -18,6 +18,7 @@ import MenuIcon from "@mui/icons-material/Menu"
 
 import { useDispatch, useSelector } from "react-redux"
 import { startLogout } from "../../../store/auth/thunks"
+import { setActiveNote } from "../../../store/journal/JournalSlice"
 
 const TmDashlayout = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false)
@@ -51,7 +52,7 @@ const TmDashlayout = ({ children }) => {
             <AtButton variant="text" onClick={() => setIsOpen(true)} sx={{ minWidth: 0, p: 1 }}>
               <MenuIcon />
             </AtButton>
-            <AtButton variant="text" onClick={() => navigate("/")}> 
+            <AtButton variant="text" onClick={() => { dispatch(setActiveNote(null)); navigate("/") }}> 
               <NoteIcon /> &nbsp; Mis Notas
             </AtButton>
           </AtGrid>
