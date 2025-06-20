@@ -22,7 +22,6 @@ import "sweetalert2/dist/sweetalert2.css"
 import AtGrid from "../../atoms/at-grid"
 
 import { useForm } from "../../../hooks/useForm"
-// import { ImageGallery } from "../components"
 
 import {
   startDeletingNote,
@@ -175,8 +174,6 @@ const OrNoteView = () => {
               Borrar
             </Button>
           </AtGrid>
-
-          {/* <ImageGallery images={note.imageUrls} /> */}
         </AtGrid>
       )}
     </>
