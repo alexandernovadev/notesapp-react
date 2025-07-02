@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react"
 import {
   Box,
   TextField,
@@ -7,22 +7,22 @@ import {
   Chip,
   IconButton,
   Tooltip,
-} from '@mui/material'
+} from "@mui/material"
 import {
   Save as SaveIcon,
   ArrowBack as ArrowBackIcon,
   CheckCircle as CheckCircleIcon,
-} from '@mui/icons-material'
-import { useNavigate, useParams } from 'react-router-dom'
-import { NoteEditor } from '@/components/editor'
-import { useNoteEditor } from '@/hooks/useNoteEditor'
-import { formatDistanceToNow } from 'date-fns'
-import { es } from 'date-fns/locale'
+} from "@mui/icons-material"
+import { useNavigate, useParams } from "react-router-dom"
+import { NoteEditor } from "@/components/editor"
+import { useNoteEditor } from "@/hooks/useNoteEditor"
+import { formatDistanceToNow } from "date-fns"
+import { es } from "date-fns/locale"
 
 export const NoteEditorPage: React.FC = () => {
   const navigate = useNavigate()
   const { noteId } = useParams<{ noteId: string }>()
-  
+
   const {
     content,
     title,
@@ -41,10 +41,10 @@ export const NoteEditorPage: React.FC = () => {
 
   const handleBack = () => {
     if (hasUnsavedChanges) {
-      const confirmed = window.confirm('¿Deseas salir sin guardar los cambios?')
+      const confirmed = window.confirm("¿Deseas salir sin guardar los cambios?")
       if (!confirmed) return
     }
-    navigate('/')
+    navigate("/")
   }
 
   const handleSave = async () => {
@@ -53,7 +53,7 @@ export const NoteEditorPage: React.FC = () => {
 
   // Debug: log content and title when they change
   React.useEffect(() => {
-    console.log('NoteEditorPage debug:', { noteId, title, content })
+    console.log("NoteEditorPage debug:", { noteId, title, content })
   }, [noteId, title, content])
 
   // Estado para mostrar/ocultar el Alert de guardado
@@ -65,36 +65,38 @@ export const NoteEditorPage: React.FC = () => {
   // Mostrar loading si hay noteId pero el contenido está vacío y no se está guardando
   if (noteId && !content && !isSaving) {
     return (
-      <Box sx={{ p: 4, textAlign: 'center' }}>
-        <Typography variant="h6" color="text.secondary">Cargando nota...</Typography>
+      <Box sx={{ p: 4, textAlign: "center" }}>
+        <Typography variant="h6" color="text.secondary">
+          Cargando nota...
+        </Typography>
       </Box>
     )
   }
 
   return (
-    <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <Box sx={{ height: "100vh", display: "flex", flexDirection: "column" }}>
       {/* Header */}
       <Box
         sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          p: 2,
-          borderBottom: '1px solid',
-          borderColor: 'divider',
-          backgroundColor: 'background.paper',
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          p: 0.5,
+          borderBottom: "1px solid",
+          borderColor: "divider",
+          backgroundColor: "background.paper",
         }}
       >
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <IconButton onClick={handleBack} size="small">
             <ArrowBackIcon />
           </IconButton>
           <Typography variant="h6" component="h1">
-            {noteId ? 'Editar Nota' : 'Nueva Nota'}
+            {noteId ? "Editar Nota" : "Nueva Nota"}
           </Typography>
         </Box>
 
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           {/* Status indicators */}
           {isSaving && (
             <Chip
@@ -104,11 +106,14 @@ export const NoteEditorPage: React.FC = () => {
               variant="outlined"
             />
           )}
-          
+
           {lastSaved && !isSaving && (
             <Chip
               icon={<CheckCircleIcon />}
-              label={`Guardado ${formatDistanceToNow(lastSaved, { addSuffix: true, locale: es })}`}
+              label={`Guardado ${formatDistanceToNow(lastSaved, {
+                addSuffix: true,
+                locale: es,
+              })}`}
               size="small"
               color="success"
               variant="outlined"
@@ -126,21 +131,14 @@ export const NoteEditorPage: React.FC = () => {
 
           {/* Save button */}
           <Tooltip title="Guardar (Ctrl+S)" arrow>
-            {(isSaving || !hasUnsavedChanges) ? (
+            {isSaving || !hasUnsavedChanges ? (
               <span>
-                <IconButton
-                  onClick={handleSave}
-                  disabled
-                  color="primary"
-                >
+                <IconButton onClick={handleSave} disabled color="primary">
                   <SaveIcon />
                 </IconButton>
               </span>
             ) : (
-              <IconButton
-                onClick={handleSave}
-                color="primary"
-              >
+              <IconButton onClick={handleSave} color="primary">
                 <SaveIcon />
               </IconButton>
             )}
@@ -149,7 +147,9 @@ export const NoteEditorPage: React.FC = () => {
       </Box>
 
       {/* Content */}
-      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', p: 2, gap: 2 }}>
+      <Box
+        sx={{ flex: 1, display: "flex", flexDirection: "column", p: 2, gap: 2 }}
+      >
         {/* Title */}
         <TextField
           fullWidth
@@ -158,8 +158,8 @@ export const NoteEditorPage: React.FC = () => {
           onChange={(e) => setTitle(e.target.value)}
           variant="outlined"
           sx={{
-            '& .MuiOutlinedInput-root': {
-              fontSize: '1.5rem',
+            "& .MuiOutlinedInput-root": {
+              fontSize: "1.5rem",
               fontWeight: 600,
             },
           }}
