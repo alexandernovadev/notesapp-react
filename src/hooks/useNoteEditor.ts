@@ -23,6 +23,7 @@ export const useNoteEditor = ({
 
   const {
     active,
+    notes,
     isSaving: storeIsSaving,
     messageSaved,
     setActiveNote,
@@ -35,12 +36,19 @@ export const useNoteEditor = ({
 
   // Initialize content from active note
   useEffect(() => {
+    // Si hay noteId y no hay nota activa, buscar la nota por ID y setearla como activa
+    if (noteId && (!active || active.id !== noteId)) {
+      const found = notes.find(n => n.id === noteId)
+      if (found) {
+        setActiveNote(found)
+      }
+    }
     if (active && noteId === active.id) {
       setContent(active.body || '')
       setTitle(active.title || '')
       setHasUnsavedChanges(false)
     }
-  }, [active, noteId])
+  }, [active, noteId, notes, setActiveNote])
 
   // Handle content updates
   const handleContentUpdate = useCallback((newContent: string) => {

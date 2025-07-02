@@ -51,6 +51,11 @@ export const NoteEditorPage: React.FC = () => {
     await save()
   }
 
+  // Debug: log content and title when they change
+  React.useEffect(() => {
+    console.log('NoteEditorPage debug:', { noteId, title, content })
+  }, [noteId, title, content])
+
   // Mostrar loading si hay noteId pero el contenido está vacío y no se está guardando
   if (noteId && !content && !isSaving) {
     return (

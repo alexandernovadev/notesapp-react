@@ -51,7 +51,7 @@ export const DashboardRoutes: React.FC = () => {
           {/* Notes */}
           <Route path="notes">
             <Route path="new" element={<NoteEditorPage />} />
-            <Route path=":id" element={<NoteEditorPage />} />
+            <Route path=":noteId" element={<NoteEditorPage />} />
           </Route>
           
           {/* Search */}
