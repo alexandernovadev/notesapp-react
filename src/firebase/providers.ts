@@ -4,6 +4,7 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   updateProfile,
+  sendPasswordResetEmail,
   User,
 } from "firebase/auth"
 import { FirebaseAuth } from "./config"
@@ -33,6 +34,10 @@ export interface LoginArgs {
 export interface UpdateProfileArgs {
   displayName?: string
   photoURL?: string
+}
+
+export interface ResetPasswordArgs {
+  email: string
 }
 
 export const singInWithGoogle = async (): Promise<AuthResponse> => {
@@ -107,5 +112,20 @@ export const updateUserProfile = async ({ displayName, photoURL }: UpdateProfile
     return { ok: true, displayName: displayName ?? null, photoURL: photoURL ?? null }
   } catch (error: any) {
     return { ok: false, errorMessage: error.message }
+  }
+}
+
+export const resetPassword = async ({ email }: ResetPasswordArgs): Promise<AuthResponse> => {
+  try {
+    await sendPasswordResetEmail(FirebaseAuth, email)
+    return {
+      ok: true,
+      email,
+    }
+  } catch (error: any) {
+    return { 
+      ok: false, 
+      errorMessage: error.message 
+    }
   }
 } 

@@ -2,11 +2,11 @@ import React from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { DashboardRoutes } from './routes/dashboardRoutes'
 import { AuthRoutes } from './routes/authRoutes'
-import { useCheckAuth } from '@/hooks/useCheckAuth'
+import { useAuth } from '@/hooks/useAuth'
 import { Box, CircularProgress, Typography } from '@mui/material'
 
 export const AppRouter: React.FC = () => {
-  const status = useCheckAuth()
+  const { status } = useAuth()
 
   // Loading state
   if (status === 'checking') {

@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { useAuthStore } from '@/stores/useAuthStore'
+import type { RegisterArgs, UpdateProfileArgs } from '@/firebase/providers'
 
 export const useAuth = () => {
   const {
@@ -10,8 +11,13 @@ export const useAuth = () => {
     photoURL,
     errorMessage,
     startLoginWithEmailPassword,
+    startRegisterWithEmailPassword,
+    startLoginWithGoogle,
     startLogout,
     startUpdateUserProfile,
+    startResetPassword,
+    setError,
+    clearError,
     checkAuth,
   } = useAuthStore()
 
@@ -35,7 +41,12 @@ export const useAuth = () => {
     
     // Actions
     login: startLoginWithEmailPassword,
+    register: startRegisterWithEmailPassword,
+    loginWithGoogle: startLoginWithGoogle,
     logout: startLogout,
     updateProfile: startUpdateUserProfile,
+    resetPassword: startResetPassword,
+    setError,
+    clearError,
   }
 } 
