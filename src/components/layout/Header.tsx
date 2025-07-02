@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState } from "react"
 import {
   Box,
   InputBase,
@@ -8,20 +8,20 @@ import {
   MenuItem,
   Typography,
   Divider,
-  useTheme
-} from '@mui/material'
+  useTheme,
+} from "@mui/material"
 import {
   Search as SearchIcon,
   AccountCircle as AccountIcon,
   Settings as SettingsIcon,
   Logout as LogoutIcon,
-  Person as PersonIcon
-} from '@mui/icons-material'
-import { useNavigate } from 'react-router-dom'
-import { useAuthStore } from '@/stores/useAuthStore'
+  Person as PersonIcon,
+} from "@mui/icons-material"
+import { useNavigate } from "react-router-dom"
+import { useAuthStore } from "@/stores/useAuthStore"
 
 export const Header: React.FC = () => {
-  const [searchQuery, setSearchQuery] = useState('')
+  const [searchQuery, setSearchQuery] = useState("")
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const theme = useTheme()
   const navigate = useNavigate()
@@ -45,94 +45,98 @@ export const Header: React.FC = () => {
   const handleLogout = async () => {
     try {
       await logout()
-      navigate('/auth/login')
+      navigate("/auth/login")
     } catch (error) {
-      console.error('Error logging out:', error)
+      console.error("Error logging out:", error)
     }
     handleMenuClose()
   }
 
   const handleProfile = () => {
-    navigate('/settings/profile')
+    navigate("/settings/profile")
     handleMenuClose()
   }
 
   const handleSettings = () => {
-    navigate('/settings')
+    navigate("/settings")
     handleMenuClose()
   }
 
   const open = Boolean(anchorEl)
 
   return (
-    <Box sx={{ 
-      display: 'flex', 
-      alignItems: 'center', 
-      justifyContent: 'space-between',
-      width: '100%',
-      gap: 2
-    }}>
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        width: "100%",
+        gap: 2,
+      }}
+    >
       {/* Search Bar */}
       <Box
         component="form"
         onSubmit={handleSearch}
         sx={{
-          display: 'flex',
-          alignItems: 'center',
-          backgroundColor: 'background.default',
+          display: "flex",
+          alignItems: "center",
+          backgroundColor: "background.default",
           borderRadius: 3,
-          border: '1px solid',
-          borderColor: 'divider',
+          border: "1px solid",
+          borderColor: "divider",
           px: 2,
           py: 1,
           flex: 1,
           maxWidth: 600,
-          '&:hover': {
-            borderColor: 'primary.main'
+          "&:hover": {
+            borderColor: "primary.main",
           },
-          '&:focus-within': {
-            borderColor: 'primary.main',
-            boxShadow: `0 0 0 2px ${theme.palette.primary.main}20`
-          }
+          "&:focus-within": {
+            borderColor: "primary.main",
+            boxShadow: `0 0 0 2px ${theme.palette.primary.main}20`,
+          },
         }}
       >
-        <SearchIcon sx={{ color: 'text.secondary', mr: 1 }} />
+        <SearchIcon sx={{ color: "text.secondary", mr: 1 }} />
         <InputBase
           placeholder="Buscar notas..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           sx={{
             flex: 1,
-            '& .MuiInputBase-input': {
-              fontSize: '0.875rem'
-            }
+            "& .MuiInputBase-input": {
+              fontSize: "0.875rem",
+            },
           }}
         />
       </Box>
 
       {/* User Menu */}
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
         <IconButton
           onClick={handleMenuOpen}
           sx={{
             p: 1,
-            border: '1px solid',
-            borderColor: 'divider',
-            '&:hover': {
-              borderColor: 'primary.main',
-              backgroundColor: 'action.hover'
-            }
+            border: "1px solid",
+            borderColor: "divider",
+            "&:hover": {
+              borderColor: "primary.main",
+              backgroundColor: "action.hover",
+            },
           }}
         >
-          <Avatar 
-            sx={{ 
-              width: 32, 
+          <Avatar
+            sx={{
+              width: 32,
               height: 32,
-              backgroundColor: 'primary.main',
-              fontSize: '0.875rem'
+              backgroundColor: "primary.main",
+              fontSize: "0.875rem",
             }}
           >
-            {displayName ? displayName.charAt(0).toUpperCase() : email?.charAt(0).toUpperCase()}
+            {displayName
+              ? displayName.charAt(0).toUpperCase()
+              : email?.charAt(0).toUpperCase()}
           </Avatar>
         </IconButton>
 
@@ -141,26 +145,26 @@ export const Header: React.FC = () => {
           open={open}
           onClose={handleMenuClose}
           anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'right',
+            vertical: "bottom",
+            horizontal: "right",
           }}
           transformOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
+            vertical: "top",
+            horizontal: "right",
           }}
           PaperProps={{
             sx: {
               mt: 1,
               minWidth: 200,
-              boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
-              borderRadius: 2
-            }
+              boxShadow: "0 8px 32px rgba(0,0,0,0.12)",
+              borderRadius: 2,
+            },
           }}
         >
           {/* User Info */}
           <Box sx={{ p: 2, pb: 1 }}>
             <Typography variant="subtitle2" fontWeight={600}>
-              {displayName || 'Usuario'}
+              {displayName || "Usuario"}
             </Typography>
             <Typography variant="body2" color="text.secondary">
               {email}
@@ -182,7 +186,10 @@ export const Header: React.FC = () => {
 
           <Divider />
 
-          <MenuItem onClick={handleLogout} sx={{ py: 1.5, color: 'error.main' }}>
+          <MenuItem
+            onClick={handleLogout}
+            sx={{ py: 1.5, color: "error.main" }}
+          >
             <LogoutIcon sx={{ mr: 2, fontSize: 20 }} />
             <Typography variant="body2">Cerrar Sesión</Typography>
           </MenuItem>
@@ -190,4 +197,4 @@ export const Header: React.FC = () => {
       </Box>
     </Box>
   )
-} 
+}

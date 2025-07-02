@@ -12,7 +12,7 @@ const config: Config = {
     "\\.(css|less|scss|sass)$": "identity-obj-proxy",
     "\\.(jpg|jpeg|png|gif|webp|svg)$": "<rootDir>/__mocks__/fileMock.js",
     "^@/(.*)$": path.resolve(__dirname, "src/$1"),
-    "^@/components/(.*)$": path.resolve(__dirname, "src/atomic/$1"),
+          "^@/components/(.*)$": path.resolve(__dirname, "src/components/$1"),
     "^@/hooks/(.*)$": path.resolve(__dirname, "src/hooks/$1"),
     "^@/store/(.*)$": path.resolve(__dirname, "src/store/$1"),
     "^@/helpers/(.*)$": path.resolve(__dirname, "src/helpers/$1"),

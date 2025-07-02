@@ -65,6 +65,7 @@ export const LoginPage: React.FC = () => {
               error={!!errors.email}
               helperText={errors.email}
               startIcon={<Email color="action" fontSize="small" />}
+              autoComplete="username"
             />
 
             <AuthTextField
@@ -75,6 +76,7 @@ export const LoginPage: React.FC = () => {
               error={!!errors.password}
               helperText={errors.password}
               startIcon={<Lock color="action" fontSize="small" />}
+              autoComplete="current-password"
               endIcon={
                 <IconButton
                   onClick={() => toggleVisibility('password')}

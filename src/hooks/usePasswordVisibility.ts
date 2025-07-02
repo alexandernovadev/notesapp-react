@@ -1,14 +1,14 @@
-import { useState } from 'react'
+import { useState } from "react"
 
-export const usePasswordVisibility = (fields: string[] = ['password']) => {
+export const usePasswordVisibility = (fields: string[] = ["password"]) => {
   const [visibleFields, setVisibleFields] = useState<Record<string, boolean>>(
     fields.reduce((acc, field) => ({ ...acc, [field]: false }), {})
   )
 
   const toggleVisibility = (field: string) => {
-    setVisibleFields(prev => ({
+    setVisibleFields((prev) => ({
       ...prev,
-      [field]: !prev[field]
+      [field]: !prev[field],
     }))
   }
 
@@ -19,4 +19,4 @@ export const usePasswordVisibility = (fields: string[] = ['password']) => {
     toggleVisibility,
     isVisible,
   }
-} 
+}

@@ -1,6 +1,6 @@
-import { useState } from 'react'
-import { useJournalStore } from '@/stores/useJournalStore'
-import { Note } from '@/types'
+import { useState } from "react"
+import { useJournalStore } from "@/stores/useJournalStore"
+import { Note } from "@/types"
 
 interface FileUploadOptions {
   maxSize?: number // en bytes
@@ -10,12 +10,18 @@ interface FileUploadOptions {
 export const useFileUpload = (options: FileUploadOptions = {}) => {
   const [isUploading, setIsUploading] = useState(false)
   const [uploadError, setUploadError] = useState<string | null>(null)
-  
+
   const { setActiveNote } = useJournalStore()
-  
+
   const {
     maxSize = 5 * 1024 * 1024, // 5MB por defecto
-    allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/jpg']
+    allowedTypes = [
+      "image/jpeg",
+      "image/png",
+      "image/gif",
+      "image/webp",
+      "image/jpg",
+    ],
   } = options
 
   const uploadFiles = async (files: FileList) => {
@@ -24,7 +30,7 @@ export const useFileUpload = (options: FileUploadOptions = {}) => {
 
     try {
       // Validar archivos
-      const validFiles = Array.from(files).filter(file => {
+      const validFiles = Array.from(files).filter((file) => {
         if (!allowedTypes.includes(file.type)) {
           throw new Error(`Tipo de archivo no válido: ${file.type}`)
         }
@@ -35,19 +41,24 @@ export const useFileUpload = (options: FileUploadOptions = {}) => {
       })
 
       if (validFiles.length === 0) {
-        throw new Error('No hay archivos válidos para subir')
+        throw new Error("No hay archivos válidos para subir")
       }
 
       // Subir a Cloudinary
       const uploadPromises = validFiles.map(async (file) => {
         const formData = new FormData()
-        formData.append('file', file)
-        formData.append('upload_preset', import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET)
+        formData.append("file", file)
+        formData.append(
+          "upload_preset",
+          import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET
+        )
 
         const response = await fetch(
-          `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/image/upload`,
+          `https://api.cloudinary.com/v1_1/${
+            import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
+          }/image/upload`,
           {
-            method: 'POST',
+            method: "POST",
             body: formData,
           }
         )
@@ -67,7 +78,7 @@ export const useFileUpload = (options: FileUploadOptions = {}) => {
       if (currentNote) {
         const updatedNote: Note = {
           ...currentNote,
-          imageUrls: [...(currentNote.imageUrls || []), ...uploadedUrls]
+          imageUrls: [...(currentNote.imageUrls || []), ...uploadedUrls],
         }
         setActiveNote(updatedNote)
       }
@@ -85,6 +96,6 @@ export const useFileUpload = (options: FileUploadOptions = {}) => {
     uploadFiles,
     isUploading,
     uploadError,
-    clearError: () => setUploadError(null)
+    clearError: () => setUploadError(null),
   }
-} 
+}

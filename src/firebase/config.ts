@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app"
 import { getAuth } from "firebase/auth"
 import { getFirestore } from "firebase/firestore/lite"
-import type { FirebaseConfig } from '@/types'
+import type { FirebaseConfig } from "@/types"
 
 const firebaseConfig: FirebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -15,4 +15,4 @@ const firebaseConfig: FirebaseConfig = {
 
 export const FirebaseApp = initializeApp(firebaseConfig)
 export const FirebaseAuth = getAuth(FirebaseApp)
-export const FirebaseDB = getFirestore(FirebaseApp) 
+export const FirebaseDB = getFirestore(FirebaseApp)

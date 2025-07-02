@@ -84,7 +84,10 @@ export const registerUserWithEmailPassword = async ({
   }
 }
 
-export const loginWithEmailPassword = async ({ email, password }: LoginArgs): Promise<AuthResponse> => {
+export const loginWithEmailPassword = async ({
+  email,
+  password,
+}: LoginArgs): Promise<AuthResponse> => {
   try {
     const resp = await signInWithEmailAndPassword(FirebaseAuth, email, password)
     const { uid, photoURL, displayName } = resp.user
@@ -103,19 +106,28 @@ export const logoutFirebase = async (): Promise<void> => {
   return await FirebaseAuth.signOut()
 }
 
-export const updateUserProfile = async ({ displayName, photoURL }: UpdateProfileArgs): Promise<AuthResponse> => {
+export const updateUserProfile = async ({
+  displayName,
+  photoURL,
+}: UpdateProfileArgs): Promise<AuthResponse> => {
   try {
     await updateProfile(FirebaseAuth.currentUser as User, {
       displayName: displayName ?? null,
       photoURL: photoURL ?? null,
     })
-    return { ok: true, displayName: displayName ?? null, photoURL: photoURL ?? null }
+    return {
+      ok: true,
+      displayName: displayName ?? null,
+      photoURL: photoURL ?? null,
+    }
   } catch (error: any) {
     return { ok: false, errorMessage: error.message }
   }
 }
 
-export const resetPassword = async ({ email }: ResetPasswordArgs): Promise<AuthResponse> => {
+export const resetPassword = async ({
+  email,
+}: ResetPasswordArgs): Promise<AuthResponse> => {
   try {
     await sendPasswordResetEmail(FirebaseAuth, email)
     return {
@@ -123,9 +135,9 @@ export const resetPassword = async ({ email }: ResetPasswordArgs): Promise<AuthR
       email,
     }
   } catch (error: any) {
-    return { 
-      ok: false, 
-      errorMessage: error.message 
+    return {
+      ok: false,
+      errorMessage: error.message,
     }
   }
-} 
+}

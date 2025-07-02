@@ -1,6 +1,6 @@
-import { useEffect } from 'react'
-import { useJournalStore } from '@/stores/useJournalStore'
-import { useAuth } from './useAuth'
+import { useEffect } from "react"
+import { useJournalStore } from "@/stores/useJournalStore"
+import { useAuth } from "./useAuth"
 
 export const useJournal = () => {
   const {
@@ -31,7 +31,7 @@ export const useJournal = () => {
     isSaving,
     isLoading,
     messageSaved,
-    
+
     // Actions
     setActiveNote,
     createNote: startNewNote,
@@ -39,4 +39,4 @@ export const useJournal = () => {
     deleteNote: startDeletingNote,
     loadNotes,
   }
-} 
+}

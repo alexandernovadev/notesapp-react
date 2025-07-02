@@ -1,6 +1,6 @@
-import { useEffect } from 'react'
-import { useAuthStore } from '@/stores/useAuthStore'
-import type { RegisterArgs, UpdateProfileArgs } from '@/firebase/providers'
+import { useEffect } from "react"
+import { useAuthStore } from "@/stores/useAuthStore"
+import type { RegisterArgs, UpdateProfileArgs } from "@/firebase/providers"
 
 export const useAuth = () => {
   const {
@@ -25,8 +25,8 @@ export const useAuth = () => {
     checkAuth()
   }, [checkAuth])
 
-  const isAuthenticated = status === 'authenticated'
-  const isChecking = status === 'checking'
+  const isAuthenticated = status === "authenticated"
+  const isChecking = status === "checking"
 
   return {
     // State
@@ -38,7 +38,7 @@ export const useAuth = () => {
     errorMessage,
     isAuthenticated,
     isChecking,
-    
+
     // Actions
     login: startLoginWithEmailPassword,
     register: startRegisterWithEmailPassword,
@@ -49,4 +49,4 @@ export const useAuth = () => {
     setError,
     clearError,
   }
-} 
+}

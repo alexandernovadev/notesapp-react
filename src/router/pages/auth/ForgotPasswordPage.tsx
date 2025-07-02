@@ -1,26 +1,21 @@
-import React, { useState } from 'react'
-import {
-  Box,
-  Typography,
-  Link,
-  Alert,
-} from '@mui/material'
+import React, { useState } from "react"
+import { Box, Typography, Link, Alert } from "@mui/material"
 import {
   Email,
   ArrowForward,
   LockReset,
   CheckCircle,
   ArrowBack,
-} from '@mui/icons-material'
-import { Link as RouterLink } from 'react-router-dom'
+} from "@mui/icons-material"
+import { Link as RouterLink } from "react-router-dom"
 import {
   AuthCard,
   AuthHeader,
   AuthFormContainer,
   AuthButton,
   AuthTextField,
-} from '@/components/auth'
-import { useAuthForm } from '@/hooks'
+} from "@/components/auth"
+import { useAuthForm } from "@/hooks"
 
 interface ForgotPasswordFormData {
   email: string
@@ -28,19 +23,20 @@ interface ForgotPasswordFormData {
 
 export const ForgotPasswordPage: React.FC = () => {
   const [isSubmitted, setIsSubmitted] = useState(false)
-  const { formData, errors, isLoading, handleInputChange, handleSubmit } = useAuthForm<ForgotPasswordFormData>({
-    initialValues: { email: '' },
-    onSubmit: async (values) => {
-      if (!values.email.trim()) {
-        throw new Error('Por favor ingresa tu correo electrónico')
-      }
-      
-      // TODO: Implement real password reset logic
-      console.log('Password reset attempt:', values)
-      await new Promise(resolve => setTimeout(resolve, 2000))
-      setIsSubmitted(true)
-    }
-  })
+  const { formData, errors, isLoading, handleInputChange, handleSubmit } =
+    useAuthForm<ForgotPasswordFormData>({
+      initialValues: { email: "" },
+      onSubmit: async (values) => {
+        if (!values.email.trim()) {
+          throw new Error("Por favor ingresa tu correo electrónico")
+        }
+
+        // TODO: Implement real password reset logic
+        console.log("Password reset attempt:", values)
+        await new Promise((resolve) => setTimeout(resolve, 2000))
+        setIsSubmitted(true)
+      },
+    })
 
   const handleResend = () => {
     setIsSubmitted(false)
@@ -50,16 +46,16 @@ export const ForgotPasswordPage: React.FC = () => {
     return (
       <AuthCard>
         <AuthHeader
-          icon={<CheckCircle sx={{ fontSize: 30, color: 'white' }} />}
+          icon={<CheckCircle sx={{ fontSize: 30, color: "white" }} />}
           title="¡Email enviado!"
           subtitle="Revisa tu bandeja de entrada para restablecer tu contraseña"
           iconColor="success"
         />
 
         <AuthFormContainer>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
-            <Alert 
-              severity="success" 
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}>
+            <Alert
+              severity="success"
               icon={<CheckCircle />}
               sx={{ borderRadius: 1.5 }}
             >
@@ -73,32 +69,38 @@ export const ForgotPasswordPage: React.FC = () => {
 
             <Box
               sx={{
-                background: 'background.default',
+                background: "background.default",
                 borderRadius: 1.5,
                 padding: 2,
-                border: '1px solid',
-                borderColor: 'divider',
+                border: "1px solid",
+                borderColor: "divider",
               }}
             >
               <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
                 ¿Qué sigue?
               </Typography>
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-                <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
+              <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
+                <Box
+                  sx={{ display: "flex", alignItems: "flex-start", gap: 1.5 }}
+                >
                   <Box
                     sx={{
                       width: 20,
                       height: 20,
-                      borderRadius: '50%',
-                      background: 'primary.main',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
+                      borderRadius: "50%",
+                      background: "primary.main",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
                       flexShrink: 0,
                       mt: 0.2,
                     }}
                   >
-                    <Typography variant="caption" color="white" fontWeight="bold">
+                    <Typography
+                      variant="caption"
+                      color="white"
+                      fontWeight="bold"
+                    >
                       1
                     </Typography>
                   </Box>
@@ -106,21 +108,27 @@ export const ForgotPasswordPage: React.FC = () => {
                     Revisa tu correo en <strong>{formData.email}</strong>
                   </Typography>
                 </Box>
-                <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
+                <Box
+                  sx={{ display: "flex", alignItems: "flex-start", gap: 1.5 }}
+                >
                   <Box
                     sx={{
                       width: 20,
                       height: 20,
-                      borderRadius: '50%',
-                      background: 'primary.main',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
+                      borderRadius: "50%",
+                      background: "primary.main",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
                       flexShrink: 0,
                       mt: 0.2,
                     }}
                   >
-                    <Typography variant="caption" color="white" fontWeight="bold">
+                    <Typography
+                      variant="caption"
+                      color="white"
+                      fontWeight="bold"
+                    >
                       2
                     </Typography>
                   </Box>
@@ -128,21 +136,27 @@ export const ForgotPasswordPage: React.FC = () => {
                     Haz clic en el enlace de restablecimiento
                   </Typography>
                 </Box>
-                <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
+                <Box
+                  sx={{ display: "flex", alignItems: "flex-start", gap: 1.5 }}
+                >
                   <Box
                     sx={{
                       width: 20,
                       height: 20,
-                      borderRadius: '50%',
-                      background: 'primary.main',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
+                      borderRadius: "50%",
+                      background: "primary.main",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
                       flexShrink: 0,
                       mt: 0.2,
                     }}
                   >
-                    <Typography variant="caption" color="white" fontWeight="bold">
+                    <Typography
+                      variant="caption"
+                      color="white"
+                      fontWeight="bold"
+                    >
                       3
                     </Typography>
                   </Box>
@@ -153,17 +167,21 @@ export const ForgotPasswordPage: React.FC = () => {
               </Box>
             </Box>
 
-            <Typography variant="body2" color="text.secondary" textAlign="center">
-              ¿No recibiste el email? Revisa tu carpeta de spam o{' '}
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              textAlign="center"
+            >
+              ¿No recibiste el email? Revisa tu carpeta de spam o{" "}
               <Link
                 component="button"
                 onClick={handleResend}
                 sx={{
-                  textDecoration: 'none',
-                  color: 'primary.main',
-                  fontWeight: 'bold',
-                  '&:hover': {
-                    textDecoration: 'underline',
+                  textDecoration: "none",
+                  color: "primary.main",
+                  fontWeight: "bold",
+                  "&:hover": {
+                    textDecoration: "underline",
                   },
                 }}
               >
@@ -188,26 +206,32 @@ export const ForgotPasswordPage: React.FC = () => {
   return (
     <AuthCard>
       <AuthHeader
-        icon={<LockReset sx={{ fontSize: 30, color: 'white' }} />}
+        icon={<LockReset sx={{ fontSize: 30, color: "white" }} />}
         title="¿Olvidaste tu contraseña?"
         subtitle="No te preocupes, te ayudamos a recuperarla"
       />
 
       <AuthFormContainer>
         <form onSubmit={handleSubmit}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
-            <Typography variant="body2" color="text.secondary" textAlign="center">
-              Ingresa tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña.
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              textAlign="center"
+            >
+              Ingresa tu correo electrónico y te enviaremos un enlace para
+              restablecer tu contraseña.
             </Typography>
 
             <AuthTextField
               label="Correo electrónico"
               type="email"
               value={formData.email}
-              onChange={handleInputChange('email')}
+              onChange={handleInputChange("email")}
               error={!!errors.email}
               helperText={errors.email}
               startIcon={<Email color="action" fontSize="small" />}
+              autoComplete="email"
             />
 
             <AuthButton
@@ -215,21 +239,21 @@ export const ForgotPasswordPage: React.FC = () => {
               loading={isLoading}
               endIcon={<ArrowForward />}
             >
-              {isLoading ? 'Enviando...' : 'Enviar enlace de recuperación'}
+              {isLoading ? "Enviando..." : "Enviar enlace de recuperación"}
             </AuthButton>
 
-            <Box sx={{ textAlign: 'center', mt: 1 }}>
+            <Box sx={{ textAlign: "center", mt: 1 }}>
               <Typography variant="body2" color="text.secondary">
-                ¿Recordaste tu contraseña?{' '}
+                ¿Recordaste tu contraseña?{" "}
                 <Link
                   component={RouterLink}
                   to="/auth/login"
                   sx={{
-                    textDecoration: 'none',
-                    color: 'primary.main',
-                    fontWeight: 'bold',
-                    '&:hover': {
-                      textDecoration: 'underline',
+                    textDecoration: "none",
+                    color: "primary.main",
+                    fontWeight: "bold",
+                    "&:hover": {
+                      textDecoration: "underline",
                     },
                   }}
                 >
@@ -242,4 +266,4 @@ export const ForgotPasswordPage: React.FC = () => {
       </AuthFormContainer>
     </AuthCard>
   )
-} 
+}

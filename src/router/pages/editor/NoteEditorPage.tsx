@@ -1,5 +1,5 @@
-import React from 'react'
-import { Box, Typography } from '@mui/material'
+import React from "react"
+import { Box, Typography } from "@mui/material"
 
 export const NoteEditorPage: React.FC = () => {
   return (
@@ -12,4 +12,4 @@ export const NoteEditorPage: React.FC = () => {
       </Typography>
     </Box>
   )
-} 
+}

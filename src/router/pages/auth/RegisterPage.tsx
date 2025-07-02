@@ -79,6 +79,7 @@ export const RegisterPage: React.FC = () => {
             error={!!errors.displayName}
             helperText={errors.displayName}
             startIcon={<Person color="action" fontSize="small" />}
+            autoComplete="name"
           />
         )
       case 1:
@@ -92,6 +93,7 @@ export const RegisterPage: React.FC = () => {
               error={!!errors.email}
               helperText={errors.email}
               startIcon={<Email color="action" fontSize="small" />}
+              autoComplete="email"
             />
             <AuthTextField
               label="Contraseña"
@@ -101,6 +103,7 @@ export const RegisterPage: React.FC = () => {
               error={!!errors.password}
               helperText={errors.password}
               startIcon={<Lock color="action" fontSize="small" />}
+              autoComplete="new-password"
               endIcon={
                 <IconButton
                   onClick={() => toggleVisibility('password')}
@@ -124,6 +127,7 @@ export const RegisterPage: React.FC = () => {
               error={!!errors.confirmPassword}
               helperText={errors.confirmPassword}
               startIcon={<Lock color="action" fontSize="small" />}
+              autoComplete="new-password"
               endIcon={
                 <IconButton
                   onClick={() => toggleVisibility('confirmPassword')}
