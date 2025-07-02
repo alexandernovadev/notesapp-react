@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { JournalState, Note } from '@/types'
 import { FirebaseDB } from '@/firebase/config'
 import { useAuthStore } from './useAuthStore'
+import { getNoteStats, createNewNote } from '@/utils/noteUtils'
 import {
   collection,
   addDoc,
@@ -20,6 +21,11 @@ interface JournalStore extends JournalState {
   loadNotes: () => Promise<void>
   setSaving: (saving: boolean) => void
   setLoading: (loading: boolean) => void
+  toggleFavorite: (noteId: string) => Promise<void>
+  togglePinned: (noteId: string) => Promise<void>
+  updateNoteCategory: (noteId: string, category: string) => Promise<void>
+  updateNoteColor: (noteId: string, color: string) => Promise<void>
+  updateNotePriority: (noteId: string, priority: 'low' | 'medium' | 'high') => Promise<void>
 }
 
 export const useJournalStore = create<JournalStore>((set, get) => ({
@@ -42,12 +48,7 @@ export const useJournalStore = create<JournalStore>((set, get) => ({
       return
     }
     
-    const newNote: Omit<Note, 'id'> = {
-      title: '',
-      body: '',
-      date: Date.now(),
-      imageUrls: [],
-    }
+    const newNote = createNewNote()
     
     try {
       const docRef = await addDoc(collection(FirebaseDB, `users/${uid}/journal/notes`), newNote)
@@ -72,13 +73,22 @@ export const useJournalStore = create<JournalStore>((set, get) => ({
       return
     }
     
-    const noteToSave = { ...active }
+    // Calcular estadísticas actualizadas
+    const stats = getNoteStats(active.body)
+    const noteToSave = { 
+      ...active, 
+      updatedAt: Date.now(),
+      wordCount: stats.wordCount,
+      readTime: stats.readTime
+    }
     delete (noteToSave as any).id
     
     try {
       await updateDoc(doc(FirebaseDB, `users/${uid}/journal/notes/${active.id}`), noteToSave)
+      const updatedNote = { ...active, ...noteToSave }
       set((state) => ({
-        notes: state.notes.map((n) => (n.id === active.id ? active : n)),
+        notes: state.notes.map((n) => (n.id === active.id ? updatedNote : n)),
+        active: updatedNote,
         isSaving: false,
         messageSaved: `${active.title}, actualizada correctamente`,
       }))
@@ -117,18 +127,158 @@ export const useJournalStore = create<JournalStore>((set, get) => ({
       const notes: Note[] = []
       notesSnap.forEach((doc) => {
         const data = doc.data()
-        notes.push({
+        const now = Date.now()
+        
+        // Migración de notas antiguas a nueva estructura
+        const note: Note = {
           id: doc.id,
           title: data.title || "",
           body: data.body || "",
-          date: data.date || Date.now(),
+          createdAt: data.createdAt || data.date || now,
+          updatedAt: data.updatedAt || data.date || now,
           imageUrls: data.imageUrls || [],
-        } as Note)
+          category: data.category || "personal",
+          tags: data.tags || [],
+          isFavorite: data.isFavorite || false,
+          isPinned: data.isPinned || false,
+          color: data.color || "#f8fafc",
+          priority: data.priority || "medium",
+          wordCount: data.wordCount || getNoteStats(data.body || "").wordCount,
+          readTime: data.readTime || getNoteStats(data.body || "").readTime,
+        }
+        notes.push(note)
       })
       set({ notes, isLoading: false })
     } catch (error) {
       console.error('Error loading notes:', error)
       set({ isLoading: false })
+    }
+  },
+
+  toggleFavorite: async (noteId: string) => {
+    const { uid } = useAuthStore.getState()
+    const { notes } = get()
+    if (!uid) return
+    
+    const note = notes.find(n => n.id === noteId)
+    if (!note) return
+    
+    const newFavoriteState = !note.isFavorite
+    
+    try {
+      await updateDoc(doc(FirebaseDB, `users/${uid}/journal/notes/${noteId}`), {
+        isFavorite: newFavoriteState,
+        updatedAt: Date.now()
+      })
+      
+      set((state) => ({
+        notes: state.notes.map((n) => 
+          n.id === noteId ? { ...n, isFavorite: newFavoriteState, updatedAt: Date.now() } : n
+        ),
+        active: state.active?.id === noteId 
+          ? { ...state.active, isFavorite: newFavoriteState, updatedAt: Date.now() }
+          : state.active
+      }))
+    } catch (error) {
+      console.error('Error toggling favorite:', error)
+    }
+  },
+
+  togglePinned: async (noteId: string) => {
+    const { uid } = useAuthStore.getState()
+    const { notes } = get()
+    if (!uid) return
+    
+    const note = notes.find(n => n.id === noteId)
+    if (!note) return
+    
+    const newPinnedState = !note.isPinned
+    
+    try {
+      await updateDoc(doc(FirebaseDB, `users/${uid}/journal/notes/${noteId}`), {
+        isPinned: newPinnedState,
+        updatedAt: Date.now()
+      })
+      
+      set((state) => ({
+        notes: state.notes.map((n) => 
+          n.id === noteId ? { ...n, isPinned: newPinnedState, updatedAt: Date.now() } : n
+        ),
+        active: state.active?.id === noteId 
+          ? { ...state.active, isPinned: newPinnedState, updatedAt: Date.now() }
+          : state.active
+      }))
+    } catch (error) {
+      console.error('Error toggling pinned:', error)
+    }
+  },
+
+  updateNoteCategory: async (noteId: string, category: string) => {
+    const { uid } = useAuthStore.getState()
+    if (!uid) return
+    
+    try {
+      await updateDoc(doc(FirebaseDB, `users/${uid}/journal/notes/${noteId}`), {
+        category,
+        updatedAt: Date.now()
+      })
+      
+      set((state) => ({
+        notes: state.notes.map((n) => 
+          n.id === noteId ? { ...n, category, updatedAt: Date.now() } : n
+        ),
+        active: state.active?.id === noteId 
+          ? { ...state.active, category, updatedAt: Date.now() }
+          : state.active
+      }))
+    } catch (error) {
+      console.error('Error updating category:', error)
+    }
+  },
+
+  updateNoteColor: async (noteId: string, color: string) => {
+    const { uid } = useAuthStore.getState()
+    if (!uid) return
+    
+    try {
+      await updateDoc(doc(FirebaseDB, `users/${uid}/journal/notes/${noteId}`), {
+        color,
+        updatedAt: Date.now()
+      })
+      
+      set((state) => ({
+        notes: state.notes.map((n) => 
+          n.id === noteId ? { ...n, color, updatedAt: Date.now() } : n
+        ),
+        active: state.active?.id === noteId 
+          ? { ...state.active, color, updatedAt: Date.now() }
+          : state.active
+      }))
+    } catch (error) {
+      console.error('Error updating color:', error)
+    }
+  },
+
+  updateNotePriority: async (noteId: string, priority: 'low' | 'medium' | 'high') => {
+    const { uid } = useAuthStore.getState()
+    if (!uid) return
+    
+    try {
+      await updateDoc(doc(FirebaseDB, `users/${uid}/journal/notes/${noteId}`), {
+        priority,
+        updatedAt: Date.now()
+      })
+      
+      set((state) => ({
+        notes: state.notes.map((n) => 
+          n.id === noteId ? { ...n, priority, updatedAt: Date.now() } : n
+        ),
+        active: state.active?.id === noteId 
+          ? { ...state.active, priority, updatedAt: Date.now() }
+          : state.active
+      }))
+    } catch (error) {
+      console.error('Error updating priority:', error)
     }
   },
 })) 

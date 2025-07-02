@@ -11,8 +11,17 @@ export interface Note {
   id: string
   title: string
   body: string
-  date: number
+  createdAt: number
+  updatedAt: number
   imageUrls: string[]
+  category?: string
+  tags?: string[]
+  isFavorite?: boolean
+  isPinned?: boolean
+  color?: string
+  priority?: 'low' | 'medium' | 'high'
+  wordCount?: number
+  readTime?: number
 }
 
 export interface AuthState {

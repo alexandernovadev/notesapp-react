@@ -17,14 +17,15 @@ import {
   Edit as EditIcon
 } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
-import { useJournalStore } from '@/stores/useJournalStore'
+import { useJournal } from '@/hooks/useJournal'
+import { Note } from '@/types'
 import { formatDistanceToNow } from 'date-fns'
 import { es } from 'date-fns/locale'
 
 export const DashboardPage: React.FC = () => {
   const theme = useTheme()
   const navigate = useNavigate()
-  const { notes, isLoading, setActiveNote } = useJournalStore()
+  const { notes, isLoading, setActiveNote, toggleFavorite, togglePinned } = useJournal()
 
   const handleCreateNote = () => {
     navigate('/notes/new')
@@ -34,16 +35,18 @@ export const DashboardPage: React.FC = () => {
     navigate(`/notes/${noteId}`)
   }
 
-  const handleNoteClick = (note: any) => {
-    setActiveNote(note)
-    navigate(`/notes/${note.id}`)
-  }
+
 
   const formatDate = (timestamp: number) => {
     return formatDistanceToNow(timestamp, { 
       addSuffix: true, 
       locale: es 
     })
+  }
+
+  const handleNoteClick = (note: Note) => {
+    setActiveNote(note)
+    navigate(`/notes/${note.id}`)
   }
 
   const truncateText = (text: string, maxLength: number = 100) => {
@@ -213,7 +216,7 @@ export const DashboardPage: React.FC = () => {
                   mt: 'auto'
                 }}>
                   <Typography variant="caption" color="text.secondary">
-                    {formatDate(note.date)}
+                    {formatDate(note.updatedAt)}
                   </Typography>
                   
                   {note.imageUrls && note.imageUrls.length > 0 && (

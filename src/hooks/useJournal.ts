@@ -14,6 +14,11 @@ export const useJournal = () => {
     startSaveNote,
     startDeletingNote,
     loadNotes,
+    toggleFavorite,
+    togglePinned,
+    updateNoteCategory,
+    updateNoteColor,
+    updateNotePriority,
   } = useJournalStore()
 
   const { isAuthenticated } = useAuth()
@@ -38,5 +43,10 @@ export const useJournal = () => {
     saveNote: startSaveNote,
     deleteNote: startDeletingNote,
     loadNotes,
+    toggleFavorite,
+    togglePinned,
+    updateNoteCategory,
+    updateNoteColor,
+    updateNotePriority,
   }
 }
