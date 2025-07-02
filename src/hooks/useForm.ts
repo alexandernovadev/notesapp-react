@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from "react"
+import { FormState, FormValidations, FormValidationState } from "@/types"
 
-export const useForm = (initialForm = {}, formValidations = {}) => {
-  const [formState, setFormState] = useState(initialForm)
-  const [formValidation, setFormValidation] = useState({})
+export const useForm = (initialForm: FormState = {}, formValidations: FormValidations = {}) => {
+  const [formState, setFormState] = useState<FormState>(initialForm)
+  const [formValidation, setFormValidation] = useState<FormValidationState>({})
 
   useEffect(() => {
     createValidators()
@@ -16,11 +17,10 @@ export const useForm = (initialForm = {}, formValidations = {}) => {
     for (const formValue of Object.keys(formValidation)) {
       if (formValidation[formValue] !== null) return false
     }
-
     return true
   }, [formValidation])
 
-  const onInputChange = ({ target }) => {
+  const onInputChange = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = target
     setFormState({
       ...formState,
@@ -33,18 +33,21 @@ export const useForm = (initialForm = {}, formValidations = {}) => {
   }
 
   const createValidators = () => {
-    const formCheckedValues = {}
+    const formCheckedValues: FormValidationState = {}
 
     // This function works with this format:
     // email               :  [(value) => value.includes("@"), "El correo debe de tener una @"],
     //formState[formField] : [fn, message] ==> fn is a function that returns a boolean;
 
     for (const formField of Object.keys(formValidations)) {
-      const [fn, errorMessage] = formValidations[formField]
-
-      formCheckedValues[`${formField}Valid`] = fn(formState[formField])
-        ? null
-        : errorMessage
+      const validation = formValidations[formField]
+      if (validation) {
+        const [fn, errorMessage] = validation
+        const fieldValue = formState[formField] || ''
+        formCheckedValues[`${formField}Valid`] = fn(fieldValue)
+          ? null
+          : errorMessage
+      }
     }
 
     setFormValidation(formCheckedValues)
@@ -55,8 +58,7 @@ export const useForm = (initialForm = {}, formValidations = {}) => {
     formState,
     onInputChange,
     onResetForm,
-
     ...formValidation,
     isFormValid,
   }
-}
+} 

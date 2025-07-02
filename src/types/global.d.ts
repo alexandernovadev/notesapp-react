@@ -55,4 +55,10 @@ interface ImportMetaEnv {
 
 interface ImportMeta {
   readonly env: ImportMetaEnv
+}
+
+declare module '@/firebase/config' {
+  export const FirebaseApp: import('firebase/app').FirebaseApp;
+  export const FirebaseAuth: import('firebase/auth').Auth;
+  export const FirebaseDB: import('firebase/firestore').Firestore;
 } 
