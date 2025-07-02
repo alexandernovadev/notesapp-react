@@ -1,0 +1,4 @@
+/* Fuerza un z-index alto para el modal y el backdrop de SweetAlert2 */
+.swal2-zindex-fix {
+  z-index: 20000 !important;
+} 

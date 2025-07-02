@@ -28,6 +28,8 @@ import { useJournal } from '@/hooks/useJournal'
 import { Note } from '@/types'
 import { formatDistanceToNow } from 'date-fns'
 import { es } from 'date-fns/locale'
+import Swal from 'sweetalert2'
+import '@/theme/swal2-zindex-fix.css'
 
 export const DashboardPage: React.FC = () => {
   const theme = useTheme()
@@ -67,10 +69,25 @@ export const DashboardPage: React.FC = () => {
 
   const handleDeleteNote = async () => {
     if (selectedNoteId) {
-      const confirmed = window.confirm('¿Estás seguro de que quieres eliminar esta nota? Esta acción no se puede deshacer.')
-      if (confirmed) {
+      handleMenuClose()
+      const result = await Swal.fire({
+        title: '¿Eliminar nota?',
+        text: 'Esta acción no se puede deshacer.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#6366f1', // primary
+        cancelButtonColor: '#aaa',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar',
+        focusCancel: true,
+        customClass: {
+          popup: 'swal2-zindex-fix',
+          container: 'swal2-zindex-fix',
+          backdrop: 'swal2-zindex-fix',
+        },
+      })
+      if (result.isConfirmed) {
         await deleteNote()
-        handleMenuClose()
       }
     }
   }
