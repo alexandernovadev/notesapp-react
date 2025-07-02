@@ -1,25 +1,42 @@
-import { Route, Routes, Navigate } from "react-router"
-import AuthRoutes from "./AuthRoutes"
-import { useCheckAuth } from "../hooks/useCheckAuth"
-import JournalRoutes from "./JournalRoutes"
-import TmLoadingLayout from "../atomic/templates/tm-loadinglayout"
+import React from 'react'
+import { Routes, Route, Navigate } from 'react-router-dom'
+import { DashboardRoutes } from './routes/dashboardRoutes'
+import { AuthRoutes } from './routes/authRoutes'
+import { useCheckAuth } from '@/hooks/useCheckAuth'
+import { Box, CircularProgress, Typography } from '@mui/material'
 
-const AppRouter = () => {
+export const AppRouter: React.FC = () => {
   const status = useCheckAuth()
 
-  if (status === "checking") return <TmLoadingLayout />
+  // Loading state
+  if (status === 'checking') {
+    return (
+      <Box
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="center"
+        minHeight="100vh"
+        gap={2}
+      >
+        <CircularProgress size={60} thickness={4} />
+        <Typography variant="h6" color="text.secondary">
+          Cargando aplicación...
+        </Typography>
+      </Box>
+    )
+  }
 
   return (
     <Routes>
-      {status === "authenticated" ? (
-        <Route path="/*" element={<JournalRoutes />} />
-      ) : (
-        <Route path="/auth/*" element={<AuthRoutes />} />
-      )}
-
-      <Route path="/*" element={<Navigate to="/auth/login" />} />
+      {/* Auth routes */}
+      <Route path="/auth/*" element={<AuthRoutes />} />
+      
+      {/* Dashboard routes (protected) */}
+      <Route path="/*" element={<DashboardRoutes />} />
+      
+      {/* Fallback */}
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )
 }
-
-export default AppRouter

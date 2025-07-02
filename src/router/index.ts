@@ -1,0 +1,8 @@
+export { AppRouter } from './AppRouter'
+export { DashboardRoutes } from './routes/dashboardRoutes'
+export { AuthRoutes } from './routes/authRoutes'
+export { AuthGuard } from './guards/AuthGuard'
+export { RouteGuard } from './guards/RouteGuard'
+export { DashboardLayout } from './layouts/DashboardLayout'
+export { AuthLayout } from './layouts/AuthLayout'
+export * from './types/routes' 
