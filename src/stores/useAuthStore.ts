@@ -35,8 +35,7 @@ interface AuthStore extends AuthState {
   startUpdateUserProfile: (data: UpdateProfileArgs) => Promise<AuthResponse>
   startResetPassword: (email: string) => Promise<AuthResponse>
   
-  // Auth state check
-  checkAuth: () => void
+
 }
 
 export const useAuthStore = create<AuthStore>((set, get) => ({
@@ -74,7 +73,8 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
 
   // Auth actions
   startLoginWithEmailPassword: async (email, password) => {
-    set({ status: 'checking', errorMessage: null })
+    // Solo limpiar el error, no cambiar el status a checking
+    set({ errorMessage: null })
     
     const response = await loginWithEmailPassword({ email, password })
     
@@ -98,7 +98,8 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
   },
 
   startRegisterWithEmailPassword: async (args) => {
-    set({ status: 'checking', errorMessage: null })
+    // Solo limpiar el error, no cambiar el status a checking
+    set({ errorMessage: null })
     
     const response = await registerUserWithEmailPassword(args)
     
@@ -122,7 +123,8 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
   },
 
   startLoginWithGoogle: async () => {
-    set({ status: 'checking', errorMessage: null })
+    // Solo limpiar el error, no cambiar el status a checking
+    set({ errorMessage: null })
     
     const response = await singInWithGoogle()
     
@@ -193,30 +195,5 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
     }
     
     return response
-  },
-
-  checkAuth: () => {
-    set({ status: 'checking' })
-    onAuthStateChanged(FirebaseAuth, (user: FirebaseUser | null) => {
-      if (user) {
-        set({
-          status: 'authenticated',
-          uid: user.uid,
-          email: user.email,
-          displayName: user.displayName,
-          photoURL: user.photoURL,
-          errorMessage: null,
-        })
-      } else {
-        set({
-          status: 'not-authenticated',
-          uid: null,
-          email: null,
-          displayName: null,
-          photoURL: null,
-          errorMessage: null,
-        })
-      }
-    })
   },
 })) 

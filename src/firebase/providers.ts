@@ -8,6 +8,7 @@ import {
   User,
 } from "firebase/auth"
 import { FirebaseAuth } from "./config"
+import { translateFirebaseError } from "@/utils/firebaseErrors"
 
 const googleProvider = new GoogleAuthProvider()
 
@@ -54,7 +55,7 @@ export const singInWithGoogle = async (): Promise<AuthResponse> => {
   } catch (error: any) {
     return {
       ok: false,
-      errorMessage: error.message,
+      errorMessage: translateFirebaseError(error.message),
     }
   }
 }
@@ -80,7 +81,7 @@ export const registerUserWithEmailPassword = async ({
       displayName,
     }
   } catch (error: any) {
-    return { ok: false, errorMessage: error.message }
+    return { ok: false, errorMessage: translateFirebaseError(error.message) }
   }
 }
 
@@ -98,7 +99,7 @@ export const loginWithEmailPassword = async ({
       displayName,
     }
   } catch (error: any) {
-    return { ok: false, errorMessage: error.message }
+    return { ok: false, errorMessage: translateFirebaseError(error.message) }
   }
 }
 
@@ -121,7 +122,7 @@ export const updateUserProfile = async ({
       photoURL: photoURL ?? null,
     }
   } catch (error: any) {
-    return { ok: false, errorMessage: error.message }
+    return { ok: false, errorMessage: translateFirebaseError(error.message) }
   }
 }
 
@@ -137,7 +138,7 @@ export const resetPassword = async ({
   } catch (error: any) {
     return {
       ok: false,
-      errorMessage: error.message,
+      errorMessage: translateFirebaseError(error.message),
     }
   }
 }

@@ -1,6 +1,8 @@
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 import { useAuthStore } from "@/stores/useAuthStore"
-import type { RegisterArgs, UpdateProfileArgs } from "@/firebase/providers"
+import { onAuthStateChanged } from "firebase/auth"
+import { FirebaseAuth } from "@/firebase/config"
+import type { User as FirebaseUser } from "firebase/auth"
 
 export const useAuth = () => {
   const {
@@ -18,12 +20,37 @@ export const useAuth = () => {
     startResetPassword,
     setError,
     clearError,
-    checkAuth,
+    login,
+    logout,
   } = useAuthStore()
 
+  const unsubscribeRef = useRef<(() => void) | null>(null)
+
   useEffect(() => {
-    checkAuth()
-  }, [checkAuth])
+    // Solo configurar el listener una vez
+    if (!unsubscribeRef.current) {
+      unsubscribeRef.current = onAuthStateChanged(FirebaseAuth, (user: FirebaseUser | null) => {
+        if (user) {
+          login({
+            uid: user.uid,
+            email: user.email || '',
+            displayName: user.displayName,
+            photoURL: user.photoURL,
+          })
+        } else {
+          logout()
+        }
+      })
+    }
+
+    // Cleanup function
+    return () => {
+      if (unsubscribeRef.current) {
+        unsubscribeRef.current()
+        unsubscribeRef.current = null
+      }
+    }
+  }, []) // Sin dependencias para evitar re-renders
 
   const isAuthenticated = status === "authenticated"
   const isChecking = status === "checking"

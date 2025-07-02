@@ -16,6 +16,7 @@ import {
   AuthTextField,
 } from "@/components/auth"
 import { useAuthForm } from "@/hooks"
+import { useAuth } from "@/hooks/useAuth"
 
 interface ForgotPasswordFormData {
   email: string
@@ -23,20 +24,30 @@ interface ForgotPasswordFormData {
 
 export const ForgotPasswordPage: React.FC = () => {
   const [isSubmitted, setIsSubmitted] = useState(false)
-  const { formData, errors, isLoading, handleInputChange, handleSubmit } =
-    useAuthForm<ForgotPasswordFormData>({
-      initialValues: { email: "" },
-      onSubmit: async (values) => {
-        if (!values.email.trim()) {
-          throw new Error("Por favor ingresa tu correo electrónico")
-        }
+  const { resetPassword, errorMessage, clearError } = useAuth()
 
-        // TODO: Implement real password reset logic
-        console.log("Password reset attempt:", values)
-        await new Promise((resolve) => setTimeout(resolve, 2000))
+  const { formData, errors, isLoading, handleInputChange, handleSubmit, setError } = useAuthForm<ForgotPasswordFormData>({
+    initialValues: { email: "" },
+    onSubmit: async (values) => {
+      if (!values.email.trim()) {
+        setError('email', 'Por favor ingresa tu correo electrónico')
+        return
+      }
+      
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+      if (!emailRegex.test(values.email)) {
+        setError('email', 'Ingresa un email válido')
+        return
+      }
+      
+      clearError()
+      const result = await resetPassword(values.email)
+      
+      if (result.ok) {
         setIsSubmitted(true)
-      },
-    })
+      }
+    }
+  })
 
   const handleResend = () => {
     setIsSubmitted(false)
@@ -54,8 +65,8 @@ export const ForgotPasswordPage: React.FC = () => {
 
         <AuthFormContainer>
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}>
-            <Alert
-              severity="success"
+            <Alert 
+              severity="success" 
               icon={<CheckCircle />}
               sx={{ borderRadius: 1.5 }}
             >
@@ -214,6 +225,13 @@ export const ForgotPasswordPage: React.FC = () => {
       <AuthFormContainer>
         <form onSubmit={handleSubmit}>
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}>
+            {/* Error Alert */}
+            {errorMessage && (
+              <Alert severity="error" onClose={clearError}>
+                {errorMessage}
+              </Alert>
+            )}
+
             <Typography
               variant="body2"
               color="text.secondary"

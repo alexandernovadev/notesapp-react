@@ -7,6 +7,7 @@ import {
   Stepper,
   Step,
   StepLabel,
+  Alert,
 } from '@mui/material'
 import {
   Visibility,
@@ -19,7 +20,7 @@ import {
   PersonAdd,
   CheckCircle,
 } from '@mui/icons-material'
-import { Link as RouterLink } from 'react-router-dom'
+import { Link as RouterLink, useNavigate } from 'react-router-dom'
 import {
   AuthCard,
   AuthHeader,
@@ -29,6 +30,7 @@ import {
   AuthDivider,
 } from '@/components/auth'
 import { useAuthForm, usePasswordVisibility } from '@/hooks'
+import { useAuth } from '@/hooks/useAuth'
 
 interface RegisterFormData {
   displayName: string
@@ -38,17 +40,57 @@ interface RegisterFormData {
 }
 
 export const RegisterPage: React.FC = () => {
+  const navigate = useNavigate()
   const [currentStep, setCurrentStep] = useState(0)
-  const { formData, errors, isLoading, handleInputChange, handleSubmit } = useAuthForm<RegisterFormData>({
+  const { register, loginWithGoogle, errorMessage, clearError, isAuthenticated } = useAuth()
+  const { isVisible, toggleVisibility } = usePasswordVisibility(['password', 'confirmPassword'])
+
+  const { formData, errors, isLoading, handleInputChange, handleSubmit, setError, clearErrors } = useAuthForm<RegisterFormData>({
     initialValues: { displayName: '', email: '', password: '', confirmPassword: '' },
     onSubmit: async (values) => {
-      // TODO: Implement real registration logic
-      console.log('Register attempt:', values)
-      await new Promise(resolve => setTimeout(resolve, 2000))
+      // Validar antes de enviar
+      if (!values.displayName.trim()) {
+        setError('displayName', 'El nombre es requerido')
+        return
+      }
+      
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+      if (!emailRegex.test(values.email)) {
+        setError('email', 'Ingresa un email válido')
+        return
+      }
+      
+      if (values.password.length < 6) {
+        setError('password', 'La contraseña debe tener al menos 6 caracteres')
+        return
+      }
+      
+      if (values.password !== values.confirmPassword) {
+        setError('confirmPassword', 'Las contraseñas no coinciden')
+        return
+      }
+      
+      clearError()
+      const result = await register({
+        email: values.email,
+        password: values.password,
+        displayName: values.displayName
+      })
+      
+      if (result.ok) {
+        navigate('/')
+      }
     }
   })
 
-  const { isVisible, toggleVisibility } = usePasswordVisibility(['password', 'confirmPassword'])
+  const handleGoogleRegister = async () => {
+    clearError()
+    const result = await loginWithGoogle()
+    
+    if (result.ok) {
+      navigate('/')
+    }
+  }
 
   const steps = ['Personal', 'Credenciales', 'Confirmar']
 
@@ -64,9 +106,12 @@ export const RegisterPage: React.FC = () => {
     }
   }
 
-  const handleGoogleRegister = () => {
-    console.log('Google register clicked')
-  }
+  // Si ya está autenticado, redirigir
+  React.useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/')
+    }
+  }, [isAuthenticated, navigate])
 
   const renderStepContent = () => {
     switch (currentStep) {
@@ -187,6 +232,15 @@ export const RegisterPage: React.FC = () => {
         title="¡Únete a nosotros!"
         subtitle="Crea tu cuenta para empezar a organizar tus notas"
       />
+
+      {/* Error Alert */}
+      {errorMessage && (
+        <Box sx={{ px: 3, pt: 2 }}>
+          <Alert severity="error" onClose={clearError}>
+            {errorMessage}
+          </Alert>
+        </Box>
+      )}
 
       {/* Stepper */}
       <Box sx={{ padding: 2, paddingBottom: 1 }}>
