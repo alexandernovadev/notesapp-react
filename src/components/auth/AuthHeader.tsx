@@ -35,7 +35,7 @@ export const AuthHeader: React.FC<AuthHeaderProps> = ({
     <Box
       sx={{
         background: getBackgroundGradient(),
-        padding: 3,
+        padding: 2.5,
         textAlign: "center",
         borderBottom: `1px solid ${theme.palette.divider}`,
       }}
@@ -44,21 +44,21 @@ export const AuthHeader: React.FC<AuthHeaderProps> = ({
         <Box>
           <Box
             sx={{
-              width: 60,
-              height: 60,
+              width: 50,
+              height: 50,
               borderRadius: "50%",
               background: getGradient(),
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              margin: "0 auto 12px",
+              margin: "0 auto 10px",
               boxShadow: theme.shadows[6],
             }}
           >
             {icon}
           </Box>
           <Typography
-            variant="h5"
+            variant="h6"
             component="h1"
             fontWeight="bold"
             gutterBottom

@@ -8,5 +8,5 @@ interface AuthFormContainerProps {
 export const AuthFormContainer: React.FC<AuthFormContainerProps> = ({
   children,
 }) => {
-  return <Box sx={{ padding: 3 }}>{children}</Box>
+  return <Box sx={{ padding: 2.5 }}>{children}</Box>
 }

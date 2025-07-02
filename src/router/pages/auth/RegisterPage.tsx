@@ -127,7 +127,7 @@ export const RegisterPage: React.FC = () => {
         )
       case 1:
         return (
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
             <AuthTextField
               label="Correo electrónico"
               type="email"
@@ -161,7 +161,7 @@ export const RegisterPage: React.FC = () => {
         )
       case 2:
         return (
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
             <AuthTextField
               label="Confirmar contraseña"
               type={isVisible('confirmPassword') ? 'text' : 'password'}
@@ -187,7 +187,7 @@ export const RegisterPage: React.FC = () => {
               sx={{
                 background: 'background.default',
                 borderRadius: 1.5,
-                padding: 2,
+                padding: 1.5,
                 border: '1px solid',
                 borderColor: 'divider',
               }}
@@ -241,7 +241,7 @@ export const RegisterPage: React.FC = () => {
       )}
 
       {/* Stepper */}
-      <Box sx={{ padding: 2, paddingBottom: 1 }}>
+      <Box sx={{ padding: 1.5, paddingBottom: 0.5 }}>
         <Stepper activeStep={currentStep} alternativeLabel>
           {steps.map((label) => (
             <Step key={label}>
@@ -253,7 +253,7 @@ export const RegisterPage: React.FC = () => {
 
       <AuthFormContainer>
         <form onSubmit={handleSubmit}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             {/* Step Content */}
             <Box>
               {renderStepContent()}
@@ -300,7 +300,7 @@ export const RegisterPage: React.FC = () => {
               Registrarse con Google
             </AuthButton>
 
-            <Box sx={{ textAlign: 'center', mt: 1 }}>
+            <Box sx={{ textAlign: 'center', mt: 0.5 }}>
               <Typography variant="body2" color="text.secondary">
                 ¿Ya tienes una cuenta?{' '}
                 <Link

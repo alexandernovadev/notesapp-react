@@ -94,7 +94,7 @@ export const LoginPage: React.FC = () => {
 
       <AuthFormContainer>
         <form onSubmit={handleSubmit}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             {/* Error Alert */}
             {errorMessage && (
               <Alert 
@@ -157,7 +157,7 @@ export const LoginPage: React.FC = () => {
               Continuar con Google
             </AuthButton>
 
-            <Box sx={{ textAlign: 'center', mt: 1 }}>
+            <Box sx={{ textAlign: 'center', mt: 0.5 }}>
               <Typography variant="body2" color="text.secondary">
                 ¿No tienes una cuenta?{' '}
                 <Link

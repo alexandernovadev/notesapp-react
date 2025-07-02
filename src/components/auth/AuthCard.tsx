@@ -21,7 +21,7 @@ export const AuthCard: React.FC<AuthCardProps> = ({
         alignItems: "center",
         justifyContent: "center",
         background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
-        padding: 2,
+        padding: 1.5,
       }}
     >
       <Slide direction="up" in={true} timeout={800}>
