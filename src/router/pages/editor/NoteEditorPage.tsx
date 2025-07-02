@@ -109,8 +109,28 @@ export const NoteEditorPage: React.FC = () => {
     const urls = Array.from(files).map((file) => URL.createObjectURL(file))
     setImages((prev) => [...prev, ...urls])
   }
+  
   const handleRemoveImage = (url: string) => {
     setImages((prev) => prev.filter((img) => img !== url))
+  }
+
+  // Drag and drop handlers
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+  }
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    
+    const files = Array.from(e.dataTransfer.files)
+    const imageFiles = files.filter(file => file.type.startsWith('image/'))
+    
+    if (imageFiles.length > 0) {
+      const urls = imageFiles.map((file) => URL.createObjectURL(file))
+      setImages((prev) => [...prev, ...urls])
+    }
   }
 
   // Mostrar loading si hay noteId pero el contenido está vacío y no se está guardando
@@ -570,6 +590,8 @@ export const NoteEditorPage: React.FC = () => {
                 </Typography>
                 <Box
                   component="label"
+                  onDragOver={handleDragOver}
+                  onDrop={handleDrop}
                   sx={{
                     border: "2px dashed #bbb",
                     borderRadius: 2,
