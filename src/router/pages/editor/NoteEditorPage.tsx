@@ -56,6 +56,12 @@ export const NoteEditorPage: React.FC = () => {
     console.log('NoteEditorPage debug:', { noteId, title, content })
   }, [noteId, title, content])
 
+  // Estado para mostrar/ocultar el Alert de guardado
+  const [showAlert, setShowAlert] = React.useState(false)
+  React.useEffect(() => {
+    if (messageSaved) setShowAlert(true)
+  }, [messageSaved])
+
   // Mostrar loading si hay noteId pero el contenido está vacío y no se está guardando
   if (noteId && !content && !isSaving) {
     return (
@@ -160,8 +166,8 @@ export const NoteEditorPage: React.FC = () => {
         />
 
         {/* Success message */}
-        {messageSaved && (
-          <Alert severity="success" onClose={() => {}}>
+        {messageSaved && showAlert && (
+          <Alert severity="success" onClose={() => setShowAlert(false)}>
             {messageSaved}
           </Alert>
         )}
