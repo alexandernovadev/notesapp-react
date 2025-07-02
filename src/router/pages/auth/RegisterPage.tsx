@@ -70,7 +70,6 @@ export const RegisterPage: React.FC = () => {
         return
       }
       
-      clearError()
       const result = await register({
         email: values.email,
         password: values.password,
@@ -84,7 +83,6 @@ export const RegisterPage: React.FC = () => {
   })
 
   const handleGoogleRegister = async () => {
-    clearError()
     const result = await loginWithGoogle()
     
     if (result.ok) {
