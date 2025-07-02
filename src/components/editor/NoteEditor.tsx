@@ -110,6 +110,7 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
         border: '1px solid',
         borderColor: 'divider',
         borderRadius: 2,
+        p: 2,
         overflow: 'hidden',
       }}
     >
@@ -122,16 +123,11 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
           p: 2,
           '& .ProseMirror': {
             outline: 'none',
-            boxShadow: (theme) => `0 0 0 1.5px ${theme.palette.divider}`,
             borderRadius: 2,
-            border: '1px solid',
-            borderColor: 'divider',
             transition: 'box-shadow 0.2s, border-color 0.2s',
           },
           '& .ProseMirror:focus': {
             outline: 'none',
-            boxShadow: (theme) => `0 0 0 2px ${theme.palette.primary.main}`,
-            borderColor: 'primary.main',
           },
         }}
       >
