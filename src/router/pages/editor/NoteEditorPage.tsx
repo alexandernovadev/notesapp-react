@@ -269,9 +269,23 @@ export const NoteEditorPage: React.FC = () => {
                   options={CATEGORY_OPTIONS}
                   value={category}
                   onChange={(_, newValue) => setCategory(newValue || "")}
-                  renderInput={(params) => (
-                    <TextField {...params} placeholder="Ej: Personal, Trabajo..." fullWidth variant="standard" sx={{ backgroundColor: 'background.default', borderRadius: 1, px: 1 }} />
-                  )}
+                  renderInput={(params) => {
+                    const { size, InputLabelProps, ...rest } = params;
+                    return (
+                      <TextField
+                        {...rest}
+                        InputLabelProps={{
+                          ...InputLabelProps,
+                          className: InputLabelProps?.className ?? "",
+                          style: InputLabelProps?.style ?? {},
+                        }}
+                        placeholder="Ej: Personal, Trabajo..."
+                        fullWidth
+                        variant="standard"
+                        sx={{ backgroundColor: 'background.default', borderRadius: 1, px: 1 }}
+                      />
+                    );
+                  }}
                 />
               </Grid>
               {/* Tags */}
@@ -298,9 +312,23 @@ export const NoteEditorPage: React.FC = () => {
                       />
                     ))
                   }
-                  renderInput={(params) => (
-                    <TextField {...params} placeholder="Agrega tags..." fullWidth variant="standard" sx={{ backgroundColor: 'background.default', borderRadius: 1, px: 1 }} />
-                  )}
+                  renderInput={(params) => {
+                    const { size, InputLabelProps, ...rest } = params;
+                    return (
+                      <TextField
+                        {...rest}
+                        InputLabelProps={{
+                          ...InputLabelProps,
+                          className: InputLabelProps?.className ?? "",
+                          style: InputLabelProps?.style ?? {},
+                        }}
+                        placeholder="Agrega tags..."
+                        fullWidth
+                        variant="standard"
+                        sx={{ backgroundColor: 'background.default', borderRadius: 1, px: 1 }}
+                      />
+                    );
+                  }}
                 />
               </Grid>
               <Grid item xs={12}><Divider sx={{ my: 2 }} /></Grid>
