@@ -11,6 +11,8 @@ interface AuthButtonProps {
   type?: 'button' | 'submit'
   startIcon?: React.ReactNode
   endIcon?: React.ReactNode
+  component?: any
+  to?: string
 }
 
 export const AuthButton: React.FC<AuthButtonProps> = ({
@@ -23,6 +25,8 @@ export const AuthButton: React.FC<AuthButtonProps> = ({
   type = 'button',
   startIcon,
   endIcon,
+  component,
+  to,
 }) => {
   const theme = useTheme()
 
@@ -70,6 +74,8 @@ export const AuthButton: React.FC<AuthButtonProps> = ({
       type={type}
       startIcon={startIcon}
       endIcon={loading ? null : endIcon}
+      component={component}
+      to={to}
       sx={getButtonStyles()}
     >
       {children}

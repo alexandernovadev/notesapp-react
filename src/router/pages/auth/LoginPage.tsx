@@ -12,17 +12,18 @@ import {
   Lock,
   Google,
   ArrowForward,
-  Login as LoginIcon,
+  Login,
 } from '@mui/icons-material'
 import { Link as RouterLink } from 'react-router-dom'
-import { AuthCard } from '../../../components/auth/AuthCard'
-import { AuthHeader } from '../../../components/auth/AuthHeader'
-import { AuthFormContainer } from '../../../components/auth/AuthFormContainer'
-import { AuthButton } from '../../../components/auth/AuthButton'
-import { AuthTextField } from '../../../components/auth/AuthTextField'
-import { AuthDivider } from '../../../components/auth/AuthDivider'
-import { useAuthForm } from '@/hooks/useAuthForm'
-import { usePasswordVisibility } from '@/hooks/usePasswordVisibility'
+import {
+  AuthCard,
+  AuthHeader,
+  AuthFormContainer,
+  AuthButton,
+  AuthTextField,
+  AuthDivider,
+} from '@/components/auth'
+import { useAuthForm, usePasswordVisibility } from '@/hooks'
 
 interface LoginFormData {
   email: string
@@ -48,7 +49,7 @@ export const LoginPage: React.FC = () => {
   return (
     <AuthCard>
       <AuthHeader
-        icon={<LoginIcon sx={{ fontSize: 30, color: 'white' }} />}
+        icon={<Login sx={{ fontSize: 30, color: 'white' }} />}
         title="¡Bienvenido de vuelta!"
         subtitle="Inicia sesión para acceder a tus notas"
       />
