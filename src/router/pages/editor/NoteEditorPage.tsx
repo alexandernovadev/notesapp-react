@@ -569,56 +569,55 @@ export const NoteEditorPage: React.FC = () => {
                   <ImageIcon fontSize="small" /> Imágenes
                 </Typography>
                 <Box
+                  component="label"
                   sx={{
                     border: "2px dashed #bbb",
                     borderRadius: 2,
-                    p: 2,
+                    p: 3,
                     mb: 2,
                     textAlign: "center",
                     background: "#f8fafc",
-                    minHeight: 80,
+                    minHeight: 120,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    flexWrap: "wrap",
+                    flexDirection: "column",
                     gap: 2,
-                    transition: "box-shadow 0.2s",
+                    transition: "all 0.3s ease",
+                    cursor: "pointer",
                     boxShadow: 1,
-                    "&:hover": { boxShadow: 4 },
+                    "&:hover": {
+                      boxShadow: 4,
+                      borderColor: "primary.main",
+                      background: "#f0f4ff",
+                      transform: "translateY(-2px)",
+                    },
+                    "&:active": {
+                      transform: "translateY(0)",
+                    },
                   }}
                 >
-                  <Button
-                    variant="outlined"
-                    component="label"
-                    startIcon={<ImageIcon />}
-                    sx={{ fontWeight: 600, borderRadius: 2 }}
-                  >
+                  <input
+                    hidden
+                    accept="image/*"
+                    multiple
+                    type="file"
+                    onChange={handleImageUpload}
+                  />
+                  <ImageIcon sx={{ fontSize: 48, color: "primary.main", mb: 1 }} />
+                  <Typography variant="h6" color="primary.main" fontWeight={600}>
                     Subir imágenes
-                    <input
-                      hidden
-                      accept="image/*"
-                      multiple
-                      type="file"
-                      onChange={handleImageUpload}
-                    />
-                  </Button>
-                  {images.length === 0 && (
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        color: "text.secondary",
-                        mt: 1,
-                      }}
-                    >
-                      <ImageIcon sx={{ fontSize: 40, mb: 1 }} />
-                      <Typography variant="body2">
-                        Arrastra imágenes aquí o usa el botón
-                      </Typography>
-                    </Box>
-                  )}
-                  <Grid container spacing={1} sx={{ mt: 1 }}>
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Arrastra imágenes aquí o haz clic para seleccionar
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary" sx={{ opacity: 0.7 }}>
+                    PNG, JPG, GIF hasta 10MB
+                  </Typography>
+                </Box>
+                {/* Grid de imágenes subidas */}
+                {images.length > 0 && (
+                  <Grid container spacing={2} sx={{ mt: 2 }}>
                     {images.map((url, idx) => (
                       <Grid item key={url} xs={6} sm={4} md={3} lg={2}>
                         <Box
@@ -628,9 +627,9 @@ export const NoteEditorPage: React.FC = () => {
                             borderRadius: 2,
                             overflow: "hidden",
                             boxShadow: 2,
-                            transition: "transform 0.2s",
+                            transition: "all 0.3s ease",
                             "&:hover": {
-                              transform: "scale(1.06)",
+                              transform: "scale(1.05)",
                               boxShadow: 6,
                             },
                           }}
@@ -639,8 +638,8 @@ export const NoteEditorPage: React.FC = () => {
                             src={url}
                             variant="rounded"
                             sx={{
-                              width: 80,
-                              height: 80,
+                              width: 100,
+                              height: 100,
                               boxShadow: 1,
                               transition: "box-shadow 0.2s",
                             }}
@@ -649,15 +648,16 @@ export const NoteEditorPage: React.FC = () => {
                             size="small"
                             sx={{
                               position: "absolute",
-                              top: 2,
-                              right: 2,
+                              top: 4,
+                              right: 4,
                               bgcolor: "background.paper",
-                              boxShadow: 1,
+                              boxShadow: 2,
                               zIndex: 2,
                               transition: "all 0.2s",
                               "&:hover": {
                                 bgcolor: "error.main",
                                 color: "white",
+                                transform: "scale(1.1)",
                               },
                             }}
                             onClick={() => handleRemoveImage(url)}
@@ -668,7 +668,7 @@ export const NoteEditorPage: React.FC = () => {
                       </Grid>
                     ))}
                   </Grid>
-                </Box>
+                )}
               </Grid>
               {/* Sección avanzada */}
               <Grid item xs={12}>
