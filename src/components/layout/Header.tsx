@@ -18,14 +18,14 @@ import {
   Person as PersonIcon,
 } from "@mui/icons-material"
 import { useNavigate } from "react-router-dom"
-import { useAuthStore } from "@/stores/useAuthStore"
+import { useAuth } from "@/hooks/useAuth"
 
 export const Header: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("")
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const theme = useTheme()
   const navigate = useNavigate()
-  const { displayName, email, logout } = useAuthStore()
+  const { displayName, email, logout } = useAuth()
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)
