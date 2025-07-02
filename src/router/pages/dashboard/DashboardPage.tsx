@@ -268,10 +268,21 @@ export const DashboardPage: React.FC = () => {
                     display: '-webkit-box',
                     WebkitLineClamp: 3,
                     WebkitBoxOrient: 'vertical',
-                    overflow: 'hidden'
+                    overflow: 'hidden',
+                    wordBreak: 'break-word',
                   }}
+                  component="div"
                 >
-                  {truncateText(note.body || 'Sin contenido')}
+                  <div
+                    style={{
+                      display: '-webkit-box',
+                      WebkitLineClamp: 3,
+                      WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden',
+                      wordBreak: 'break-word',
+                    }}
+                    dangerouslySetInnerHTML={{ __html: note.body || '<em>Sin contenido</em>' }}
+                  />
                 </Typography>
 
                 {/* Note Footer */}
