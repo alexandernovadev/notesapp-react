@@ -42,7 +42,7 @@ export const useJournal = () => {
     setActiveNote,
     createNote: startNewNote,
     saveNote: startSaveNote,
-    deleteNote: startDeletingNote,
+    deleteNote: (noteId: string) => startDeletingNote(noteId),
     loadNotes,
     toggleFavorite,
     togglePinned,

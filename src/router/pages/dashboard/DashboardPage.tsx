@@ -87,7 +87,7 @@ export const DashboardPage: React.FC = () => {
         },
       })
       if (result.isConfirmed) {
-        await deleteNote()
+        await deleteNote(selectedNoteId)
       }
     }
   }

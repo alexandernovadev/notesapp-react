@@ -17,7 +17,7 @@ interface JournalStore extends JournalState {
   setNotes: (notes: Note[]) => void
   startNewNote: () => Promise<void>
   startSaveNote: () => Promise<void>
-  startDeletingNote: () => Promise<void>
+  startDeletingNote: (noteId: string) => Promise<void>
   loadNotes: () => Promise<void>
   setSaving: (saving: boolean) => void
   setLoading: (loading: boolean) => void
@@ -99,16 +99,14 @@ export const useJournalStore = create<JournalStore>((set, get) => ({
     }
   },
 
-  startDeletingNote: async () => {
+  startDeletingNote: async (noteId: string) => {
     const { uid } = useAuthStore.getState()
-    const { active } = get()
-    if (!uid || !active) return
-    
+    if (!uid || !noteId) return
     try {
-      await deleteDoc(doc(FirebaseDB, `users/${uid}/notes/${active.id}`))
+      await deleteDoc(doc(FirebaseDB, `users/${uid}/notes/${noteId}`))
       set((state) => ({
-        notes: state.notes.filter((n) => n.id !== active.id),
-        active: null,
+        notes: state.notes.filter((n) => n.id !== noteId),
+        active: state.active?.id === noteId ? null : state.active,
       }))
     } catch (error) {
       console.error('Error deleting note:', error)
