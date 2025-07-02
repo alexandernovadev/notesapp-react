@@ -51,6 +51,15 @@ export const NoteEditorPage: React.FC = () => {
     await save()
   }
 
+  // Mostrar loading si hay noteId pero el contenido está vacío y no se está guardando
+  if (noteId && !content && !isSaving) {
+    return (
+      <Box sx={{ p: 4, textAlign: 'center' }}>
+        <Typography variant="h6" color="text.secondary">Cargando nota...</Typography>
+      </Box>
+    )
+  }
+
   return (
     <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
       {/* Header */}
@@ -106,13 +115,24 @@ export const NoteEditorPage: React.FC = () => {
 
           {/* Save button */}
           <Tooltip title="Guardar (Ctrl+S)" arrow>
-            <IconButton
-              onClick={handleSave}
-              disabled={isSaving || !hasUnsavedChanges}
-              color="primary"
-            >
-              <SaveIcon />
-            </IconButton>
+            {(isSaving || !hasUnsavedChanges) ? (
+              <span>
+                <IconButton
+                  onClick={handleSave}
+                  disabled
+                  color="primary"
+                >
+                  <SaveIcon />
+                </IconButton>
+              </span>
+            ) : (
+              <IconButton
+                onClick={handleSave}
+                color="primary"
+              >
+                <SaveIcon />
+              </IconButton>
+            )}
           </Tooltip>
         </Box>
       </Box>

@@ -7,12 +7,6 @@ import TextAlign from '@tiptap/extension-text-align'
 import Underline from '@tiptap/extension-underline'
 import Link from '@tiptap/extension-link'
 import Image from '@tiptap/extension-image'
-import Blockquote from '@tiptap/extension-blockquote'
-import CodeBlock from '@tiptap/extension-code-block'
-import Heading from '@tiptap/extension-heading'
-import ListItem from '@tiptap/extension-list-item'
-import BulletList from '@tiptap/extension-bullet-list'
-import OrderedList from '@tiptap/extension-ordered-list'
 import TaskList from '@tiptap/extension-task-list'
 import TaskItem from '@tiptap/extension-task-item'
 import Table from '@tiptap/extension-table'
@@ -59,30 +53,6 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
       Image.configure({
         HTMLAttributes: {
           class: 'image',
-        },
-      }),
-      Blockquote.configure({
-        HTMLAttributes: {
-          class: 'blockquote',
-        },
-      }),
-      CodeBlock.configure({
-        HTMLAttributes: {
-          class: 'code-block',
-        },
-      }),
-      Heading.configure({
-        levels: [1, 2, 3],
-      }),
-      ListItem,
-      BulletList.configure({
-        HTMLAttributes: {
-          class: 'bullet-list',
-        },
-      }),
-      OrderedList.configure({
-        HTMLAttributes: {
-          class: 'ordered-list',
         },
       }),
       TaskList,

@@ -45,20 +45,39 @@ const ToolbarButton: React.FC<ToolbarButtonProps> = ({
   disabled = false,
 }) => (
   <Tooltip title={tooltip} arrow>
-    <IconButton
-      onClick={onClick}
-      disabled={disabled}
-      sx={{
-        p: 1,
-        color: isActive ? 'primary.main' : 'text.secondary',
-        backgroundColor: isActive ? 'primary.light' : 'transparent',
-        '&:hover': {
-          backgroundColor: isActive ? 'primary.light' : 'action.hover',
-        },
-      }}
-    >
-      {icon}
-    </IconButton>
+    {disabled ? (
+      <span>
+        <IconButton
+          onClick={onClick}
+          disabled={disabled}
+          sx={{
+            p: 1,
+            color: isActive ? 'primary.main' : 'text.secondary',
+            backgroundColor: isActive ? 'primary.light' : 'transparent',
+            '&:hover': {
+              backgroundColor: isActive ? 'primary.light' : 'action.hover',
+            },
+          }}
+        >
+          {icon}
+        </IconButton>
+      </span>
+    ) : (
+      <IconButton
+        onClick={onClick}
+        disabled={disabled}
+        sx={{
+          p: 1,
+          color: isActive ? 'primary.main' : 'text.secondary',
+          backgroundColor: isActive ? 'primary.light' : 'transparent',
+          '&:hover': {
+            backgroundColor: isActive ? 'primary.light' : 'action.hover',
+          },
+        }}
+      >
+        {icon}
+      </IconButton>
+    )}
   </Tooltip>
 )
 
