@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { DashboardRoutes } from './routes/dashboardRoutes'
 import { AuthRoutes } from './routes/authRoutes'
@@ -28,15 +28,33 @@ export const AppRouter: React.FC = () => {
   }
 
   return (
-    <Routes>
-      {/* Auth routes */}
-      <Route path="/auth/*" element={<AuthRoutes />} />
-      
-      {/* Dashboard routes (protected) */}
-      <Route path="/*" element={<DashboardRoutes />} />
-      
-      {/* Fallback */}
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+    <Suspense
+      fallback={
+        <Box
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="center"
+          minHeight="60vh"
+          gap={2}
+        >
+          <CircularProgress size={50} thickness={4} />
+          <Typography variant="body1" color="text.secondary">
+            Cargando contenido...
+          </Typography>
+        </Box>
+      }
+    >
+      <Routes>
+        {/* Auth routes */}
+        <Route path="/auth/*" element={<AuthRoutes />} />
+        
+        {/* Dashboard routes (protected) */}
+        <Route path="/*" element={<DashboardRoutes />} />
+        
+        {/* Fallback */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </Suspense>
   )
 }

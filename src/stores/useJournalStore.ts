@@ -26,6 +26,7 @@ interface JournalStore extends JournalState {
   updateNoteCategory: (noteId: string, category: string) => Promise<void>
   updateNoteColor: (noteId: string, color: string) => Promise<void>
   updateNotePriority: (noteId: string, priority: 'low' | 'medium' | 'high') => Promise<void>
+  duplicateNote: (noteId: string) => Promise<void>
 }
 
 export const useJournalStore = create<JournalStore>((set, get) => ({
@@ -51,7 +52,7 @@ export const useJournalStore = create<JournalStore>((set, get) => ({
     const newNote = createNewNote()
     
     try {
-      const docRef = await addDoc(collection(FirebaseDB, `users/${uid}/journal/notes`), newNote)
+      const docRef = await addDoc(collection(FirebaseDB, `users/${uid}/notes`), newNote)
       const note: Note = { ...newNote, id: docRef.id }
       set((state) => ({
         notes: [...state.notes, note],
@@ -84,7 +85,7 @@ export const useJournalStore = create<JournalStore>((set, get) => ({
     delete (noteToSave as any).id
     
     try {
-      await updateDoc(doc(FirebaseDB, `users/${uid}/journal/notes/${active.id}`), noteToSave)
+      await updateDoc(doc(FirebaseDB, `users/${uid}/notes/${active.id}`), noteToSave)
       const updatedNote = { ...active, ...noteToSave }
       set((state) => ({
         notes: state.notes.map((n) => (n.id === active.id ? updatedNote : n)),
@@ -104,7 +105,7 @@ export const useJournalStore = create<JournalStore>((set, get) => ({
     if (!uid || !active) return
     
     try {
-      await deleteDoc(doc(FirebaseDB, `users/${uid}/journal/notes/${active.id}`))
+      await deleteDoc(doc(FirebaseDB, `users/${uid}/notes/${active.id}`))
       set((state) => ({
         notes: state.notes.filter((n) => n.id !== active.id),
         active: null,
@@ -123,7 +124,7 @@ export const useJournalStore = create<JournalStore>((set, get) => ({
     }
     
     try {
-      const notesSnap = await getDocs(collection(FirebaseDB, `users/${uid}/journal/notes`))
+      const notesSnap = await getDocs(collection(FirebaseDB, `users/${uid}/notes`))
       const notes: Note[] = []
       notesSnap.forEach((doc) => {
         const data = doc.data()
@@ -166,7 +167,7 @@ export const useJournalStore = create<JournalStore>((set, get) => ({
     const newFavoriteState = !note.isFavorite
     
     try {
-      await updateDoc(doc(FirebaseDB, `users/${uid}/journal/notes/${noteId}`), {
+      await updateDoc(doc(FirebaseDB, `users/${uid}/notes/${noteId}`), {
         isFavorite: newFavoriteState,
         updatedAt: Date.now()
       })
@@ -195,7 +196,7 @@ export const useJournalStore = create<JournalStore>((set, get) => ({
     const newPinnedState = !note.isPinned
     
     try {
-      await updateDoc(doc(FirebaseDB, `users/${uid}/journal/notes/${noteId}`), {
+      await updateDoc(doc(FirebaseDB, `users/${uid}/notes/${noteId}`), {
         isPinned: newPinnedState,
         updatedAt: Date.now()
       })
@@ -218,7 +219,7 @@ export const useJournalStore = create<JournalStore>((set, get) => ({
     if (!uid) return
     
     try {
-      await updateDoc(doc(FirebaseDB, `users/${uid}/journal/notes/${noteId}`), {
+      await updateDoc(doc(FirebaseDB, `users/${uid}/notes/${noteId}`), {
         category,
         updatedAt: Date.now()
       })
@@ -241,7 +242,7 @@ export const useJournalStore = create<JournalStore>((set, get) => ({
     if (!uid) return
     
     try {
-      await updateDoc(doc(FirebaseDB, `users/${uid}/journal/notes/${noteId}`), {
+      await updateDoc(doc(FirebaseDB, `users/${uid}/notes/${noteId}`), {
         color,
         updatedAt: Date.now()
       })
@@ -264,7 +265,7 @@ export const useJournalStore = create<JournalStore>((set, get) => ({
     if (!uid) return
     
     try {
-      await updateDoc(doc(FirebaseDB, `users/${uid}/journal/notes/${noteId}`), {
+      await updateDoc(doc(FirebaseDB, `users/${uid}/notes/${noteId}`), {
         priority,
         updatedAt: Date.now()
       })
@@ -279,6 +280,46 @@ export const useJournalStore = create<JournalStore>((set, get) => ({
       }))
     } catch (error) {
       console.error('Error updating priority:', error)
+    }
+  },
+
+  duplicateNote: async (noteId: string) => {
+    const { uid } = useAuthStore.getState()
+    const { notes } = get()
+    if (!uid) return
+    
+    const originalNote = notes.find(n => n.id === noteId)
+    if (!originalNote) return
+    
+    try {
+      // Create duplicate note data
+      const duplicateData = {
+        title: `${originalNote.title} (Copia)`,
+        body: originalNote.body,
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+        imageUrls: [...originalNote.imageUrls],
+        category: originalNote.category || 'personal',
+        tags: [...(originalNote.tags || [])],
+        isFavorite: false,
+        isPinned: false,
+        color: originalNote.color || '#f8fafc',
+        priority: originalNote.priority || 'medium',
+        wordCount: originalNote.wordCount || 0,
+        readTime: originalNote.readTime || 1,
+      }
+      
+      // Add to Firestore
+      const docRef = await addDoc(collection(FirebaseDB, `users/${uid}/notes`), duplicateData)
+      const newNote: Note = { ...duplicateData, id: docRef.id }
+      
+      // Update local state
+      set((state) => ({
+        notes: [...state.notes, newNote],
+        active: newNote,
+      }))
+    } catch (error) {
+      console.error('Error duplicating note:', error)
     }
   },
 })) 

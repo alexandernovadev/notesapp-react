@@ -7,6 +7,10 @@ import {
   Paper,
   Chip,
   IconButton,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  ListItemText,
   useTheme
 } from '@mui/material'
 import {
@@ -14,7 +18,10 @@ import {
   Star as StarIcon,
   StarBorder as StarBorderIcon,
   Delete as DeleteIcon,
-  Edit as EditIcon
+  Edit as EditIcon,
+  PushPin as PushPinIcon,
+  PushPinOutlined as PushPinOutlinedIcon,
+  MoreVert as MoreVertIcon
 } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
 import { useJournal } from '@/hooks/useJournal'
@@ -25,7 +32,11 @@ import { es } from 'date-fns/locale'
 export const DashboardPage: React.FC = () => {
   const theme = useTheme()
   const navigate = useNavigate()
-  const { notes, isLoading, setActiveNote, toggleFavorite, togglePinned } = useJournal()
+  const { notes, isLoading, setActiveNote, toggleFavorite, togglePinned, deleteNote } = useJournal()
+  
+  // Menu state
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
+  const [selectedNoteId, setSelectedNoteId] = React.useState<string | null>(null)
 
   const handleCreateNote = () => {
     navigate('/notes/new')
@@ -33,6 +44,46 @@ export const DashboardPage: React.FC = () => {
 
   const handleEditNote = (noteId: string) => {
     navigate(`/notes/${noteId}`)
+  }
+
+  const handleToggleFavorite = async (noteId: string) => {
+    await toggleFavorite(noteId)
+  }
+
+  const handleTogglePinned = async (noteId: string) => {
+    await togglePinned(noteId)
+  }
+
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>, noteId: string) => {
+    event.stopPropagation()
+    setAnchorEl(event.currentTarget)
+    setSelectedNoteId(noteId)
+  }
+
+  const handleMenuClose = () => {
+    setAnchorEl(null)
+    setSelectedNoteId(null)
+  }
+
+  const handleDeleteNote = async () => {
+    if (selectedNoteId) {
+      const confirmed = window.confirm('¿Estás seguro de que quieres eliminar esta nota? Esta acción no se puede deshacer.')
+      if (confirmed) {
+        await deleteNote()
+        handleMenuClose()
+      }
+    }
+  }
+
+  const handleDuplicateNote = () => {
+    if (selectedNoteId) {
+      const note = notes.find(n => n.id === selectedNoteId)
+      if (note) {
+        // TODO: Implement duplicate functionality
+        console.log('Duplicar nota:', note)
+        handleMenuClose()
+      }
+    }
   }
 
 
@@ -173,21 +224,36 @@ export const DashboardPage: React.FC = () => {
                       size="small"
                       onClick={(e) => {
                         e.stopPropagation()
-                        // TODO: Toggle favorite
+                        handleToggleFavorite(note.id)
                       }}
                       sx={{ p: 0.5 }}
                     >
-                      <StarBorderIcon fontSize="small" />
+                      {note.isFavorite ? (
+                        <StarIcon fontSize="small" color="primary" />
+                      ) : (
+                        <StarBorderIcon fontSize="small" />
+                      )}
                     </IconButton>
                     <IconButton
                       size="small"
                       onClick={(e) => {
                         e.stopPropagation()
-                        handleEditNote(note.id)
+                        handleTogglePinned(note.id)
                       }}
                       sx={{ p: 0.5 }}
                     >
-                      <EditIcon fontSize="small" />
+                      {note.isPinned ? (
+                        <PushPinIcon fontSize="small" color="primary" />
+                      ) : (
+                        <PushPinOutlinedIcon fontSize="small" />
+                      )}
+                    </IconButton>
+                    <IconButton
+                      size="small"
+                      onClick={(e) => handleMenuOpen(e, note.id)}
+                      sx={{ p: 0.5 }}
+                    >
+                      <MoreVertIcon fontSize="small" />
                     </IconButton>
                   </Box>
                 </Box>
@@ -233,6 +299,55 @@ export const DashboardPage: React.FC = () => {
           ))}
         </Grid>
       )}
+
+      {/* Note Options Menu */}
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleMenuClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        PaperProps={{
+          sx: {
+            mt: 1,
+            minWidth: 180,
+            boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
+            borderRadius: 2,
+          },
+        }}
+      >
+        <MenuItem onClick={() => {
+          if (selectedNoteId) {
+            handleEditNote(selectedNoteId)
+            handleMenuClose()
+          }
+        }}>
+          <ListItemIcon>
+            <EditIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Editar</ListItemText>
+        </MenuItem>
+        
+        <MenuItem onClick={handleDuplicateNote}>
+          <ListItemIcon>
+            <AddIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Duplicar</ListItemText>
+        </MenuItem>
+        
+        <MenuItem onClick={handleDeleteNote} sx={{ color: 'error.main' }}>
+          <ListItemIcon>
+            <DeleteIcon fontSize="small" color="error" />
+          </ListItemIcon>
+          <ListItemText>Eliminar</ListItemText>
+        </MenuItem>
+      </Menu>
     </Box>
   )
 } 
