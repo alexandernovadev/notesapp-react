@@ -22,6 +22,7 @@ import {
   AccordionSummary,
   AccordionDetails,
   Divider,
+  LinearProgress,
 } from "@mui/material"
 import {
   Save as SaveIcon,
@@ -29,10 +30,12 @@ import {
   CheckCircle as CheckCircleIcon,
   Star as StarIcon,
   Delete as DeleteIcon,
+  Visibility as VisibilityIcon,
 } from "@mui/icons-material"
 import { useNavigate, useParams } from "react-router-dom"
 import { NoteEditor } from "@/components/editor"
 import { useNoteEditor } from "@/hooks/useNoteEditor"
+import { ImageModal } from "@/components/ImageModal"
 import { formatDistanceToNow } from "date-fns"
 import { es } from "date-fns/locale"
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
@@ -43,6 +46,8 @@ import ImageIcon from "@mui/icons-material/Image"
 import AccessTimeIcon from "@mui/icons-material/AccessTime"
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday"
 import { CATEGORY_OPTIONS, TAG_OPTIONS, COLOR_PALETTE } from "@/utils/noteOptions"
+import { fileUpload } from '@/helpers/fileUpload'
+import { useJournal } from '@/hooks/useJournal'
 
 export const NoteEditorPage: React.FC = () => {
   const navigate = useNavigate()
@@ -59,17 +64,28 @@ export const NoteEditorPage: React.FC = () => {
     setTitle,
     save,
     active,
+    setHasUnsavedChanges,
   } = useNoteEditor({
     noteId: noteId || undefined,
-    autoSave: true,
-    autoSaveDelay: 2000,
   })
 
-  const [category, setCategory] = React.useState(active?.category || "Personal")
-  const [tags, setTags] = React.useState<string[]>(active?.tags || [])
-  const [color, setColor] = React.useState(active?.color || "#f8fafc")
-  const [priority, setPriority] = React.useState(active?.priority || "medium")
+  const [category, setCategoryState] = React.useState(active?.category || "Personal")
+  const [tags, setTagsState] = React.useState<string[]>(active?.tags || [])
+  const [color, setColorState] = React.useState(active?.color || "#f8fafc")
+  const [priority, setPriorityState] = React.useState(active?.priority || "medium")
   const [images, setImages] = React.useState<string[]>(active?.imageUrls || [])
+  const [pendingFiles, setPendingFiles] = React.useState<File[]>([])
+
+  // Modal state
+  const [modalOpen, setModalOpen] = React.useState(false)
+  const [currentImageIndex, setCurrentImageIndex] = React.useState(0)
+
+  const [isUploadingImages, setIsUploadingImages] = React.useState(false)
+  const [isSavingNote, setIsSavingNote] = React.useState(false)
+  const [imageUploadProgress, setImageUploadProgress] = React.useState<number>(0)
+  const [imageUploadError, setImageUploadError] = React.useState<string | null>(null)
+
+  const { setActiveNote } = useJournal()
 
   const handleBack = () => {
     if (hasUnsavedChanges) {
@@ -80,10 +96,60 @@ export const NoteEditorPage: React.FC = () => {
   }
 
   const handleSave = async () => {
-    // Aquí podrías actualizar el store para guardar category y tags
-    // Por ahora, solo log para debug
-    console.log({ title, content, category, tags })
-    await save()
+    setImageUploadError(null)
+    setIsUploadingImages(false)
+    setIsSavingNote(false)
+    try {
+      let finalImageUrls = images
+      
+      // Subir imágenes a Cloudinary si hay archivos pendientes
+      if (pendingFiles.length > 0) {
+        setIsUploadingImages(true)
+        setImageUploadProgress(0)
+        const total = pendingFiles.length
+        let uploadedUrls: string[] = []
+        for (let i = 0; i < total; i++) {
+          const file = pendingFiles[i]
+          if (!file) continue
+          try {
+            const url = await fileUpload(file)
+            uploadedUrls.push(url)
+            setImageUploadProgress(Math.round(((i + 1) / total) * 100))
+          } catch (err: any) {
+            setImageUploadError(err.message || 'Error al subir imagen')
+            setIsUploadingImages(false)
+            return
+          }
+        }
+        
+        // Calcular las URLs finales ANTES de guardar
+        finalImageUrls = [...images, ...uploadedUrls]
+        setImages(finalImageUrls)
+        setPendingFiles([])
+        setIsUploadingImages(false)
+      }
+      
+      // ACTUALIZA la nota activa antes de guardar con las URLs finales
+      if (active) {
+        setActiveNote({
+          ...active,
+          title,
+          body: content,
+          imageUrls: finalImageUrls, // Usar las URLs finales calculadas
+          category,
+          tags,
+          color,
+          priority,
+        })
+      }
+      setIsSavingNote(true)
+      await save()
+      setIsSavingNote(false)
+    } catch (error) {
+      setIsSavingNote(false)
+      setImageUploadError('Error al guardar la nota')
+      console.error('Error saving note:', error)
+    }
   }
 
   // Debug: log content and title when they change
@@ -102,16 +168,22 @@ export const NoteEditorPage: React.FC = () => {
   const handleTabChange = (_: React.SyntheticEvent, newValue: number) =>
     setTab(newValue)
 
-  // Handler para imágenes (placeholder, drag & drop no funcional aún)
+  // Handler para imágenes
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
     if (!files) return
-    const urls = Array.from(files).map((file) => URL.createObjectURL(file))
-    setImages((prev) => [...prev, ...urls])
+    const fileArray = Array.from(files)
+    setPendingFiles(prev => [...prev, ...fileArray])
+    
+    // Crear URLs temporales para preview
+    const urls = fileArray.map((file) => URL.createObjectURL(file))
+    setImages(prev => [...prev, ...urls])
   }
   
   const handleRemoveImage = (url: string) => {
-    setImages((prev) => prev.filter((img) => img !== url))
+    setImages(prev => prev.filter((img) => img !== url))
+    // También remover de pendingFiles si existe
+    setPendingFiles(prev => prev.filter(file => URL.createObjectURL(file) !== url))
   }
 
   // Drag and drop handlers
@@ -128,24 +200,69 @@ export const NoteEditorPage: React.FC = () => {
     const imageFiles = files.filter(file => file.type.startsWith('image/'))
     
     if (imageFiles.length > 0) {
+      setPendingFiles(prev => [...prev, ...imageFiles])
       const urls = imageFiles.map((file) => URL.createObjectURL(file))
-      setImages((prev) => [...prev, ...urls])
+      setImages(prev => [...prev, ...urls])
     }
   }
 
-  // Mostrar loading si hay noteId pero el contenido está vacío y no se está guardando
-  if (noteId && !content && !isSaving) {
-    return (
-      <Box sx={{ p: 4, textAlign: "center" }}>
-        <Typography variant="h6" color="text.secondary">
-          Cargando nota...
-        </Typography>
-      </Box>
-    )
+  // Modal handlers
+  const handleImageClick = (index: number) => {
+    setCurrentImageIndex(index)
+    setModalOpen(true)
   }
+
+  const handleModalClose = () => {
+    setModalOpen(false)
+  }
+
+  const handleImageChange = (index: number) => {
+    setCurrentImageIndex(index)
+  }
+
+  // Handlers que marcan cambios pendientes
+  const setCategory = (val: string) => {
+    setCategoryState(val)
+    setHasUnsavedChanges(true)
+  }
+  const setTags = (val: string[]) => {
+    setTagsState(val)
+    setHasUnsavedChanges(true)
+  }
+  const setColor = (val: string) => {
+    setColorState(val)
+    setHasUnsavedChanges(true)
+  }
+  const setPriority = (val: 'low' | 'medium' | 'high') => {
+    setPriorityState(val)
+    setHasUnsavedChanges(true)
+  }
+  const setImagesWithDirty = (val: string[]) => {
+    setImages(val)
+    setHasUnsavedChanges(true)
+  }
+
+  React.useEffect(() => {
+    if (active) {
+      setCategoryState(active.category || "Personal")
+      setTagsState(active.tags || [])
+      setColorState(active.color || "#f8fafc")
+      setPriorityState(active.priority || "medium")
+      setImages(active.imageUrls || [])
+    }
+  }, [active])
 
   return (
     <Box sx={{ height: "100vh", display: "flex", flexDirection: "column" }}>
+      {/* Mostrar loading si hay noteId pero el contenido está vacío y no se está guardando */}
+      {noteId && !content && !isSaving ? (
+        <Box sx={{ p: 4, textAlign: "center" }}>
+          <Typography variant="h6" color="text.secondary">
+            Cargando nota...
+          </Typography>
+        </Box>
+      ) : (
+        <>
       {/* Header */}
       <Box
         sx={{
@@ -588,6 +705,35 @@ export const NoteEditorPage: React.FC = () => {
                 >
                   <ImageIcon fontSize="small" /> Imágenes
                 </Typography>
+                
+                {/* Estado de subida de imágenes */}
+                {isUploadingImages && (
+                  <Box sx={{ mb: 2 }}>
+                    <Typography variant="body2" color="info.main" sx={{ mb: 1 }}>
+                      Guardando imágenes...
+                    </Typography>
+                    <LinearProgress variant="determinate" value={imageUploadProgress} />
+                    <Typography variant="caption" color="text.secondary">
+                      {imageUploadProgress}%
+                    </Typography>
+                  </Box>
+                )}
+                {/* Estado de guardado de nota */}
+                {isSavingNote && (
+                  <Box sx={{ mb: 2 }}>
+                    <Typography variant="body2" color="primary.main">
+                      Guardando nota...
+                    </Typography>
+                    <LinearProgress />
+                  </Box>
+                )}
+                {/* Errores de subida de imágenes */}
+                {imageUploadError && (
+                  <Alert severity="error" sx={{ mb: 2 }}>
+                    {imageUploadError}
+                  </Alert>
+                )}
+
                 <Box
                   component="label"
                   onDragOver={handleDragOver}
@@ -637,6 +783,7 @@ export const NoteEditorPage: React.FC = () => {
                     PNG, JPG, GIF hasta 10MB
                   </Typography>
                 </Box>
+
                 {/* Grid de imágenes subidas */}
                 {images.length > 0 && (
                   <Grid container spacing={2} sx={{ mt: 2 }}>
@@ -650,6 +797,7 @@ export const NoteEditorPage: React.FC = () => {
                             overflow: "hidden",
                             boxShadow: 2,
                             transition: "all 0.3s ease",
+                            cursor: "pointer",
                             "&:hover": {
                               transform: "scale(1.05)",
                               boxShadow: 6,
@@ -665,7 +813,41 @@ export const NoteEditorPage: React.FC = () => {
                               boxShadow: 1,
                               transition: "box-shadow 0.2s",
                             }}
+                            onClick={() => handleImageClick(idx)}
                           />
+                          
+                          {/* Overlay con iconos */}
+                          <Box
+                            sx={{
+                              position: "absolute",
+                              top: 0,
+                              left: 0,
+                              right: 0,
+                              bottom: 0,
+                              background: "rgba(0,0,0,0.3)",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              opacity: 0,
+                              transition: "opacity 0.2s",
+                              "&:hover": {
+                                opacity: 1,
+                              },
+                            }}
+                          >
+                            <IconButton
+                              size="small"
+                              onClick={() => handleImageClick(idx)}
+                              sx={{
+                                color: "white",
+                                bgcolor: "rgba(0,0,0,0.5)",
+                                "&:hover": { bgcolor: "rgba(0,0,0,0.7)" },
+                              }}
+                            >
+                              <VisibilityIcon fontSize="small" />
+                            </IconButton>
+                          </Box>
+
                           <IconButton
                             size="small"
                             sx={{
@@ -758,6 +940,17 @@ export const NoteEditorPage: React.FC = () => {
           </Alert>
         )}
       </Box>
+
+      {/* Image Modal */}
+      <ImageModal
+        open={modalOpen}
+        onClose={handleModalClose}
+        images={images}
+        currentIndex={currentImageIndex}
+        onImageChange={handleImageChange}
+      />
+        </>
+      )}
     </Box>
   )
 }

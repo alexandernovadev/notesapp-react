@@ -5,15 +5,11 @@ import { Note } from '@/types'
 interface UseNoteEditorProps {
   noteId?: string | undefined
   initialContent?: string
-  autoSave?: boolean
-  autoSaveDelay?: number
 }
 
 export const useNoteEditor = ({
   noteId,
   initialContent = '',
-  autoSave = true,
-  autoSaveDelay = 2000,
 }: UseNoteEditorProps = {}) => {
   const [content, setContent] = useState(initialContent)
   const [title, setTitle] = useState('')
@@ -31,12 +27,8 @@ export const useNoteEditor = ({
     createNote,
   } = useJournal()
 
-  // Auto-save timer
-  const [autoSaveTimer, setAutoSaveTimer] = useState<NodeJS.Timeout | null>(null)
-
   // Initialize content from active note
   useEffect(() => {
-    // Si hay noteId y no hay nota activa, buscar la nota por ID y setearla como activa
     if (noteId && (!active || active.id !== noteId)) {
       const found = notes.find(n => n.id === noteId)
       if (found) {
@@ -54,39 +46,13 @@ export const useNoteEditor = ({
   const handleContentUpdate = useCallback((newContent: string) => {
     setContent(newContent)
     setHasUnsavedChanges(true)
-
-    // Clear existing timer
-    if (autoSaveTimer) {
-      clearTimeout(autoSaveTimer)
-    }
-
-    // Set new auto-save timer
-    if (autoSave) {
-      const timer = setTimeout(() => {
-        handleSave()
-      }, autoSaveDelay)
-      setAutoSaveTimer(timer)
-    }
-  }, [autoSave, autoSaveDelay, autoSaveTimer])
+  }, [])
 
   // Handle title updates
   const handleTitleUpdate = useCallback((newTitle: string) => {
     setTitle(newTitle)
     setHasUnsavedChanges(true)
-
-    // Clear existing timer
-    if (autoSaveTimer) {
-      clearTimeout(autoSaveTimer)
-    }
-
-    // Set new auto-save timer
-    if (autoSave) {
-      const timer = setTimeout(() => {
-        handleSave()
-      }, autoSaveDelay)
-      setAutoSaveTimer(timer)
-    }
-  }, [autoSave, autoSaveDelay, autoSaveTimer])
+  }, [])
 
   // Save function
   const handleSave = useCallback(async () => {
@@ -119,13 +85,8 @@ export const useNoteEditor = ({
 
   // Manual save
   const save = useCallback(async () => {
-    // Clear auto-save timer
-    if (autoSaveTimer) {
-      clearTimeout(autoSaveTimer)
-      setAutoSaveTimer(null)
-    }
     await handleSave()
-  }, [autoSaveTimer, handleSave])
+  }, [handleSave])
 
   // Create new note
   const createNew = useCallback(async () => {
@@ -135,15 +96,6 @@ export const useNoteEditor = ({
     setActiveNote(null)
     await createNote()
   }, [createNote, setActiveNote])
-
-  // Cleanup timer on unmount
-  useEffect(() => {
-    return () => {
-      if (autoSaveTimer) {
-        clearTimeout(autoSaveTimer)
-      }
-    }
-  }, [autoSaveTimer])
 
   return {
     // State
@@ -161,5 +113,6 @@ export const useNoteEditor = ({
     save,
     createNew,
     setActiveNote,
+    setHasUnsavedChanges,
   }
 } 
