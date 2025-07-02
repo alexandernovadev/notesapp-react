@@ -61,13 +61,8 @@ export const useNoteEditor = ({
     setIsSaving(true)
     try {
       if (active) {
-        // Update existing note
-        const updatedNote = {
-          ...active,
-          title,
-          body: content,
-        }
-        setActiveNote(updatedNote)
+        // Update existing note - PRESERVAR todos los campos de la nota activa
+        // No sobrescribir aquí porque NoteEditorPage ya actualizó setActiveNote con todos los campos
         await saveNote()
       } else {
         // Create new note
@@ -81,7 +76,7 @@ export const useNoteEditor = ({
     } finally {
       setIsSaving(false)
     }
-  }, [active, title, content, hasUnsavedChanges, setActiveNote, saveNote, createNote])
+  }, [active, hasUnsavedChanges, saveNote, createNote])
 
   // Manual save
   const save = useCallback(async () => {

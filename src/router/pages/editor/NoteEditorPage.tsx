@@ -75,6 +75,7 @@ export const NoteEditorPage: React.FC = () => {
   const [priority, setPriorityState] = React.useState(active?.priority || "medium")
   const [images, setImages] = React.useState<string[]>(active?.imageUrls || [])
   const [pendingFiles, setPendingFiles] = React.useState<File[]>([])
+  const [previewUrls, setPreviewUrls] = React.useState<string[]>([]) // URLs temporales para preview
 
   // Modal state
   const [modalOpen, setModalOpen] = React.useState(false)
@@ -100,7 +101,8 @@ export const NoteEditorPage: React.FC = () => {
     setIsUploadingImages(false)
     setIsSavingNote(false)
     try {
-      let finalImageUrls = images
+      // Inicializar con URLs reales (no blob URLs)
+      let finalImageUrls = images.filter(url => !url.startsWith('blob:'))
       
       // Subir imágenes a Cloudinary si hay archivos pendientes
       if (pendingFiles.length > 0) {
@@ -122,26 +124,52 @@ export const NoteEditorPage: React.FC = () => {
           }
         }
         
-        // Calcular las URLs finales ANTES de guardar
-        finalImageUrls = [...images, ...uploadedUrls]
+        // SOLO usar URLs reales (filtrar blob URLs) + URLs de Cloudinary
+        const realImageUrls = images.filter(url => !url.startsWith('blob:'))
+        finalImageUrls = [...realImageUrls, ...uploadedUrls]
         setImages(finalImageUrls)
         setPendingFiles([])
+        setPreviewUrls([]) // Limpiar URLs temporales
         setIsUploadingImages(false)
       }
       
-      // ACTUALIZA la nota activa antes de guardar con las URLs finales
-      if (active) {
-        setActiveNote({
-          ...active,
-          title,
-          body: content,
-          imageUrls: finalImageUrls, // Usar las URLs finales calculadas
-          category,
-          tags,
-          color,
-          priority,
-        })
+      // Solo proceder si hay una nota activa
+      if (!active) {
+        console.warn('No hay nota activa para guardar')
+        return
       }
+      
+      // Preparar datos completos para guardar
+      const noteToSave = {
+        ...active,
+        title,
+        body: content,
+        imageUrls: finalImageUrls,
+        category,
+        tags,
+        color,
+        priority,
+      }
+      
+      // LOG: Mostrar qué se guardará
+      console.log('🔍 DATOS QUE SE GUARDARÁN:', JSON.stringify({
+        id: noteToSave.id,
+        title: noteToSave.title,
+        body: noteToSave.body?.substring(0, 100) + (noteToSave.body?.length > 100 ? '...' : ''),
+        category: noteToSave.category,
+        tags: noteToSave.tags,
+        color: noteToSave.color,
+        priority: noteToSave.priority,
+        imageUrls: noteToSave.imageUrls,
+        isFavorite: noteToSave.isFavorite,
+        isPinned: noteToSave.isPinned,
+        createdAt: noteToSave.createdAt,
+        updatedAt: noteToSave.updatedAt,
+      }, null, 2))
+      
+      // ACTUALIZA la nota activa antes de guardar con todos los campos
+      setActiveNote(noteToSave)
+      
       setIsSavingNote(true)
       await save()
       setIsSavingNote(false)
@@ -175,15 +203,27 @@ export const NoteEditorPage: React.FC = () => {
     const fileArray = Array.from(files)
     setPendingFiles(prev => [...prev, ...fileArray])
     
-    // Crear URLs temporales para preview
+    // Crear URLs temporales para preview (NO agregar a images)
     const urls = fileArray.map((file) => URL.createObjectURL(file))
-    setImages(prev => [...prev, ...urls])
+    setPreviewUrls(prev => [...prev, ...urls])
+    setHasUnsavedChanges(true)
   }
   
+  // Función para obtener todas las imágenes (reales + preview)
+  const getAllImages = () => {
+    return [...images, ...previewUrls]
+  }
+
   const handleRemoveImage = (url: string) => {
-    setImages(prev => prev.filter((img) => img !== url))
-    // También remover de pendingFiles si existe
-    setPendingFiles(prev => prev.filter(file => URL.createObjectURL(file) !== url))
+    if (url.startsWith('blob:')) {
+      // Es una URL temporal, remover de previewUrls y pendingFiles
+      setPreviewUrls(prev => prev.filter((img) => img !== url))
+      setPendingFiles(prev => prev.filter(file => URL.createObjectURL(file) !== url))
+    } else {
+      // Es una URL real, remover de images
+      setImages(prev => prev.filter((img) => img !== url))
+    }
+    setHasUnsavedChanges(true)
   }
 
   // Drag and drop handlers
@@ -202,7 +242,8 @@ export const NoteEditorPage: React.FC = () => {
     if (imageFiles.length > 0) {
       setPendingFiles(prev => [...prev, ...imageFiles])
       const urls = imageFiles.map((file) => URL.createObjectURL(file))
-      setImages(prev => [...prev, ...urls])
+      setPreviewUrls(prev => [...prev, ...urls])
+      setHasUnsavedChanges(true)
     }
   }
 
@@ -249,6 +290,9 @@ export const NoteEditorPage: React.FC = () => {
       setColorState(active.color || "#f8fafc")
       setPriorityState(active.priority || "medium")
       setImages(active.imageUrls || [])
+      // Limpiar URLs temporales al cargar una nota existente
+      setPreviewUrls([])
+      setPendingFiles([])
     }
   }, [active])
 
@@ -785,9 +829,9 @@ export const NoteEditorPage: React.FC = () => {
                 </Box>
 
                 {/* Grid de imágenes subidas */}
-                {images.length > 0 && (
+                {getAllImages().length > 0 && (
                   <Grid container spacing={2} sx={{ mt: 2 }}>
-                    {images.map((url, idx) => (
+                    {getAllImages().map((url, idx) => (
                       <Grid item key={url} xs={6} sm={4} md={3} lg={2}>
                         <Box
                           sx={{
@@ -945,7 +989,7 @@ export const NoteEditorPage: React.FC = () => {
       <ImageModal
         open={modalOpen}
         onClose={handleModalClose}
-        images={images}
+        images={getAllImages()}
         currentIndex={currentImageIndex}
         onImageChange={handleImageChange}
       />
