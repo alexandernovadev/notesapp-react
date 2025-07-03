@@ -48,10 +48,13 @@ import CalendarTodayIcon from "@mui/icons-material/CalendarToday"
 import { CATEGORY_OPTIONS, TAG_OPTIONS, COLOR_PALETTE } from "@/utils/noteOptions"
 import { fileUpload } from '@/helpers/fileUpload'
 import { useJournal } from '@/hooks/useJournal'
+import { Note } from '@/types'
 
 export const NoteEditorPage: React.FC = () => {
   const navigate = useNavigate()
   const { noteId } = useParams<{ noteId: string }>()
+
+  console.log('🚀 NoteEditorPage RENDER - noteId:', noteId)
 
   const {
     content,
@@ -69,11 +72,14 @@ export const NoteEditorPage: React.FC = () => {
     noteId: noteId || undefined,
   })
 
-  const [category, setCategoryState] = React.useState(active?.category || "Personal")
-  const [tags, setTagsState] = React.useState<string[]>(active?.tags || [])
-  const [color, setColorState] = React.useState(active?.color || "#f8fafc")
-  const [priority, setPriorityState] = React.useState(active?.priority || "medium")
-  const [images, setImages] = React.useState<string[]>(active?.imageUrls || [])
+  console.log('🎯 DESPUÉS DE useNoteEditor - active:', active?.id, 'title:', title, 'content:', content?.substring(0, 50))
+
+  // INICIALIZAR SIEMPRE CON VALORES POR DEFECTO - el useEffect ajustará según active
+  const [category, setCategoryState] = React.useState("Personal")
+  const [tags, setTagsState] = React.useState<string[]>([])
+  const [color, setColorState] = React.useState("#f8fafc")
+  const [priority, setPriorityState] = React.useState<'low' | 'medium' | 'high'>("medium")
+  const [images, setImages] = React.useState<string[]>([])
   const [pendingFiles, setPendingFiles] = React.useState<File[]>([])
   const [previewUrls, setPreviewUrls] = React.useState<string[]>([]) // URLs temporales para preview
 
@@ -86,7 +92,7 @@ export const NoteEditorPage: React.FC = () => {
   const [imageUploadProgress, setImageUploadProgress] = React.useState<number>(0)
   const [imageUploadError, setImageUploadError] = React.useState<string | null>(null)
 
-  const { setActiveNote } = useJournal()
+  const { setActiveNote, createNote } = useJournal()
 
   const handleBack = () => {
     if (hasUnsavedChanges) {
@@ -133,45 +139,40 @@ export const NoteEditorPage: React.FC = () => {
         setIsUploadingImages(false)
       }
       
-      // Solo proceder si hay una nota activa
-      if (!active) {
-        console.warn('No hay nota activa para guardar')
-        return
-      }
-      
-      // Preparar datos completos para guardar
-      const noteToSave = {
-        ...active,
-        title,
-        body: content,
-        imageUrls: finalImageUrls,
-        category,
-        tags,
-        color,
-        priority,
-      }
-      
-      // LOG: Mostrar qué se guardará
-      console.log('🔍 DATOS QUE SE GUARDARÁN:', JSON.stringify({
-        id: noteToSave.id,
-        title: noteToSave.title,
-        body: noteToSave.body?.substring(0, 100) + (noteToSave.body?.length > 100 ? '...' : ''),
-        category: noteToSave.category,
-        tags: noteToSave.tags,
-        color: noteToSave.color,
-        priority: noteToSave.priority,
-        imageUrls: noteToSave.imageUrls,
-        isFavorite: noteToSave.isFavorite,
-        isPinned: noteToSave.isPinned,
-        createdAt: noteToSave.createdAt,
-        updatedAt: noteToSave.updatedAt,
-      }, null, 2))
-      
-      // ACTUALIZA la nota activa antes de guardar con todos los campos
-      setActiveNote(noteToSave)
-      
       setIsSavingNote(true)
-      await save()
+      
+      if (noteId && active) {
+        // EDITAR NOTA EXISTENTE - actualizar nota activa con todos los campos
+        const noteToSave = {
+          ...active,
+          title,
+          body: content,
+          imageUrls: finalImageUrls,
+          category,
+          tags,
+          color,
+          priority,
+        }
+        
+        console.log('✏️ EDITANDO NOTA EXISTENTE:', noteToSave.id)
+        setActiveNote(noteToSave)
+        await save()
+      } else {
+        // CREAR NUEVA NOTA - usar createNote directamente con los datos
+        console.log('✨ CREANDO NUEVA NOTA')
+        await createNote({
+          title,
+          body: content,
+          imageUrls: finalImageUrls,
+          category,
+          tags,
+          color,
+          priority,
+          isFavorite: false,
+          isPinned: false,
+        })
+      }
+      
       setIsSavingNote(false)
     } catch (error) {
       setIsSavingNote(false)
@@ -284,7 +285,19 @@ export const NoteEditorPage: React.FC = () => {
   }
 
   React.useEffect(() => {
+    console.log('🔍 NoteEditorPage useEffect - noteId:', noteId, 'active:', active?.id, 'active:', !!active)
+    
     if (active) {
+      // CARGAR DATOS DE NOTA EXISTENTE
+      console.log('📝 CARGANDO DATOS DE NOTA EXISTENTE:', {
+        id: active.id,
+        title: active.title,
+        category: active.category,
+        tags: active.tags,
+        color: active.color,
+        priority: active.priority,
+        imageUrls: active.imageUrls?.length
+      })
       setCategoryState(active.category || "Personal")
       setTagsState(active.tags || [])
       setColorState(active.color || "#f8fafc")
@@ -293,8 +306,18 @@ export const NoteEditorPage: React.FC = () => {
       // Limpiar URLs temporales al cargar una nota existente
       setPreviewUrls([])
       setPendingFiles([])
+    } else {
+      // RESETEAR ESTADO PARA NUEVA NOTA
+      console.log('🔄 LIMPIANDO ESTADO PARA NUEVA NOTA (active es null)')
+      setCategoryState("Personal")
+      setTagsState([])
+      setColorState("#f8fafc")
+      setPriorityState("medium")
+      setImages([])
+      setPreviewUrls([])
+      setPendingFiles([])
     }
-  }, [active])
+  }, [active, noteId])
 
   return (
     <Box sx={{ height: "100vh", display: "flex", flexDirection: "column" }}>

@@ -15,7 +15,7 @@ import {
 interface JournalStore extends JournalState {
   setActiveNote: (note: Note | null) => void
   setNotes: (notes: Note[]) => void
-  startNewNote: () => Promise<void>
+  startNewNote: (noteData?: Partial<Omit<Note, 'id'>>) => Promise<void>
   startSaveNote: () => Promise<void>
   startDeletingNote: (noteId: string) => Promise<void>
   loadNotes: () => Promise<void>
@@ -36,12 +36,15 @@ export const useJournalStore = create<JournalStore>((set, get) => ({
   notes: [],
   active: null,
 
-  setActiveNote: (note) => set({ active: note, messageSaved: '' }),
+  setActiveNote: (note) => {
+    console.log('🏪 STORE setActiveNote llamado con:', note ? `${note.id} (${note.title})` : 'NULL')
+    set({ active: note, messageSaved: '' })
+  },
   setNotes: (notes) => set({ notes }),
   setSaving: (saving) => set({ isSaving: saving }),
   setLoading: (loading) => set({ isLoading: loading }),
 
-  startNewNote: async () => {
+  startNewNote: async (noteData?: Partial<Omit<Note, 'id'>>) => {
     set({ isSaving: true })
     const { uid } = useAuthStore.getState()
     if (!uid) {
@@ -49,18 +52,33 @@ export const useJournalStore = create<JournalStore>((set, get) => ({
       return
     }
     
-    const newNote = createNewNote()
+    // Merge datos por defecto con datos proporcionados
+    const defaultNote = createNewNote()
+    const newNote = { ...defaultNote, ...noteData }
+    
+    // Recalcular estadísticas si se proporciona contenido
+    if (noteData?.body) {
+      const stats = getNoteStats(noteData.body)
+      newNote.wordCount = stats.wordCount
+      newNote.readTime = stats.readTime
+    }
+    
+    console.log('🔥 CREANDO NUEVA NOTA EN FIRESTORE:', newNote)
     
     try {
       const docRef = await addDoc(collection(FirebaseDB, `users/${uid}/notes`), newNote)
       const note: Note = { ...newNote, id: docRef.id }
+      
+      console.log('✅ NOTA CREADA EXITOSAMENTE:', note.id)
+      
       set((state) => ({
         notes: [...state.notes, note],
         active: note,
         isSaving: false,
+        messageSaved: `Nueva nota "${note.title || 'Sin título'}" creada`,
       }))
     } catch (error) {
-      console.error('Error creating note:', error)
+      console.error('❌ Error creating note:', error)
       set({ isSaving: false })
     }
   },

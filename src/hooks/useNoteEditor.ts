@@ -29,13 +29,33 @@ export const useNoteEditor = ({
 
   // Initialize content from active note
   useEffect(() => {
+    console.log('🔧 useNoteEditor useEffect - noteId:', noteId, 'active:', active?.id, 'notes count:', notes.length)
+    
     if (noteId && (!active || active.id !== noteId)) {
+      console.log('🔍 Buscando nota con ID:', noteId)
       const found = notes.find(n => n.id === noteId)
       if (found) {
+        console.log('✅ Nota encontrada, estableciendo como activa:', found.id)
         setActiveNote(found)
+      } else {
+        console.log('❌ Nota NO encontrada con ID:', noteId)
+      }
+    } else if (!noteId) {
+      // CRÍTICO: Limpiar nota activa cuando navegamos a nueva nota
+      console.log('🆕 No hay noteId - NUEVA NOTA')
+      if (active) {
+        console.log('🧹 Limpiando nota activa anterior:', active.id)
+        setActiveNote(null)
+        setContent('')
+        setTitle('')
+        setHasUnsavedChanges(false)
+      } else {
+        console.log('✨ Ya estaba limpio (active era null)')
       }
     }
+    
     if (active && noteId === active.id) {
+      console.log('📝 Sincronizando contenido con nota activa:', active.id)
       setContent(active.body || '')
       setTitle(active.title || '')
       setHasUnsavedChanges(false)
@@ -54,43 +74,38 @@ export const useNoteEditor = ({
     setHasUnsavedChanges(true)
   }, [])
 
-  // Save function
+  // Save function (solo para editar notas existentes)
   const handleSave = useCallback(async () => {
     if (!hasUnsavedChanges) return
 
     setIsSaving(true)
     try {
-      if (active) {
+      if (noteId && active && active.id === noteId) {
         // Update existing note - PRESERVAR todos los campos de la nota activa
         // No sobrescribir aquí porque NoteEditorPage ya actualizó setActiveNote con todos los campos
+        console.log('🔧 useNoteEditor: Guardando nota existente', noteId)
         await saveNote()
+        setHasUnsavedChanges(false)
+        setLastSaved(new Date())
       } else {
-        // Create new note
-        await createNote()
-        // The store will handle setting the active note
+        console.warn('🔧 useNoteEditor: No se puede guardar - falta noteId o active')
       }
-      setHasUnsavedChanges(false)
-      setLastSaved(new Date())
     } catch (error) {
       console.error('Error saving note:', error)
     } finally {
       setIsSaving(false)
     }
-  }, [active, hasUnsavedChanges, saveNote, createNote])
+  }, [noteId, active, hasUnsavedChanges, saveNote])
 
   // Manual save
   const save = useCallback(async () => {
     await handleSave()
   }, [handleSave])
 
-  // Create new note
+  // Create new note (deprecated - usar createNote del journal directamente)
   const createNew = useCallback(async () => {
-    setContent('')
-    setTitle('')
-    setHasUnsavedChanges(false)
-    setActiveNote(null)
-    await createNote()
-  }, [createNote, setActiveNote])
+    console.warn('createNew está deprecated - usar createNote del journal directamente')
+  }, [])
 
   return {
     // State
