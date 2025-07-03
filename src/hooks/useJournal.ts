@@ -19,7 +19,6 @@ export const useJournal = () => {
     updateNoteCategory,
     updateNoteColor,
     updateNotePriority,
-    duplicateNote,
   } = useJournalStore()
 
   const { isAuthenticated } = useAuth()

@@ -94,35 +94,6 @@ export const SearchPage: React.FC = () => {
     }
   }
 
-  const handleToggleFavorite = async (noteId: string) => {
-    await toggleFavorite(noteId)
-  }
-
-  const handleTogglePinned = async (noteId: string) => {
-    await togglePinned(noteId)
-  }
-
-  const handleDeleteNote = async (noteId: string) => {
-    const result = await Swal.fire({
-      title: "¿Eliminar nota?",
-      text: "Esta acción no se puede deshacer.",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#6366f1",
-      cancelButtonColor: "#aaa",
-      confirmButtonText: "Sí, eliminar",
-      cancelButtonText: "Cancelar",
-      focusCancel: true,
-      customClass: {
-        popup: "swal2-zindex-fix",
-        container: "swal2-zindex-fix",
-      },
-    })
-    if (result.isConfirmed) {
-      await deleteNote(noteId)
-    }
-  }
-
   // Handler para sugerencias
   const handleSuggestionClick = (suggestion: string) => {
     setQuery(suggestion)
@@ -143,12 +114,7 @@ export const SearchPage: React.FC = () => {
   const renderHighlightedResult = (result: SearchResult) => {
     const { note, highlights } = result
 
-    // Crear una versión de la nota con highlights para mostrar
-    const highlightedNote = {
-      ...note,
-      title: highlights.title || note.title,
-      body: highlights.body || note.body,
-    }
+
 
     return (
       <Grid item xs={12} sm={6} md={4} lg={3} key={note.id}>

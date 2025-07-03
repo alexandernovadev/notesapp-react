@@ -1,10 +1,6 @@
 import { create } from 'zustand'
 import { AuthState, User } from '@/types'
-import { 
-  onAuthStateChanged,
-  User as FirebaseUser,
-} from 'firebase/auth'
-import { FirebaseAuth } from '@/firebase/config'
+
 import {
   loginWithEmailPassword,
   registerUserWithEmailPassword,
@@ -14,9 +10,7 @@ import {
   resetPassword,
   type AuthResponse,
   type RegisterArgs,
-  type LoginArgs,
   type UpdateProfileArgs,
-  type ResetPasswordArgs,
 } from '@/firebase/providers'
 
 interface AuthStore extends AuthState {

@@ -39,7 +39,6 @@ export const LoginPage: React.FC = () => {
     handleInputChange,
     handleSubmit,
     setError,
-    clearErrors,
   } = useAuthForm<LoginFormData>({
     initialValues: { email: "", password: "" },
     onSubmit: async (values) => {

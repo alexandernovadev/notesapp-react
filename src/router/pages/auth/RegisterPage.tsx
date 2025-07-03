@@ -61,7 +61,6 @@ export const RegisterPage: React.FC = () => {
     handleInputChange,
     handleSubmit,
     setError,
-    clearErrors,
   } = useAuthForm<RegisterFormData>({
     initialValues: {
       displayName: "",

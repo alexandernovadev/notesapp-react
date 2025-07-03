@@ -318,14 +318,6 @@ export const NoteEditorPage: React.FC = React.memo(() => {
     [setHasUnsavedChanges]
   )
 
-  const setImagesWithDirty = React.useCallback(
-    (val: string[]) => {
-      setImages(val)
-      setHasUnsavedChanges(true)
-    },
-    [setHasUnsavedChanges]
-  )
-
   React.useEffect(() => {
     // SOLO ejecutar cuando cambia el ID de la nota activa o cuando noteId cambia
     const activeId = active?.id || null

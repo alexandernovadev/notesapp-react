@@ -81,7 +81,6 @@ const getIcon = (iconName: string) => {
 export const Sidebar: React.FC<SidebarProps> = ({ onItemClick }) => {
   const navigate = useNavigate()
   const location = useLocation()
-  const theme = useTheme()
 
   const handleItemClick = (path: string) => {
     navigate(path)

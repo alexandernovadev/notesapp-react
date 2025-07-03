@@ -23,7 +23,6 @@ export const useNoteEditor = ({
     messageSaved,
     setActiveNote,
     saveNote,
-    createNote,
   } = useJournal()
 
   // Initialize content from active note
