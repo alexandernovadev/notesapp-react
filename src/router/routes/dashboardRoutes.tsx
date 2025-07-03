@@ -40,6 +40,12 @@ const SettingsPage = React.lazy(() =>
   }))
 )
 
+const ProfilePage = React.lazy(() => 
+  import('@/router/pages/settings/ProfilePage').then(module => ({
+    default: module.ProfilePage
+  }))
+)
+
 export const DashboardRoutes: React.FC = () => {
   return (
     <AuthGuard>
@@ -65,7 +71,7 @@ export const DashboardRoutes: React.FC = () => {
           
           {/* Settings */}
           <Route path="settings" element={<SettingsPage />} />
-          <Route path="settings/*" element={<SettingsPage />} />
+          <Route path="settings/profile" element={<ProfilePage />} />
         </Route>
       </Routes>
     </AuthGuard>

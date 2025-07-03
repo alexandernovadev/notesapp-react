@@ -10,7 +10,7 @@ import {
   updateDoc,
   doc,
   deleteDoc,
-} from 'firebase/firestore/lite'
+} from 'firebase/firestore'
 
 interface JournalStore extends JournalState {
   setActiveNote: (note: Note | null) => void

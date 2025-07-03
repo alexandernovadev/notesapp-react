@@ -7,6 +7,67 @@ export interface User {
   photoURL: string | null
 }
 
+// Extended User Profile for premium features
+export interface UserProfile extends User {
+  bio?: string
+  location?: string
+  website?: string
+  phoneNumber?: string
+  birthDate?: string
+  occupation?: string
+  company?: string
+  createdAt?: number
+  lastLoginAt?: number
+  isEmailVerified?: boolean
+  preferences?: UserPreferences
+  stats?: UserStats
+}
+
+export interface UserPreferences {
+  theme?: 'light' | 'dark' | 'auto'
+  language?: string
+  timezone?: string
+  emailNotifications?: boolean
+  pushNotifications?: boolean
+  autoSave?: boolean
+  defaultNoteColor?: string
+  defaultCategory?: string
+  editorFontSize?: 'small' | 'medium' | 'large'
+  editorFontFamily?: string
+  compactMode?: boolean
+  showWordCount?: boolean
+  showReadingTime?: boolean
+}
+
+export interface UserStats {
+  totalNotes?: number
+  totalWords?: number
+  totalReadingTime?: number
+  favoriteNotes?: number
+  categoriesUsed?: string[]
+  tagsUsed?: string[]
+  averageNoteLength?: number
+  mostUsedCategory?: string
+  createdThisWeek?: number
+  createdThisMonth?: number
+  longestStreak?: number
+  currentStreak?: number
+  lastActiveDate?: number
+}
+
+export interface ProfileUpdateData {
+  displayName?: string
+  photoURL?: string
+  bio?: string
+  location?: string
+  website?: string
+  phoneNumber?: string
+  birthDate?: string
+  occupation?: string
+  company?: string
+  preferences?: Partial<UserPreferences>
+}
+
 export interface Note {
   id: string
   title: string
