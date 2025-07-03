@@ -9,7 +9,6 @@ import {
   Divider,
   Typography,
   Badge,
-  useTheme,
 } from "@mui/material"
 import {
   Notes as NotesIcon,
