@@ -35,6 +35,8 @@ import {
   Tabs,
   CardHeader,
   CardActions,
+  Skeleton,
+  Backdrop,
 } from '@mui/material'
 import {
   Edit as EditIcon,
@@ -95,6 +97,8 @@ export const ProfilePage: React.FC = () => {
   const [preferences, setPreferences] = useState<Partial<UserPreferences>>({})
   const [successMessage, setSuccessMessage] = useState('')
   const [avatarAnchorEl, setAvatarAnchorEl] = useState<null | HTMLElement>(null)
+  const [avatarUploading, setAvatarUploading] = useState(false)
+  const [statsLoading, setStatsLoading] = useState(false)
 
   React.useEffect(() => {
     if (profile) {
@@ -131,17 +135,23 @@ export const ProfilePage: React.FC = () => {
   const handleSave = async () => {
     const success = await updateProfile(formData)
     if (success) {
-      setSuccessMessage('Perfil actualizado exitosamente')
+      setSuccessMessage('✅ Información personal actualizada exitosamente')
       setEditMode(false)
-      setTimeout(() => setSuccessMessage(''), 3000)
+      setTimeout(() => setSuccessMessage(''), 4000)
+    } else {
+      setSuccessMessage('❌ Error al actualizar la información personal')
+      setTimeout(() => setSuccessMessage(''), 4000)
     }
   }
 
   const handlePreferencesSave = async () => {
     const success = await updatePreferences(preferences)
     if (success) {
-      setSuccessMessage('Preferencias actualizadas exitosamente')
-      setTimeout(() => setSuccessMessage(''), 3000)
+      setSuccessMessage('✅ Preferencias guardadas exitosamente')
+      setTimeout(() => setSuccessMessage(''), 4000)
+    } else {
+      setSuccessMessage('❌ Error al guardar las preferencias')
+      setTimeout(() => setSuccessMessage(''), 4000)
     }
   }
 
@@ -156,24 +166,40 @@ export const ProfilePage: React.FC = () => {
   const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (file) {
-      const fileList = new DataTransfer()
-      fileList.items.add(file)
-      const urls = await uploadFiles(fileList.files)
-      if (urls.length > 0) {
-        const success = await updateProfile({ photoURL: urls[0] })
-        if (success) {
-          setSuccessMessage('Foto de perfil actualizada')
-          setTimeout(() => setSuccessMessage(''), 3000)
+      setAvatarUploading(true)
+      try {
+        const fileList = new DataTransfer()
+        fileList.items.add(file)
+        const urls = await uploadFiles(fileList.files)
+        if (urls.length > 0 && urls[0]) {
+          const success = await updateProfile({ photoURL: urls[0] })
+          if (success) {
+            setSuccessMessage('✅ Foto de perfil actualizada exitosamente')
+            setTimeout(() => setSuccessMessage(''), 4000)
+          }
         }
+      } catch (error: any) {
+        setSuccessMessage(`❌ Error: ${error.message}`)
+        setTimeout(() => setSuccessMessage(''), 4000)
+      } finally {
+        setAvatarUploading(false)
       }
     }
     handleAvatarClose()
   }
 
   const handleRefreshStats = async () => {
-    await refreshStats()
-    setSuccessMessage('Estadísticas actualizadas')
-    setTimeout(() => setSuccessMessage(''), 3000)
+    setStatsLoading(true)
+    try {
+      await refreshStats()
+      setSuccessMessage('✅ Estadísticas actualizadas correctamente')
+      setTimeout(() => setSuccessMessage(''), 4000)
+    } catch (error: any) {
+      setSuccessMessage('❌ Error al actualizar las estadísticas')
+      setTimeout(() => setSuccessMessage(''), 4000)
+    } finally {
+      setStatsLoading(false)
+    }
   }
 
   if (isLoading) {
@@ -210,39 +236,97 @@ export const ProfilePage: React.FC = () => {
         <Box sx={{ position: 'relative', zIndex: 1 }}>
           <Grid container spacing={3} alignItems="center">
             <Grid item>
-              <Badge
-                overlap="circular"
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                badgeContent={
-                  <Tooltip title="Cambiar foto">
-                    <IconButton
-                      size="small"
-                      onClick={handleAvatarClick}
+              <Box sx={{ position: 'relative' }}>
+                <Badge
+                  overlap="circular"
+                  anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                  badgeContent={
+                    <Tooltip title={avatarUploading ? "Subiendo..." : "Cambiar foto"}>
+                      <IconButton
+                        size="small"
+                        onClick={handleAvatarClick}
+                        disabled={avatarUploading}
+                        sx={{
+                          backgroundColor: 'rgba(255,255,255,0.9)',
+                          color: 'primary.main',
+                          '&:hover': { backgroundColor: 'white' },
+                          '&:disabled': { 
+                            backgroundColor: 'rgba(255,255,255,0.5)',
+                            color: 'rgba(103, 126, 234, 0.5)'
+                          },
+                        }}
+                      >
+                        {avatarUploading ? (
+                          <CircularProgress size={16} color="inherit" />
+                        ) : (
+                          <PhotoCameraIcon fontSize="small" />
+                        )}
+                      </IconButton>
+                    </Tooltip>
+                  }
+                >
+                  {avatarUploading ? (
+                    <Skeleton 
+                      variant="circular" 
                       sx={{
-                        backgroundColor: 'rgba(255,255,255,0.9)',
-                        color: 'primary.main',
-                        '&:hover': { backgroundColor: 'white' },
+                        width: 120,
+                        height: 120,
+                        border: '4px solid rgba(255,255,255,0.2)',
+                        boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
+                      }}
+                    />
+                  ) : (
+                    <Avatar
+                      src={photoURL || profile?.photoURL || ''}
+                      sx={{
+                        width: 120,
+                        height: 120,
+                        border: '4px solid rgba(255,255,255,0.2)',
+                        boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
+                        fontSize: '2rem',
+                        fontWeight: 'bold',
                       }}
                     >
-                      <PhotoCameraIcon fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
-                }
-              >
-                <Avatar
-                  src={photoURL || profile?.photoURL || ''}
-                  sx={{
-                    width: 120,
-                    height: 120,
-                    border: '4px solid rgba(255,255,255,0.2)',
-                    boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
-                    fontSize: '2rem',
-                    fontWeight: 'bold',
-                  }}
-                >
-                  {displayName?.charAt(0) || email?.charAt(0) || 'U'}
-                </Avatar>
-              </Badge>
+                      {displayName?.charAt(0) || email?.charAt(0) || 'U'}
+                    </Avatar>
+                  )}
+                </Badge>
+                
+                {/* Overlay de carga */}
+                {avatarUploading && (
+                  <Box
+                    sx={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      backgroundColor: 'rgba(103, 126, 234, 0.7)',
+                      borderRadius: '50%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexDirection: 'column',
+                      gap: 1,
+                    }}
+                  >
+                    <CircularProgress 
+                      size={40} 
+                      sx={{ color: 'white' }}
+                    />
+                    <Typography 
+                      variant="caption" 
+                      sx={{ 
+                        color: 'white', 
+                        fontWeight: 'bold',
+                        textAlign: 'center'
+                      }}
+                    >
+                      Subiendo...
+                    </Typography>
+                  </Box>
+                )}
+              </Box>
             </Grid>
             <Grid item flex={1}>
               <Typography variant="h4" fontWeight="bold" gutterBottom>
@@ -256,21 +340,68 @@ export const ProfilePage: React.FC = () => {
                   {profile.bio}
                 </Typography>
               )}
-              <Box sx={{ display: 'flex', gap: 1, mt: 2 }}>
+              <Box sx={{ display: 'flex', gap: 1, mt: 2, flexWrap: 'wrap' }}>
                 {profile?.location && (
                   <Chip
-                    icon={<LocationIcon />}
+                    icon={<LocationIcon sx={{ color: 'rgba(255,255,255,0.9)' }} />}
                     label={profile.location}
-                    variant="outlined"
-                    sx={{ color: 'white', borderColor: 'rgba(255,255,255,0.3)' }}
+                    sx={{ 
+                      backgroundColor: 'rgba(255,255,255,0.15)',
+                      color: 'white',
+                      borderColor: 'rgba(255,255,255,0.4)',
+                      border: '1px solid rgba(255,255,255,0.4)',
+                      backdropFilter: 'blur(10px)',
+                      fontWeight: '500',
+                      '&:hover': {
+                        backgroundColor: 'rgba(255,255,255,0.25)',
+                        borderColor: 'rgba(255,255,255,0.6)',
+                      },
+                      '& .MuiChip-icon': {
+                        color: 'rgba(255,255,255,0.9)',
+                      }
+                    }}
                   />
                 )}
                 {profile?.occupation && (
                   <Chip
-                    icon={<WorkIcon />}
+                    icon={<WorkIcon sx={{ color: 'rgba(255,255,255,0.9)' }} />}
                     label={profile.occupation}
-                    variant="outlined"
-                    sx={{ color: 'white', borderColor: 'rgba(255,255,255,0.3)' }}
+                    sx={{ 
+                      backgroundColor: 'rgba(255,255,255,0.15)',
+                      color: 'white',
+                      borderColor: 'rgba(255,255,255,0.4)',
+                      border: '1px solid rgba(255,255,255,0.4)',
+                      backdropFilter: 'blur(10px)',
+                      fontWeight: '500',
+                      '&:hover': {
+                        backgroundColor: 'rgba(255,255,255,0.25)',
+                        borderColor: 'rgba(255,255,255,0.6)',
+                      },
+                      '& .MuiChip-icon': {
+                        color: 'rgba(255,255,255,0.9)',
+                      }
+                    }}
+                  />
+                )}
+                {profile?.company && (
+                  <Chip
+                    icon={<WorkIcon sx={{ color: 'rgba(255,255,255,0.9)' }} />}
+                    label={profile.company}
+                    sx={{ 
+                      backgroundColor: 'rgba(255,255,255,0.15)',
+                      color: 'white',
+                      borderColor: 'rgba(255,255,255,0.4)',
+                      border: '1px solid rgba(255,255,255,0.4)',
+                      backdropFilter: 'blur(10px)',
+                      fontWeight: '500',
+                      '&:hover': {
+                        backgroundColor: 'rgba(255,255,255,0.25)',
+                        borderColor: 'rgba(255,255,255,0.6)',
+                      },
+                      '& .MuiChip-icon': {
+                        color: 'rgba(255,255,255,0.9)',
+                      }
+                    }}
                   />
                 )}
               </Box>
@@ -279,9 +410,30 @@ export const ProfilePage: React.FC = () => {
         </Box>
       </Paper>
 
-      {/* Success Message */}
+      {/* Success/Error Messages */}
       {successMessage && (
-        <Alert severity="success" sx={{ mb: 2 }}>
+        <Alert 
+          severity={successMessage.includes('❌') ? "error" : "success"} 
+          sx={{ 
+            mb: 2,
+            '& .MuiAlert-message': {
+              fontWeight: 500,
+            },
+            ...(successMessage.includes('✅') && {
+              backgroundColor: 'success.light',
+              '& .MuiAlert-icon': {
+                color: 'success.main'
+              }
+            }),
+            ...(successMessage.includes('❌') && {
+              backgroundColor: 'error.light',
+              '& .MuiAlert-icon': {
+                color: 'error.main'
+              }
+            })
+          }}
+          onClose={() => setSuccessMessage('')}
+        >
           {successMessage}
         </Alert>
       )}
@@ -332,7 +484,7 @@ export const ProfilePage: React.FC = () => {
         </TabPanel>
 
         <TabPanel value={tabValue} index={1}>
-          <StatsSection profile={profile} onRefresh={handleRefreshStats} />
+          <StatsSection profile={profile} onRefresh={handleRefreshStats} isLoading={statsLoading} />
         </TabPanel>
 
         <TabPanel value={tabValue} index={2}>
@@ -415,10 +567,18 @@ const PersonalInfoSection: React.FC<{
             </Button>
             <Button
               variant="contained"
-              startIcon={<SaveIcon />}
+              startIcon={isUpdating ? <CircularProgress size={16} color="inherit" /> : <SaveIcon />}
               onClick={onSave}
               disabled={isUpdating}
               size="small"
+              sx={{
+                minWidth: 120,
+                '&:disabled': {
+                  backgroundColor: 'primary.main',
+                  opacity: 0.7,
+                  color: 'white'
+                }
+              }}
             >
               {isUpdating ? 'Guardando...' : 'Guardar'}
             </Button>
@@ -528,7 +688,8 @@ const PersonalInfoSection: React.FC<{
 const StatsSection: React.FC<{
   profile: any
   onRefresh: () => void
-}> = ({ profile, onRefresh }) => {
+  isLoading?: boolean
+}> = ({ profile, onRefresh, isLoading = false }) => {
   const stats = profile?.stats || {}
 
   return (
@@ -539,11 +700,20 @@ const StatsSection: React.FC<{
         </Typography>
         <Button
           variant="outlined"
-          startIcon={<RefreshIcon />}
+          startIcon={isLoading ? <CircularProgress size={16} color="inherit" /> : <RefreshIcon />}
           onClick={onRefresh}
+          disabled={isLoading}
           size="small"
+          sx={{
+            minWidth: 100,
+            '&:disabled': {
+              borderColor: 'primary.main',
+              color: 'primary.main',
+              opacity: 0.7
+            }
+          }}
         >
-          Actualizar
+          {isLoading ? 'Actualizando...' : 'Actualizar'}
         </Button>
       </Box>
 
@@ -699,10 +869,18 @@ const ConfigurationSection: React.FC<{
         </Typography>
         <Button
           variant="contained"
-          startIcon={<SaveIcon />}
+          startIcon={isUpdating ? <CircularProgress size={16} color="inherit" /> : <SaveIcon />}
           onClick={onSave}
           disabled={isUpdating}
           size="small"
+          sx={{
+            minWidth: 140,
+            '&:disabled': {
+              backgroundColor: 'primary.main',
+              opacity: 0.7,
+              color: 'white'
+            }
+          }}
         >
           {isUpdating ? 'Guardando...' : 'Guardar Cambios'}
         </Button>
@@ -803,10 +981,18 @@ const NotificationSection: React.FC<{
         </Typography>
         <Button
           variant="contained"
-          startIcon={<SaveIcon />}
+          startIcon={isUpdating ? <CircularProgress size={16} color="inherit" /> : <SaveIcon />}
           onClick={onSave}
           disabled={isUpdating}
           size="small"
+          sx={{
+            minWidth: 140,
+            '&:disabled': {
+              backgroundColor: 'primary.main',
+              opacity: 0.7,
+              color: 'white'
+            }
+          }}
         >
           {isUpdating ? 'Guardando...' : 'Guardar Cambios'}
         </Button>
