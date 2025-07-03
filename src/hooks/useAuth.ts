@@ -29,18 +29,21 @@ export const useAuth = () => {
   useEffect(() => {
     // Solo configurar el listener una vez
     if (!unsubscribeRef.current) {
-      unsubscribeRef.current = onAuthStateChanged(FirebaseAuth, (user: FirebaseUser | null) => {
-        if (user) {
-          login({
-            uid: user.uid,
-            email: user.email || '',
-            displayName: user.displayName,
-            photoURL: user.photoURL,
-          })
-        } else {
-          logout()
+      unsubscribeRef.current = onAuthStateChanged(
+        FirebaseAuth,
+        (user: FirebaseUser | null) => {
+          if (user) {
+            login({
+              uid: user.uid,
+              email: user.email || "",
+              displayName: user.displayName,
+              photoURL: user.photoURL,
+            })
+          } else {
+            logout()
+          }
         }
-      })
+      )
     }
 
     // Cleanup function

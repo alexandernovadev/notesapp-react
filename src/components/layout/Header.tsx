@@ -12,7 +12,6 @@ import {
 } from "@mui/material"
 import {
   Search as SearchIcon,
-  AccountCircle as AccountIcon,
   Settings as SettingsIcon,
   Logout as LogoutIcon,
   Person as PersonIcon,

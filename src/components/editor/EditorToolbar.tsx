@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react"
 import {
   Box,
   IconButton,
@@ -6,7 +6,7 @@ import {
   Divider,
   ToggleButtonGroup,
   ToggleButton,
-} from '@mui/material'
+} from "@mui/material"
 import {
   FormatBold,
   FormatItalic,
@@ -21,9 +21,9 @@ import {
   Link,
   Undo,
   Redo,
-} from '@mui/icons-material'
-import { FormatUnderlined } from '@mui/icons-material'
-import { Editor } from '@tiptap/react'
+} from "@mui/icons-material"
+import { FormatUnderlined } from "@mui/icons-material"
+import { Editor } from "@tiptap/react"
 
 interface EditorToolbarProps {
   editor: Editor | null
@@ -52,10 +52,10 @@ const ToolbarButton: React.FC<ToolbarButtonProps> = ({
           disabled={disabled}
           sx={{
             p: 1,
-            color: isActive ? 'primary.main' : 'text.secondary',
-            backgroundColor: isActive ? 'primary.light' : 'transparent',
-            '&:hover': {
-              backgroundColor: isActive ? 'primary.light' : 'action.hover',
+            color: isActive ? "primary.main" : "text.secondary",
+            backgroundColor: isActive ? "primary.light" : "transparent",
+            "&:hover": {
+              backgroundColor: isActive ? "primary.light" : "action.hover",
             },
           }}
         >
@@ -68,10 +68,10 @@ const ToolbarButton: React.FC<ToolbarButtonProps> = ({
         disabled={disabled}
         sx={{
           p: 1,
-          color: isActive ? 'primary.main' : 'text.secondary',
-          backgroundColor: isActive ? 'primary.light' : 'transparent',
-          '&:hover': {
-            backgroundColor: isActive ? 'primary.light' : 'action.hover',
+          color: isActive ? "primary.main" : "text.secondary",
+          backgroundColor: isActive ? "primary.light" : "transparent",
+          "&:hover": {
+            backgroundColor: isActive ? "primary.light" : "action.hover",
           },
         }}
       >
@@ -88,80 +88,85 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({ editor }) => {
     // Text formatting
     {
       icon: <FormatBold fontSize="small" />,
-      tooltip: 'Negrita (Ctrl+B)',
+      tooltip: "Negrita (Ctrl+B)",
       onClick: () => editor.chain().focus().toggleBold().run(),
-      isActive: editor.isActive('bold'),
+      isActive: editor.isActive("bold"),
     },
     {
       icon: <FormatItalic fontSize="small" />,
-      tooltip: 'Cursiva (Ctrl+I)',
+      tooltip: "Cursiva (Ctrl+I)",
       onClick: () => editor.chain().focus().toggleItalic().run(),
-      isActive: editor.isActive('italic'),
+      isActive: editor.isActive("italic"),
     },
     {
       icon: <FormatUnderlined fontSize="small" />,
-      tooltip: 'Subrayado (Ctrl+U)',
+      tooltip: "Subrayado (Ctrl+U)",
       onClick: () => editor.chain().focus().toggleUnderline().run(),
-      isActive: editor.isActive('underline'),
+      isActive: editor.isActive("underline"),
     },
     {
       icon: <FormatStrikethrough fontSize="small" />,
-      tooltip: 'Tachado',
+      tooltip: "Tachado",
       onClick: () => editor.chain().focus().toggleStrike().run(),
-      isActive: editor.isActive('strike'),
+      isActive: editor.isActive("strike"),
     },
     {
       icon: <Code fontSize="small" />,
-      tooltip: 'Código en línea',
+      tooltip: "Código en línea",
       onClick: () => editor.chain().focus().toggleCode().run(),
-      isActive: editor.isActive('code'),
+      isActive: editor.isActive("code"),
     },
   ]
 
   const headingItems = [
-    { value: 1, label: 'H1' },
-    { value: 2, label: 'H2' },
-    { value: 3, label: 'H3' },
+    { value: 1, label: "H1" },
+    { value: 2, label: "H2" },
+    { value: 3, label: "H3" },
   ]
 
   const listItems = [
     {
       icon: <FormatListBulleted fontSize="small" />,
-      tooltip: 'Lista con viñetas',
+      tooltip: "Lista con viñetas",
       onClick: () => editor.chain().focus().toggleBulletList().run(),
-      isActive: editor.isActive('bulletList'),
+      isActive: editor.isActive("bulletList"),
     },
     {
       icon: <FormatListNumbered fontSize="small" />,
-      tooltip: 'Lista numerada',
+      tooltip: "Lista numerada",
       onClick: () => editor.chain().focus().toggleOrderedList().run(),
-      isActive: editor.isActive('orderedList'),
+      isActive: editor.isActive("orderedList"),
     },
     {
       icon: <CheckBox fontSize="small" />,
-      tooltip: 'Lista de tareas',
+      tooltip: "Lista de tareas",
       onClick: () => editor.chain().focus().toggleTaskList().run(),
-      isActive: editor.isActive('taskList'),
+      isActive: editor.isActive("taskList"),
     },
   ]
 
   const blockItems = [
     {
       icon: <FormatQuote fontSize="small" />,
-      tooltip: 'Cita',
+      tooltip: "Cita",
       onClick: () => editor.chain().focus().toggleBlockquote().run(),
-      isActive: editor.isActive('blockquote'),
+      isActive: editor.isActive("blockquote"),
     },
     {
       icon: <TableChart fontSize="small" />,
-      tooltip: 'Insertar tabla',
-      onClick: () => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run(),
+      tooltip: "Insertar tabla",
+      onClick: () =>
+        editor
+          .chain()
+          .focus()
+          .insertTable({ rows: 3, cols: 3, withHeaderRow: true })
+          .run(),
     },
     {
       icon: <Image fontSize="small" />,
-      tooltip: 'Insertar imagen',
+      tooltip: "Insertar imagen",
       onClick: () => {
-        const url = window.prompt('URL de la imagen:')
+        const url = window.prompt("URL de la imagen:")
         if (url) {
           editor.chain().focus().setImage({ src: url }).run()
         }
@@ -169,27 +174,27 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({ editor }) => {
     },
     {
       icon: <Link fontSize="small" />,
-      tooltip: 'Insertar enlace',
+      tooltip: "Insertar enlace",
       onClick: () => {
-        const url = window.prompt('URL:')
+        const url = window.prompt("URL:")
         if (url) {
           editor.chain().focus().setLink({ href: url }).run()
         }
       },
-      isActive: editor.isActive('link'),
+      isActive: editor.isActive("link"),
     },
   ]
 
   const historyItems = [
     {
       icon: <Undo fontSize="small" />,
-      tooltip: 'Deshacer (Ctrl+Z)',
+      tooltip: "Deshacer (Ctrl+Z)",
       onClick: () => editor.chain().focus().undo().run(),
       disabled: false,
     },
     {
       icon: <Redo fontSize="small" />,
-      tooltip: 'Rehacer (Ctrl+Y)',
+      tooltip: "Rehacer (Ctrl+Y)",
       onClick: () => editor.chain().focus().redo().run(),
       disabled: false,
     },
@@ -198,18 +203,18 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({ editor }) => {
   return (
     <Box
       sx={{
-        display: 'flex',
-        alignItems: 'center',
+        display: "flex",
+        alignItems: "center",
         gap: 0.5,
         p: 1,
-        borderBottom: '1px solid',
-        borderColor: 'divider',
-        backgroundColor: 'background.paper',
-        flexWrap: 'wrap',
+        borderBottom: "1px solid",
+        borderColor: "divider",
+        backgroundColor: "background.paper",
+        flexWrap: "wrap",
       }}
     >
       {/* Text formatting */}
-      <Box sx={{ display: 'flex', gap: 0.5 }}>
+      <Box sx={{ display: "flex", gap: 0.5 }}>
         {toolbarItems.map((item, index) => (
           <ToolbarButton key={index} {...item} />
         ))}
@@ -220,11 +225,23 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({ editor }) => {
       {/* Headings */}
       <ToggleButtonGroup
         size="small"
-        value={editor.isActive('heading', { level: 1 }) ? 1 : editor.isActive('heading', { level: 2 }) ? 2 : editor.isActive('heading', { level: 3 }) ? 3 : 0}
+        value={
+          editor.isActive("heading", { level: 1 })
+            ? 1
+            : editor.isActive("heading", { level: 2 })
+            ? 2
+            : editor.isActive("heading", { level: 3 })
+            ? 3
+            : 0
+        }
         exclusive
         onChange={(_, value) => {
           if (value) {
-            editor.chain().focus().toggleHeading({ level: value as 1 | 2 | 3 }).run()
+            editor
+              .chain()
+              .focus()
+              .toggleHeading({ level: value as 1 | 2 | 3 })
+              .run()
           } else {
             editor.chain().focus().setParagraph().run()
           }
@@ -240,7 +257,7 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({ editor }) => {
       <Divider orientation="vertical" flexItem />
 
       {/* Lists */}
-      <Box sx={{ display: 'flex', gap: 0.5 }}>
+      <Box sx={{ display: "flex", gap: 0.5 }}>
         {listItems.map((item, index) => (
           <ToolbarButton key={index} {...item} />
         ))}
@@ -249,7 +266,7 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({ editor }) => {
       <Divider orientation="vertical" flexItem />
 
       {/* Blocks */}
-      <Box sx={{ display: 'flex', gap: 0.5 }}>
+      <Box sx={{ display: "flex", gap: 0.5 }}>
         {blockItems.map((item, index) => (
           <ToolbarButton key={index} {...item} />
         ))}
@@ -258,11 +275,11 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({ editor }) => {
       <Divider orientation="vertical" flexItem />
 
       {/* History */}
-      <Box sx={{ display: 'flex', gap: 0.5 }}>
+      <Box sx={{ display: "flex", gap: 0.5 }}>
         {historyItems.map((item, index) => (
           <ToolbarButton key={index} {...item} />
         ))}
       </Box>
     </Box>
   )
-} 
+}

@@ -13,8 +13,6 @@ import {
   getDoc, 
   updateDoc, 
   collection, 
-  query, 
-  where, 
   getDocs, 
   serverTimestamp 
 } from "firebase/firestore"

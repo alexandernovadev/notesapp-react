@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react"
 import {
   Box,
   Typography,
@@ -10,14 +10,9 @@ import {
   Chip,
   Collapse,
   Button,
-  Divider,
   LinearProgress,
-  Autocomplete,
   FormControlLabel,
   Switch,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
   Badge,
   Card,
   CardContent,
@@ -27,15 +22,12 @@ import {
   ListItem,
   ListItemText,
   ListItemButton,
-  Fade,
-} from '@mui/material'
+} from "@mui/material"
 import {
   Search as SearchIcon,
   Clear as ClearIcon,
   FilterList as FilterIcon,
-  ExpandMore as ExpandMoreIcon,
   History as HistoryIcon,
-  TrendingUp as TrendingIcon,
   Close as CloseIcon,
   Category as CategoryIcon,
   Tag as TagIcon,
@@ -43,23 +35,23 @@ import {
   AccessTime as PriorityIcon,
   Star as StarIcon,
   PushPin as PinIcon,
-} from '@mui/icons-material'
-import { useNavigate, useSearchParams } from 'react-router-dom'
-import { useSearch } from '@/hooks/useSearch'
-import { useJournal } from '@/hooks/useJournal'
-import { NoteCard } from '@/components'
-import { SearchResult } from '@/utils/searchUtils'
-import { COLOR_PALETTE } from '@/utils/noteOptions'
-import Swal from 'sweetalert2'
-import '@/theme/swal2-zindex-fix.css'
+} from "@mui/icons-material"
+import { useNavigate, useSearchParams } from "react-router-dom"
+import { useSearch } from "@/hooks/useSearch"
+import { useJournal } from "@/hooks/useJournal"
+import { SearchResult } from "@/utils/searchUtils"
+import Swal from "sweetalert2"
+import "@/theme/swal2-zindex-fix.css"
+import { COLOR_PALETTE } from "@/utils/noteOptions"
 
 export const SearchPage: React.FC = () => {
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
-  const initialQuery = searchParams.get('q') || ''
-  
-  const { setActiveNote, toggleFavorite, togglePinned, deleteNote } = useJournal()
-  
+  const initialQuery = searchParams.get("q") || ""
+
+  const { setActiveNote, toggleFavorite, togglePinned, deleteNote } =
+    useJournal()
+
   const {
     query,
     setQuery,
@@ -79,11 +71,11 @@ export const SearchPage: React.FC = () => {
     hasResults,
     isEmpty,
   } = useSearch({ initialQuery })
-  
+
   // Estados locales
   const [showFilters, setShowFilters] = React.useState(false)
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null)
-  
+
   // Actualizar URL cuando cambia la query
   React.useEffect(() => {
     if (query.trim()) {
@@ -92,135 +84,140 @@ export const SearchPage: React.FC = () => {
       setSearchParams({})
     }
   }, [query, setSearchParams])
-  
+
   // Handlers para las notas
   const handleNoteClick = (noteId: string) => {
-    const result = searchResults.find(r => r.note.id === noteId)
+    const result = searchResults.find((r) => r.note.id === noteId)
     if (result) {
       setActiveNote(result.note)
       navigate(`/notes/${noteId}`)
     }
   }
-  
+
   const handleToggleFavorite = async (noteId: string) => {
     await toggleFavorite(noteId)
   }
-  
+
   const handleTogglePinned = async (noteId: string) => {
     await togglePinned(noteId)
   }
-  
+
   const handleDeleteNote = async (noteId: string) => {
     const result = await Swal.fire({
-      title: '¿Eliminar nota?',
-      text: 'Esta acción no se puede deshacer.',
-      icon: 'warning',
+      title: "¿Eliminar nota?",
+      text: "Esta acción no se puede deshacer.",
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: '#6366f1',
-      cancelButtonColor: '#aaa',
-      confirmButtonText: 'Sí, eliminar',
-      cancelButtonText: 'Cancelar',
+      confirmButtonColor: "#6366f1",
+      cancelButtonColor: "#aaa",
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
       focusCancel: true,
       customClass: {
-        popup: 'swal2-zindex-fix',
-        container: 'swal2-zindex-fix',
+        popup: "swal2-zindex-fix",
+        container: "swal2-zindex-fix",
       },
     })
     if (result.isConfirmed) {
       await deleteNote(noteId)
     }
   }
-  
+
   // Handler para sugerencias
   const handleSuggestionClick = (suggestion: string) => {
     setQuery(suggestion)
     setShowSuggestions(false)
   }
-  
+
   const handleSearchFocus = (event: React.FocusEvent<HTMLInputElement>) => {
     setAnchorEl(event.currentTarget)
     setShowSuggestions(true)
   }
-  
+
   const handleClickAway = () => {
     setShowSuggestions(false)
     setAnchorEl(null)
   }
-  
+
   // Renderizar resultados con highlighting
   const renderHighlightedResult = (result: SearchResult) => {
     const { note, highlights } = result
-    
+
     // Crear una versión de la nota con highlights para mostrar
     const highlightedNote = {
       ...note,
       title: highlights.title || note.title,
       body: highlights.body || note.body,
     }
-    
+
     return (
       <Grid item xs={12} sm={6} md={4} lg={3} key={note.id}>
-        <Card 
-          sx={{ 
-            position: 'relative',
-            '& mark': {
-              backgroundColor: '#fff59d',
+        <Card
+          sx={{
+            position: "relative",
+            "& mark": {
+              backgroundColor: "#fff59d",
               fontWeight: 600,
               borderRadius: 0.5,
-              px: 0.25
-            }
+              px: 0.25,
+            },
           }}
         >
           <CardContent sx={{ p: 1.5 }}>
             {/* Score badge para debugging */}
-            {process.env.NODE_ENV === 'development' && result.score > 0 && (
+            {process.env.NODE_ENV === "development" && result.score > 0 && (
               <Chip
                 label={`Score: ${result.score}`}
                 size="small"
                 sx={{
-                  position: 'absolute',
+                  position: "absolute",
                   top: 8,
                   right: 8,
-                  bgcolor: 'info.main',
-                  color: 'white',
-                  fontSize: '0.6rem',
+                  bgcolor: "info.main",
+                  color: "white",
+                  fontSize: "0.6rem",
                   height: 16,
                 }}
               />
             )}
-            
+
             {/* Usar NoteCard con contenido highlighted */}
-            <Box onClick={() => handleNoteClick(note.id)} sx={{ cursor: 'pointer' }}>
-              <Typography 
-                variant="h6" 
-                sx={{ 
-                  mb: 1, 
-                  fontSize: '1rem',
+            <Box
+              onClick={() => handleNoteClick(note.id)}
+              sx={{ cursor: "pointer" }}
+            >
+              <Typography
+                variant="h6"
+                sx={{
+                  mb: 1,
+                  fontSize: "1rem",
                   fontWeight: 600,
-                  '& mark': {
-                    backgroundColor: '#fff59d',
-                    fontWeight: 700
-                  }
+                  "& mark": {
+                    backgroundColor: "#fff59d",
+                    fontWeight: 700,
+                  },
                 }}
-                dangerouslySetInnerHTML={{ __html: highlights.title || note.title }}
+                dangerouslySetInnerHTML={{
+                  __html: highlights.title || note.title,
+                }}
               />
-              
+
               {highlights.body && (
-                <Typography 
-                  variant="body2" 
+                <Typography
+                  variant="body2"
                   color="text.secondary"
-                  sx={{ 
+                  sx={{
                     mb: 1,
                     lineHeight: 1.4,
-                    '& mark': {
-                      backgroundColor: '#fff59d',
-                      fontWeight: 600
-                    }
+                    "& mark": {
+                      backgroundColor: "#fff59d",
+                      fontWeight: 600,
+                    },
                   }}
                   dangerouslySetInnerHTML={{ __html: highlights.body }}
                 />
               )}
-              
+
               {highlights.tags && highlights.tags.length > 0 && (
                 <Box sx={{ mb: 1 }}>
                   {highlights.tags.map((tag, idx) => (
@@ -229,13 +226,13 @@ export const SearchPage: React.FC = () => {
                       label={<span dangerouslySetInnerHTML={{ __html: tag }} />}
                       size="small"
                       color="secondary"
-                      sx={{ 
-                        mr: 0.5, 
+                      sx={{
+                        mr: 0.5,
                         mb: 0.5,
-                        '& mark': {
-                          backgroundColor: '#fff59d',
-                          fontWeight: 600
-                        }
+                        "& mark": {
+                          backgroundColor: "#fff59d",
+                          fontWeight: 600,
+                        },
                       }}
                     />
                   ))}
@@ -247,7 +244,7 @@ export const SearchPage: React.FC = () => {
       </Grid>
     )
   }
-  
+
   return (
     <Box>
       {/* Header */}
@@ -259,10 +256,10 @@ export const SearchPage: React.FC = () => {
           Encuentra tus notas por título, contenido, tags o categoría
         </Typography>
       </Box>
-      
+
       {/* Barra de búsqueda principal */}
       <ClickAwayListener onClickAway={handleClickAway}>
-        <Box sx={{ position: 'relative', mb: 3 }}>
+        <Box sx={{ position: "relative", mb: 3 }}>
           <TextField
             fullWidth
             placeholder="Buscar en todas las notas..."
@@ -283,13 +280,17 @@ export const SearchPage: React.FC = () => {
                     </IconButton>
                   )}
                   <Badge
-                    badgeContent={hasActiveFilters ? Object.values(filters).flat().length : 0}
+                    badgeContent={
+                      hasActiveFilters
+                        ? Object.values(filters).flat().length
+                        : 0
+                    }
                     color="primary"
                   >
                     <IconButton
                       size="small"
                       onClick={() => setShowFilters(!showFilters)}
-                      color={showFilters ? 'primary' : 'default'}
+                      color={showFilters ? "primary" : "default"}
                     >
                       <FilterIcon />
                     </IconButton>
@@ -298,14 +299,14 @@ export const SearchPage: React.FC = () => {
               ),
             }}
             sx={{
-              '& .MuiOutlinedInput-root': {
+              "& .MuiOutlinedInput-root": {
                 borderRadius: 3,
-                fontSize: '1.1rem',
-                backgroundColor: 'background.paper',
+                fontSize: "1.1rem",
+                backgroundColor: "background.paper",
               },
             }}
           />
-          
+
           {/* Sugerencias dropdown */}
           <Popper
             open={showSuggestions && suggestions.length > 0}
@@ -318,10 +319,10 @@ export const SearchPage: React.FC = () => {
               sx={{
                 mt: 0.5,
                 borderRadius: 2,
-                border: '1px solid',
-                borderColor: 'divider',
+                border: "1px solid",
+                borderColor: "divider",
                 maxHeight: 300,
-                overflow: 'auto',
+                overflow: "auto",
               }}
             >
               <List dense>
@@ -331,11 +332,13 @@ export const SearchPage: React.FC = () => {
                       onClick={() => handleSuggestionClick(suggestion)}
                       sx={{ py: 1 }}
                     >
-                      <HistoryIcon sx={{ mr: 1, fontSize: 16, color: 'text.secondary' }} />
+                      <HistoryIcon
+                        sx={{ mr: 1, fontSize: 16, color: "text.secondary" }}
+                      />
                       <ListItemText
                         primary={suggestion}
                         primaryTypographyProps={{
-                          fontSize: '0.9rem',
+                          fontSize: "0.9rem",
                         }}
                       />
                     </ListItemButton>
@@ -346,11 +349,11 @@ export const SearchPage: React.FC = () => {
           </Popper>
         </Box>
       </ClickAwayListener>
-      
+
       {/* Panel de filtros */}
       <Collapse in={showFilters}>
         <Paper sx={{ p: 3, mb: 3, borderRadius: 2 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+          <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
             <Typography variant="h6" sx={{ flexGrow: 1 }}>
               Filtros
             </Typography>
@@ -363,84 +366,130 @@ export const SearchPage: React.FC = () => {
               Limpiar filtros
             </Button>
           </Box>
-          
+
           <Grid container spacing={3}>
             {/* Categorías */}
             <Grid item xs={12} sm={6} md={3}>
-              <Typography variant="subtitle2" sx={{ mb: 1, display: 'flex', alignItems: 'center', gap: 0.5 }}>
+              <Typography
+                variant="subtitle2"
+                sx={{ mb: 1, display: "flex", alignItems: "center", gap: 0.5 }}
+              >
                 <CategoryIcon fontSize="small" /> Categorías
               </Typography>
-              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                {availableFilters.categories.map(category => (
+              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                {availableFilters.categories.map((category) => (
                   <Chip
                     key={category}
                     label={category}
                     size="small"
-                    onClick={() => toggleFilterValue('categories', category)}
-                    color={filters.categories?.includes(category) ? 'primary' : 'default'}
-                    variant={filters.categories?.includes(category) ? 'filled' : 'outlined'}
+                    onClick={() => toggleFilterValue("categories", category)}
+                    color={
+                      filters.categories?.includes(category)
+                        ? "primary"
+                        : "default"
+                    }
+                    variant={
+                      filters.categories?.includes(category)
+                        ? "filled"
+                        : "outlined"
+                    }
                   />
                 ))}
               </Box>
             </Grid>
-            
+
             {/* Tags */}
             <Grid item xs={12} sm={6} md={3}>
-              <Typography variant="subtitle2" sx={{ mb: 1, display: 'flex', alignItems: 'center', gap: 0.5 }}>
+              <Typography
+                variant="subtitle2"
+                sx={{ mb: 1, display: "flex", alignItems: "center", gap: 0.5 }}
+              >
                 <TagIcon fontSize="small" /> Tags
               </Typography>
-              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, maxHeight: 120, overflow: 'auto' }}>
-                {availableFilters.tags.map(tag => (
+              <Box
+                sx={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  gap: 0.5,
+                  maxHeight: 120,
+                  overflow: "auto",
+                }}
+              >
+                {availableFilters.tags.map((tag) => (
                   <Chip
                     key={tag}
                     label={tag}
                     size="small"
-                    onClick={() => toggleFilterValue('tags', tag)}
-                    color={filters.tags?.includes(tag) ? 'secondary' : 'default'}
-                    variant={filters.tags?.includes(tag) ? 'filled' : 'outlined'}
+                    onClick={() => toggleFilterValue("tags", tag)}
+                    color={
+                      filters.tags?.includes(tag) ? "secondary" : "default"
+                    }
+                    variant={
+                      filters.tags?.includes(tag) ? "filled" : "outlined"
+                    }
                   />
                 ))}
               </Box>
             </Grid>
-            
+
             {/* Prioridad */}
             <Grid item xs={12} sm={6} md={2}>
-              <Typography variant="subtitle2" sx={{ mb: 1, display: 'flex', alignItems: 'center', gap: 0.5 }}>
+              <Typography
+                variant="subtitle2"
+                sx={{ mb: 1, display: "flex", alignItems: "center", gap: 0.5 }}
+              >
                 <PriorityIcon fontSize="small" /> Prioridad
               </Typography>
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
-                {availableFilters.priorities.map(priority => (
+              <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}>
+                {availableFilters.priorities.map((priority) => (
                   <Chip
                     key={priority}
-                    label={priority === 'high' ? 'Alta' : priority === 'medium' ? 'Media' : 'Baja'}
-                    size="small"
-                    onClick={() => toggleFilterValue('priorities', priority)}
-                    color={
-                      priority === 'high' ? 'error' : 
-                      priority === 'medium' ? 'warning' : 'success'
+                    label={
+                      priority === "high"
+                        ? "Alta"
+                        : priority === "medium"
+                        ? "Media"
+                        : "Baja"
                     }
-                    variant={filters.priorities?.includes(priority) ? 'filled' : 'outlined'}
+                    size="small"
+                    onClick={() => toggleFilterValue("priorities", priority)}
+                    color={
+                      priority === "high"
+                        ? "error"
+                        : priority === "medium"
+                        ? "warning"
+                        : "success"
+                    }
+                    variant={
+                      filters.priorities?.includes(priority)
+                        ? "filled"
+                        : "outlined"
+                    }
                   />
                 ))}
               </Box>
             </Grid>
-            
+
             {/* Estados */}
             <Grid item xs={12} sm={6} md={2}>
               <Typography variant="subtitle2" sx={{ mb: 1 }}>
                 Estados
               </Typography>
-              <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+              <Box sx={{ display: "flex", flexDirection: "column" }}>
                 <FormControlLabel
                   control={
                     <Switch
                       checked={filters.showFavoritesOnly || false}
-                      onChange={(e) => updateFilter('showFavoritesOnly', e.target.checked)}
+                      onChange={(e) =>
+                        updateFilter("showFavoritesOnly", e.target.checked)
+                      }
                       size="small"
                     />
                   }
                   label={
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                    <Box
+                      sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
+                    >
                       <StarIcon fontSize="small" />
                       <Typography variant="body2">Solo favoritos</Typography>
                     </Box>
@@ -450,12 +499,16 @@ export const SearchPage: React.FC = () => {
                   control={
                     <Switch
                       checked={filters.showPinnedOnly || false}
-                      onChange={(e) => updateFilter('showPinnedOnly', e.target.checked)}
+                      onChange={(e) =>
+                        updateFilter("showPinnedOnly", e.target.checked)
+                      }
                       size="small"
                     />
                   }
                   label={
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                    <Box
+                      sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
+                    >
                       <PinIcon fontSize="small" />
                       <Typography variant="body2">Solo pineadas</Typography>
                     </Box>
@@ -463,26 +516,33 @@ export const SearchPage: React.FC = () => {
                 />
               </Box>
             </Grid>
-            
+
             {/* Colores */}
             <Grid item xs={12} sm={6} md={2}>
-              <Typography variant="subtitle2" sx={{ mb: 1, display: 'flex', alignItems: 'center', gap: 0.5 }}>
+              <Typography
+                variant="subtitle2"
+                sx={{ mb: 1, display: "flex", alignItems: "center", gap: 0.5 }}
+              >
                 <PaletteIcon fontSize="small" /> Colores
               </Typography>
-              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                {COLOR_PALETTE.map(color => (
+              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                {COLOR_PALETTE.map((color) => (
                   <IconButton
                     key={color}
                     size="small"
-                    onClick={() => toggleFilterValue('colors', color)}
+                    onClick={() => toggleFilterValue("colors", color)}
                     sx={{
                       width: 24,
                       height: 24,
                       backgroundColor: color,
-                      border: filters.colors?.includes(color) ? '2px solid' : '1px solid',
-                      borderColor: filters.colors?.includes(color) ? 'primary.main' : 'divider',
-                      '&:hover': {
-                        transform: 'scale(1.1)',
+                      border: filters.colors?.includes(color)
+                        ? "2px solid"
+                        : "1px solid",
+                      borderColor: filters.colors?.includes(color)
+                        ? "primary.main"
+                        : "divider",
+                      "&:hover": {
+                        transform: "scale(1.1)",
                       },
                     }}
                   />
@@ -492,45 +552,45 @@ export const SearchPage: React.FC = () => {
           </Grid>
         </Paper>
       </Collapse>
-      
+
       {/* Barra de progreso mientras busca */}
       {isSearching && <LinearProgress sx={{ mb: 2 }} />}
-      
+
       {/* Estadísticas de búsqueda */}
       {searchStats.showingFiltered && (
         <Box sx={{ mb: 3 }}>
           <Typography variant="body2" color="text.secondary">
             {searchStats.resultsCount} de {searchStats.totalNotes} notas
             {query.trim() && ` para "${query}"`}
-            {hasActiveFilters && ' con filtros aplicados'}
+            {hasActiveFilters && " con filtros aplicados"}
           </Typography>
-          
+
           {hasActiveFilters && (
-            <Box sx={{ mt: 1, display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-              {filters.categories?.map(cat => (
+            <Box sx={{ mt: 1, display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+              {filters.categories?.map((cat) => (
                 <Chip
                   key={`cat-${cat}`}
                   label={cat}
                   size="small"
-                  onDelete={() => toggleFilterValue('categories', cat)}
+                  onDelete={() => toggleFilterValue("categories", cat)}
                   color="primary"
                 />
               ))}
-              {filters.tags?.map(tag => (
+              {filters.tags?.map((tag) => (
                 <Chip
                   key={`tag-${tag}`}
                   label={tag}
                   size="small"
-                  onDelete={() => toggleFilterValue('tags', tag)}
+                  onDelete={() => toggleFilterValue("tags", tag)}
                   color="secondary"
                 />
               ))}
-              {filters.priorities?.map(priority => (
+              {filters.priorities?.map((priority) => (
                 <Chip
                   key={`priority-${priority}`}
                   label={priority}
                   size="small"
-                  onDelete={() => toggleFilterValue('priorities', priority)}
+                  onDelete={() => toggleFilterValue("priorities", priority)}
                   color="warning"
                 />
               ))}
@@ -538,19 +598,19 @@ export const SearchPage: React.FC = () => {
           )}
         </Box>
       )}
-      
+
       {/* Resultados */}
       {isEmpty ? (
         <Paper
           sx={{
             p: 8,
-            textAlign: 'center',
-            backgroundColor: 'background.default',
-            border: '2px dashed',
-            borderColor: 'divider',
+            textAlign: "center",
+            backgroundColor: "background.default",
+            border: "2px dashed",
+            borderColor: "divider",
           }}
         >
-          <SearchIcon sx={{ fontSize: 48, color: 'text.secondary', mb: 2 }} />
+          <SearchIcon sx={{ fontSize: 48, color: "text.secondary", mb: 2 }} />
           <Typography variant="h6" color="text.secondary" gutterBottom>
             Comienza a buscar
           </Typography>
@@ -562,13 +622,13 @@ export const SearchPage: React.FC = () => {
         <Paper
           sx={{
             p: 8,
-            textAlign: 'center',
-            backgroundColor: 'background.default',
-            border: '2px dashed',
-            borderColor: 'divider',
+            textAlign: "center",
+            backgroundColor: "background.default",
+            border: "2px dashed",
+            borderColor: "divider",
           }}
         >
-          <SearchIcon sx={{ fontSize: 48, color: 'text.secondary', mb: 2 }} />
+          <SearchIcon sx={{ fontSize: 48, color: "text.secondary", mb: 2 }} />
           <Typography variant="h6" color="text.secondary" gutterBottom>
             No se encontraron resultados
           </Typography>
@@ -581,9 +641,9 @@ export const SearchPage: React.FC = () => {
         </Paper>
       ) : (
         <Grid container spacing={3}>
-          {searchResults.map(result => renderHighlightedResult(result))}
+          {searchResults.map((result) => renderHighlightedResult(result))}
         </Grid>
       )}
     </Box>
   )
-} 
+}

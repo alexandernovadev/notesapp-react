@@ -4,7 +4,6 @@ import {
   FormMethods,
   FormState,
   ValidationErrors,
-  ValidationRule,
   ValidationError,
 } from "@/types/forms"
 import { validateField } from "@/utils/validators"
@@ -19,7 +18,6 @@ export const useForm = <T extends Record<string, any>>(
     onError,
     validateOnChange = true,
     validateOnBlur = true,
-    validateOnSubmit = true,
   } = config
 
   // State

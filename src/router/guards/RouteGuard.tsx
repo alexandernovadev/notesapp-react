@@ -1,6 +1,6 @@
-import React, { Suspense } from 'react'
-import { Box, CircularProgress, Typography, Alert, Button } from '@mui/material'
-import { ErrorBoundary } from 'react-error-boundary'
+import React, { Suspense } from "react"
+import { Box, CircularProgress, Typography, Alert, Button } from "@mui/material"
+import { ErrorBoundary } from "react-error-boundary"
 
 interface RouteGuardProps {
   children: React.ReactNode
@@ -8,10 +8,10 @@ interface RouteGuardProps {
 }
 
 // Error fallback component
-const ErrorFallback: React.FC<{ error: Error; resetErrorBoundary: () => void }> = ({ 
-  error, 
-  resetErrorBoundary 
-}) => {
+const ErrorFallback: React.FC<{
+  error: Error
+  resetErrorBoundary: () => void
+}> = ({ error, resetErrorBoundary }) => {
   return (
     <Box
       display="flex"
@@ -27,13 +27,9 @@ const ErrorFallback: React.FC<{ error: Error; resetErrorBoundary: () => void }> 
           Algo salió mal
         </Typography>
         <Typography variant="body2" color="text.secondary" gutterBottom>
-          {error.message || 'Ocurrió un error inesperado'}
+          {error.message || "Ocurrió un error inesperado"}
         </Typography>
-        <Button 
-          variant="contained" 
-          onClick={resetErrorBoundary}
-          sx={{ mt: 2 }}
-        >
+        <Button variant="contained" onClick={resetErrorBoundary} sx={{ mt: 2 }}>
           Intentar de nuevo
         </Button>
       </Alert>
@@ -60,15 +56,13 @@ const LoadingFallback: React.FC = () => {
   )
 }
 
-export const RouteGuard: React.FC<RouteGuardProps> = ({ 
-  children, 
-  fallback = <LoadingFallback /> 
+export const RouteGuard: React.FC<RouteGuardProps> = ({
+  children,
+  fallback = <LoadingFallback />,
 }) => {
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
-      <Suspense fallback={fallback}>
-        {children}
-      </Suspense>
+      <Suspense fallback={fallback}>{children}</Suspense>
     </ErrorBoundary>
   )
-} 
+}

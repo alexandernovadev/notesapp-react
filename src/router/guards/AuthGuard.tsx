@@ -1,7 +1,7 @@
-import React from 'react'
-import { Navigate, useLocation } from 'react-router-dom'
-import { useAuthStore } from '@/stores/useAuthStore'
-import { Box, CircularProgress, Typography } from '@mui/material'
+import React from "react"
+import { Navigate, useLocation } from "react-router-dom"
+import { useAuthStore } from "@/stores/useAuthStore"
+import { Box, CircularProgress, Typography } from "@mui/material"
 
 interface AuthGuardProps {
   children: React.ReactNode
@@ -12,7 +12,7 @@ export const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
   const location = useLocation()
 
   // Loading state
-  if (status === 'checking') {
+  if (status === "checking") {
     return (
       <Box
         display="flex"
@@ -31,10 +31,10 @@ export const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
   }
 
   // Not authenticated - redirect to login
-  if (status === 'not-authenticated' || !uid) {
+  if (status === "not-authenticated" || !uid) {
     return <Navigate to="/auth/login" state={{ from: location }} replace />
   }
 
   // Authenticated - render children
   return <>{children}</>
-} 
+}
