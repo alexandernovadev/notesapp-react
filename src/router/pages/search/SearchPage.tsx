@@ -40,7 +40,6 @@ import { useNavigate, useSearchParams } from "react-router-dom"
 import { useSearch } from "@/hooks/useSearch"
 import { useJournal } from "@/hooks/useJournal"
 import { SearchResult } from "@/utils/searchUtils"
-import Swal from "sweetalert2"
 import "@/theme/swal2-zindex-fix.css"
 import { COLOR_PALETTE } from "@/utils/noteOptions"
 
@@ -49,7 +48,7 @@ export const SearchPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const initialQuery = searchParams.get("q") || ""
 
-  const { setActiveNote, toggleFavorite, togglePinned, deleteNote } =
+  const { setActiveNote } =
     useJournal()
 
   const {

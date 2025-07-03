@@ -32,7 +32,7 @@ interface AuthStore extends AuthState {
 
 }
 
-export const useAuthStore = create<AuthStore>((set, get) => ({
+export const useAuthStore = create<AuthStore>((set) => ({
   status: 'checking',
   uid: null,
   email: null,
