@@ -29,10 +29,10 @@ export const useNoteEditor = ({
 
   // Initialize content from active note
   useEffect(() => {
-    console.log('🔧 useNoteEditor useEffect - noteId:', noteId, 'active:', active?.id, 'notes count:', notes.length)
+    // console.log('🔧 useNoteEditor useEffect - noteId:', noteId, 'active:', active?.id, 'notes count:', notes.length)
     
     if (noteId && (!active || active.id !== noteId)) {
-      console.log('🔍 Buscando nota con ID:', noteId)
+      // console.log('🔍 Buscando nota con ID:', noteId)
       const found = notes.find(n => n.id === noteId)
       if (found) {
         console.log('✅ Nota encontrada, estableciendo como activa:', found.id)
@@ -50,12 +50,12 @@ export const useNoteEditor = ({
         setTitle('')
         setHasUnsavedChanges(false)
       } else {
-        console.log('✨ Ya estaba limpio (active era null)')
+        // console.log('✨ Ya estaba limpio (active era null)')
       }
     }
     
     if (active && noteId === active.id) {
-      console.log('📝 Sincronizando contenido con nota activa:', active.id)
+      // console.log('📝 Sincronizando contenido con nota activa:', active.id)
       setContent(active.body || '')
       setTitle(active.title || '')
       setHasUnsavedChanges(false)

@@ -50,11 +50,11 @@ import { fileUpload } from '@/helpers/fileUpload'
 import { useJournal } from '@/hooks/useJournal'
 import { Note } from '@/types'
 
-export const NoteEditorPage: React.FC = () => {
+export const NoteEditorPage: React.FC = React.memo(() => {
   const navigate = useNavigate()
   const { noteId } = useParams<{ noteId: string }>()
 
-  console.log('🚀 NoteEditorPage RENDER - noteId:', noteId)
+  // console.log('🚀 NoteEditorPage RENDER - noteId:', noteId)
 
   const {
     content,
@@ -72,7 +72,7 @@ export const NoteEditorPage: React.FC = () => {
     noteId: noteId || undefined,
   })
 
-  console.log('🎯 DESPUÉS DE useNoteEditor - active:', active?.id, 'title:', title, 'content:', content?.substring(0, 50))
+  // console.log('🎯 DESPUÉS DE useNoteEditor - active:', active?.id, 'title:', title, 'content:', content?.substring(0, 50))
 
   // INICIALIZAR SIEMPRE CON VALORES POR DEFECTO - el useEffect ajustará según active
   const [category, setCategoryState] = React.useState("Personal")
@@ -181,9 +181,12 @@ export const NoteEditorPage: React.FC = () => {
     }
   }
 
-  // Debug: log content and title when they change
+  // Debug: log content and title when they change (DEBOUNCED)
   React.useEffect(() => {
-    console.log("NoteEditorPage debug:", { noteId, title, content })
+    const timeoutId = setTimeout(() => {
+      console.log("NoteEditorPage debug:", { noteId, title, content: content?.substring(0, 50) })
+    }, 1000)
+    return () => clearTimeout(timeoutId)
   }, [noteId, title, content])
 
   // Estado para mostrar/ocultar el Alert de guardado
@@ -197,8 +200,8 @@ export const NoteEditorPage: React.FC = () => {
   const handleTabChange = (_: React.SyntheticEvent, newValue: number) =>
     setTab(newValue)
 
-  // Handler para imágenes
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Handler para imágenes (OPTIMIZADOS)
+  const handleImageUpload = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
     if (!files) return
     const fileArray = Array.from(files)
@@ -208,14 +211,14 @@ export const NoteEditorPage: React.FC = () => {
     const urls = fileArray.map((file) => URL.createObjectURL(file))
     setPreviewUrls(prev => [...prev, ...urls])
     setHasUnsavedChanges(true)
-  }
+  }, [setHasUnsavedChanges])
   
-  // Función para obtener todas las imágenes (reales + preview)
-  const getAllImages = () => {
+  // Función para obtener todas las imágenes (reales + preview) - MEMOIZADA
+  const getAllImages = React.useMemo(() => {
     return [...images, ...previewUrls]
-  }
+  }, [images, previewUrls])
 
-  const handleRemoveImage = (url: string) => {
+  const handleRemoveImage = React.useCallback((url: string) => {
     if (url.startsWith('blob:')) {
       // Es una URL temporal, remover de previewUrls y pendingFiles
       setPreviewUrls(prev => prev.filter((img) => img !== url))
@@ -225,15 +228,15 @@ export const NoteEditorPage: React.FC = () => {
       setImages(prev => prev.filter((img) => img !== url))
     }
     setHasUnsavedChanges(true)
-  }
+  }, [setHasUnsavedChanges])
 
-  // Drag and drop handlers
-  const handleDragOver = (e: React.DragEvent) => {
+  // Drag and drop handlers (OPTIMIZADOS)
+  const handleDragOver = React.useCallback((e: React.DragEvent) => {
     e.preventDefault()
     e.stopPropagation()
-  }
+  }, [])
 
-  const handleDrop = (e: React.DragEvent) => {
+  const handleDrop = React.useCallback((e: React.DragEvent) => {
     e.preventDefault()
     e.stopPropagation()
     
@@ -246,58 +249,56 @@ export const NoteEditorPage: React.FC = () => {
       setPreviewUrls(prev => [...prev, ...urls])
       setHasUnsavedChanges(true)
     }
-  }
+  }, [setHasUnsavedChanges])
 
-  // Modal handlers
-  const handleImageClick = (index: number) => {
+  // Modal handlers (OPTIMIZADOS)
+  const handleImageClick = React.useCallback((index: number) => {
     setCurrentImageIndex(index)
     setModalOpen(true)
-  }
+  }, [])
 
-  const handleModalClose = () => {
+  const handleModalClose = React.useCallback(() => {
     setModalOpen(false)
-  }
+  }, [])
 
-  const handleImageChange = (index: number) => {
+  const handleImageChange = React.useCallback((index: number) => {
     setCurrentImageIndex(index)
-  }
+  }, [])
 
-  // Handlers que marcan cambios pendientes
-  const setCategory = (val: string) => {
+  // Handlers que marcan cambios pendientes (OPTIMIZADOS)
+  const setCategory = React.useCallback((val: string) => {
     setCategoryState(val)
     setHasUnsavedChanges(true)
-  }
-  const setTags = (val: string[]) => {
+  }, [setHasUnsavedChanges])
+  
+  const setTags = React.useCallback((val: string[]) => {
     setTagsState(val)
     setHasUnsavedChanges(true)
-  }
-  const setColor = (val: string) => {
+  }, [setHasUnsavedChanges])
+  
+  const setColor = React.useCallback((val: string) => {
     setColorState(val)
     setHasUnsavedChanges(true)
-  }
-  const setPriority = (val: 'low' | 'medium' | 'high') => {
+  }, [setHasUnsavedChanges])
+  
+  const setPriority = React.useCallback((val: 'low' | 'medium' | 'high') => {
     setPriorityState(val)
     setHasUnsavedChanges(true)
-  }
-  const setImagesWithDirty = (val: string[]) => {
+  }, [setHasUnsavedChanges])
+  
+  const setImagesWithDirty = React.useCallback((val: string[]) => {
     setImages(val)
     setHasUnsavedChanges(true)
-  }
+  }, [setHasUnsavedChanges])
 
   React.useEffect(() => {
-    console.log('🔍 NoteEditorPage useEffect - noteId:', noteId, 'active:', active?.id, 'active:', !!active)
+    // SOLO ejecutar cuando cambia el ID de la nota activa o cuando noteId cambia
+    const activeId = active?.id || null
+    // console.log('🔍 NoteEditorPage useEffect - noteId:', noteId, 'activeId:', activeId)
     
-    if (active) {
+    if (active && noteId === activeId) {
       // CARGAR DATOS DE NOTA EXISTENTE
-      console.log('📝 CARGANDO DATOS DE NOTA EXISTENTE:', {
-        id: active.id,
-        title: active.title,
-        category: active.category,
-        tags: active.tags,
-        color: active.color,
-        priority: active.priority,
-        imageUrls: active.imageUrls?.length
-      })
+      console.log('📝 CARGANDO DATOS DE NOTA EXISTENTE:', activeId)
       setCategoryState(active.category || "Personal")
       setTagsState(active.tags || [])
       setColorState(active.color || "#f8fafc")
@@ -306,9 +307,9 @@ export const NoteEditorPage: React.FC = () => {
       // Limpiar URLs temporales al cargar una nota existente
       setPreviewUrls([])
       setPendingFiles([])
-    } else {
+    } else if (!noteId && active) {
       // RESETEAR ESTADO PARA NUEVA NOTA
-      console.log('🔄 LIMPIANDO ESTADO PARA NUEVA NOTA (active es null)')
+      console.log('🔄 LIMPIANDO ESTADO PARA NUEVA NOTA')
       setCategoryState("Personal")
       setTagsState([])
       setColorState("#f8fafc")
@@ -317,7 +318,7 @@ export const NoteEditorPage: React.FC = () => {
       setPreviewUrls([])
       setPendingFiles([])
     }
-  }, [active, noteId])
+  }, [active?.id, noteId]) // Solo depende de active.id, no de todo el objeto active
 
   return (
     <Box sx={{ height: "100vh", display: "flex", flexDirection: "column" }}>
@@ -387,19 +388,21 @@ export const NoteEditorPage: React.FC = () => {
           )}
 
           {/* Save button */}
-          <Tooltip title="Guardar (Ctrl+S)" arrow>
-            {isSaving || !hasUnsavedChanges ? (
+          {isSaving || !hasUnsavedChanges ? (
+            <Tooltip title="Sin cambios para guardar" arrow>
               <span>
                 <IconButton onClick={handleSave} disabled color="primary">
                   <SaveIcon />
                 </IconButton>
               </span>
-            ) : (
+            </Tooltip>
+          ) : (
+            <Tooltip title="Guardar (Ctrl+S)" arrow>
               <IconButton onClick={handleSave} color="primary">
                 <SaveIcon />
               </IconButton>
-            )}
-          </Tooltip>
+            </Tooltip>
+          )}
         </Box>
       </Box>
 
@@ -852,9 +855,9 @@ export const NoteEditorPage: React.FC = () => {
                 </Box>
 
                 {/* Grid de imágenes subidas */}
-                {getAllImages().length > 0 && (
+                                  {getAllImages.length > 0 && (
                   <Grid container spacing={2} sx={{ mt: 2 }}>
-                    {getAllImages().map((url, idx) => (
+                    {getAllImages.map((url, idx) => (
                       <Grid item key={url} xs={6} sm={4} md={3} lg={2}>
                         <Box
                           sx={{
@@ -1012,7 +1015,7 @@ export const NoteEditorPage: React.FC = () => {
       <ImageModal
         open={modalOpen}
         onClose={handleModalClose}
-        images={getAllImages()}
+        images={getAllImages}
         currentIndex={currentImageIndex}
         onImageChange={handleImageChange}
       />
@@ -1020,4 +1023,4 @@ export const NoteEditorPage: React.FC = () => {
       )}
     </Box>
   )
-}
+})

@@ -37,7 +37,7 @@ export const useJournalStore = create<JournalStore>((set, get) => ({
   active: null,
 
   setActiveNote: (note) => {
-    console.log('🏪 STORE setActiveNote llamado con:', note ? `${note.id} (${note.title})` : 'NULL')
+    // console.log('🏪 STORE setActiveNote llamado con:', note ? `${note.id} (${note.title})` : 'NULL')
     set({ active: note, messageSaved: '' })
   },
   setNotes: (notes) => set({ notes }),
