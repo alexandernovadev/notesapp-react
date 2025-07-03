@@ -5,3 +5,6 @@ export * from "./auth"
 export { default as LoadingLayout } from "./LoadingLayout"
 export { Header } from "./layout/Header"
 export { Sidebar } from "./layout/Sidebar"
+
+// Note components
+export { NoteCard } from "./NoteCard"
