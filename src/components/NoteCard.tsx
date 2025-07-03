@@ -19,6 +19,10 @@ import {
   PushPinOutlined as PushPinOutlinedIcon,
   MoreVert as MoreVertIcon,
   AccessTime as AccessTimeIcon,
+  Schedule as ScheduleIcon,
+  CalendarToday as CalendarIcon,
+  TextFields as WordsIcon,
+  MenuBook as ReadTimeIcon,
   Edit as EditIcon,
   Delete as DeleteIcon,
   Archive as ArchiveIcon,
@@ -232,32 +236,144 @@ export const NoteCard: React.FC<NoteCardProps> = ({
           {getPreviewText(note.body)}
         </Typography>
 
-        {/* FIRST DIVIDER */}
+        {/* FIRST DIVIDER - Stats con amor 💖 */}
         <Box sx={{ 
           borderTop: '1px solid',
           borderColor: 'divider',
           pt: 1,
-          mb: 1,
-          mt: 'auto'
+          mb: 0.75,
+          mt: 'auto',
+          backgroundColor: 'rgba(0,0,0,0.02)',
+          mx: -0.75,
+          px: 0.75,
+          borderRadius: 0.75
         }}>
-          {/* FECHA */}
-          <Typography variant="caption" color="text.secondary" sx={{ mb: 1 }}>
-            {formatDate(note.updatedAt)}
-          </Typography>
-          
-          {/* COUNT + RELOJ */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 1 }}>
-            <AccessTimeIcon sx={{ fontSize: 12, color: 'action.active' }} />
-            <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.65rem' }}>
-              {note.wordCount || 0} palabras
+          {/* FECHA con icono bonito */}
+          <Box sx={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: 0.5, 
+            mb: 0.75,
+            padding: 0.25,
+            borderRadius: 0.5,
+            transition: 'all 0.2s ease',
+            '&:hover': {
+              backgroundColor: 'action.hover'
+            }
+          }}>
+            <Box sx={{
+              p: 0.2,
+              borderRadius: '50%',
+              backgroundColor: 'primary.main',
+              color: 'white',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: 16,
+              height: 16
+            }}>
+              <CalendarIcon sx={{ fontSize: 9 }} />
+            </Box>
+            <Typography variant="caption" sx={{ 
+              fontSize: '0.7rem',
+              color: 'text.primary',
+              fontWeight: 500
+            }}>
+              {formatDate(note.updatedAt)}
             </Typography>
+          </Box>
+          
+          {/* ESTADÍSTICAS con iconos coloridos */}
+          <Box sx={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: 1,
+            flexWrap: 'wrap'
+          }}>
+            {/* Palabras */}
+            <Box sx={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: 0.25,
+              padding: 0.25,
+              borderRadius: 0.5,
+              transition: 'all 0.2s ease',
+              '&:hover': {
+                backgroundColor: 'action.hover',
+                transform: 'scale(1.05)'
+              }
+            }}>
+              <Box sx={{
+                p: 0.2,
+                borderRadius: '50%',
+                backgroundColor: 'secondary.main',
+                color: 'white',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: 14,
+                height: 14
+              }}>
+                <WordsIcon sx={{ fontSize: 8 }} />
+              </Box>
+              <Typography variant="caption" sx={{ 
+                fontSize: '0.65rem',
+                color: 'text.primary',
+                fontWeight: 600
+              }}>
+                {note.wordCount || 0}
+              </Typography>
+              <Typography variant="caption" sx={{ 
+                fontSize: '0.6rem',
+                color: 'text.secondary',
+                opacity: 0.8
+              }}>
+                palabras
+              </Typography>
+            </Box>
+            
+            {/* Tiempo de lectura */}
             {note.readTime && (
-              <>
-                <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.65rem' }}>•</Typography>
-                <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.65rem' }}>
-                  {note.readTime} min lectura
+              <Box sx={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: 0.25,
+                padding: 0.25,
+                borderRadius: 0.5,
+                transition: 'all 0.2s ease',
+                '&:hover': {
+                  backgroundColor: 'action.hover',
+                  transform: 'scale(1.05)'
+                }
+              }}>
+                <Box sx={{
+                  p: 0.2,
+                  borderRadius: '50%',
+                  backgroundColor: 'success.main',
+                  color: 'white',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: 14,
+                  height: 14
+                }}>
+                  <ReadTimeIcon sx={{ fontSize: 8 }} />
+                </Box>
+                <Typography variant="caption" sx={{ 
+                  fontSize: '0.65rem',
+                  color: 'text.primary',
+                  fontWeight: 600
+                }}>
+                  {note.readTime}
                 </Typography>
-              </>
+                <Typography variant="caption" sx={{ 
+                  fontSize: '0.6rem',
+                  color: 'text.secondary',
+                  opacity: 0.8
+                }}>
+                  min lectura
+                </Typography>
+              </Box>
             )}
           </Box>
         </Box>
@@ -267,18 +383,18 @@ export const NoteCard: React.FC<NoteCardProps> = ({
           <Box sx={{ 
             borderTop: '1px solid',
             borderColor: 'divider',
-            pt: 1
+            pt: 0.75
           }}>
             {/* TAGS Y CATEGORIA */}
             {((note.tags && note.tags.length > 0) || (note.category && note.category !== 'personal')) && (
-              <Box sx={{ mb: ((note.priority && note.priority !== 'medium') || showFavoriteChip) ? 1 : 0 }}>
+              <Box sx={{ mb: ((note.priority && note.priority !== 'medium') || showFavoriteChip) ? 0.75 : 0 }}>
                 {/* TAGS */}
                 {note.tags && note.tags.length > 0 && (
-                  <Box sx={{ mb: note.category && note.category !== 'personal' ? 0.75 : 0 }}>
-                    <Typography variant="caption" sx={{ fontSize: '0.6rem', color: 'text.secondary', fontWeight: 500, textTransform: 'uppercase', letterSpacing: 0.5, mb: 0.5, display: 'block' }}>
+                  <Box sx={{ mb: note.category && note.category !== 'personal' ? 0.5 : 0 }}>
+                    <Typography variant="caption" sx={{ fontSize: '0.55rem', color: 'text.secondary', fontWeight: 500, textTransform: 'uppercase', letterSpacing: 0.5, mb: 0.25, display: 'block' }}>
                       tags
                     </Typography>
-                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.25 }}>
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.2 }}>
                       {note.tags.slice(0, 4).map((tag) => (
                         <Chip
                           key={tag}
@@ -287,10 +403,10 @@ export const NoteCard: React.FC<NoteCardProps> = ({
                           variant="filled"
                           color="secondary"
                           sx={{
-                            fontSize: '0.6rem',
-                            height: 18,
+                            fontSize: '0.7rem',
+                            height: 20,
                             opacity: 0.8,
-                            '& .MuiChip-label': { px: 0.75 }
+                            '& .MuiChip-label': { px: 1, py: 0.25 }
                           }}
                         />
                       ))}
@@ -299,11 +415,11 @@ export const NoteCard: React.FC<NoteCardProps> = ({
                           label={`+${note.tags.length - 4}`}
                           size="small"
                           sx={{
-                            fontSize: '0.6rem',
-                            height: 18,
+                            fontSize: '0.7rem',
+                            height: 20,
                             bgcolor: 'text.secondary',
                             color: 'white',
-                            '& .MuiChip-label': { px: 0.75 }
+                            '& .MuiChip-label': { px: 1, py: 0.25 }
                           }}
                         />
                       )}
@@ -314,7 +430,7 @@ export const NoteCard: React.FC<NoteCardProps> = ({
                 {/* CATEGORIA */}
                 {note.category && note.category !== 'personal' && (
                   <Box>
-                    <Typography variant="caption" sx={{ fontSize: '0.6rem', color: 'text.secondary', fontWeight: 500, textTransform: 'uppercase', letterSpacing: 0.5, mb: 0.5, display: 'block' }}>
+                    <Typography variant="caption" sx={{ fontSize: '0.55rem', color: 'text.secondary', fontWeight: 500, textTransform: 'uppercase', letterSpacing: 0.5, mb: 0.25, display: 'block' }}>
                       categoría
                     </Typography>
                     <Chip
@@ -322,11 +438,11 @@ export const NoteCard: React.FC<NoteCardProps> = ({
                       size="small"
                       variant="outlined"
                       sx={{
-                        fontSize: '0.6rem',
-                        height: 18,
+                        fontSize: '0.7rem',
+                        height: 20,
                         bgcolor: 'background.paper',
                         opacity: 0.9,
-                        '& .MuiChip-label': { px: 0.75 }
+                        '& .MuiChip-label': { px: 1, py: 0.25 }
                       }}
                     />
                   </Box>
@@ -339,7 +455,7 @@ export const NoteCard: React.FC<NoteCardProps> = ({
               <Box sx={{ 
                 display: 'flex',
                 flexWrap: 'wrap',
-                gap: 0.25,
+                gap: 0.2,
                 alignItems: 'center'
               }}>
                 {/* Favorite indicator first - only in favorites page */}
@@ -351,9 +467,10 @@ export const NoteCard: React.FC<NoteCardProps> = ({
                     variant="filled"
                     color="primary"
                     sx={{
-                      fontSize: '0.65rem',
+                      fontSize: '0.7rem',
                       height: 20,
-                      fontWeight: 600
+                      fontWeight: 600,
+                      '& .MuiChip-label': { py: 0.25 }
                     }}
                   />
                 )}
@@ -363,11 +480,12 @@ export const NoteCard: React.FC<NoteCardProps> = ({
                     label={note.priority === 'high' ? 'Alta Prioridad' : 'Baja Prioridad'}
                     size="small"
                     sx={{
-                      fontSize: '0.65rem',
+                      fontSize: '0.7rem',
                       height: 20,
                       bgcolor: note.priority === 'high' ? 'error.main' : 'success.main',
                       color: 'white',
-                      ml: showFavoriteChip ? 0.5 : 0
+                      ml: showFavoriteChip ? 0.5 : 0,
+                      '& .MuiChip-label': { py: 0.25 }
                     }}
                   />
                 )}

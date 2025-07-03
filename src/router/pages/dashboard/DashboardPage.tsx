@@ -11,7 +11,6 @@ import {
 } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
 import { useJournal } from '@/hooks/useJournal'
-import { Note } from '@/types'
 import { NoteCard } from '@/components'
 import Swal from 'sweetalert2'
 import '@/theme/swal2-zindex-fix.css'
